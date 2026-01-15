@@ -58,6 +58,7 @@ Code reviews are done via pull requests into the main branch. These ensure that 
 
 ### Commit Messages
 
+<small>RECOMMENDATION:</small>
 Keep the name clear and concise, accurately describing the topic. Limit the length to around 50 characters or less. You can use the description for more informative messages. Use present tense and an imperative mood.
 
 ### Branches
