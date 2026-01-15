@@ -5,27 +5,23 @@ These guidelines are primarily for new students to understand the Git process an
 > [!NOTE]
 > Content marked with [REC] are not required to be followed. But this standard is designed to simplify development and build consistency.
 
-##### Table of Contents  
+##### Table of Contents
 - [CONTRIBUTING](#contributing)
-  * [Issues](#issues)
-    + [How to report a bug](#how-to-report-a-bug)
-    + [How to suggest a feature](#how-to-suggest-a-feature)
-  * [Code Review Process](#code-review-process)
-  * [Conventions](#conventions)
-    + [Commit Messages](#commit-messages)
-    + [Branches](#branches)
-      - [Features `feat/`](#features--feat--)
-      - [Bug Fixes `bugfix/`](#bug-fixes--bugfix--)
-      - [Hot Fixes `hotfix/`](#hot-fixes--hotfix--)
-    + [Core Branches](#core-branches)
-      - [Main `main`](#main--main-)
-      - [Releases `releases/v1.0.0`](#releases--releases-v100-)
-    + [Competition Branches](#competition-branches)
-    + [Development Branches](#development-branches)
-      - [Development `dev`](#development--dev-)
-      - [Competition Development `gainesville/dev` `gwinnett/dev`](#competition-development--gainesville-dev---gwinnett-dev-)
-  * [Workflow](#workflow)
-  * [Contact](#contact)
+   * [Table of Contents](#table-of-contents)
+   * [Issues](#issues)
+      + [How to report a bug](#how-to-report-a-bug)
+      + [How to suggest a feature](#how-to-suggest-a-feature)
+   * [Code Review Process](#code-review-process)
+   * [Conventions](#conventions)
+      + [Commit Messages [REC]](#commit-messages-rec)
+      + [Branches [REC]](#branches-rec)
+         - [Features `feat/`](#features-feat)
+         - [Bug Fixes `bugfix/`](#bug-fixes-bugfix)
+      + [Core Branches](#core-branches)
+         - [Main `main`](#main-main)
+   * [Workflow](#workflow)
+      + [Example commit and branch history](#example-commit-and-branch-history)
+   * [Contact](#contact)
 
 ## Issues
 
