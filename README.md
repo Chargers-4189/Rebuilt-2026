@@ -4,7 +4,7 @@
 
 ### FRC Team 4189 - Chargers
 
-This repository includes all code and resources for the 2025 FRC Season, Reefscape.
+This repository includes all code and resources for the 2026 FRC Season, Rebuilt.
 
 ##### Table of Contents  
 - [Resources](#resources)
@@ -17,7 +17,7 @@ This repository includes all code and resources for the 2025 FRC Season, Reefsca
 ```
 assets/
 └── AdvantageScopeAssets/
-    └── Robot_Chargers2025
+    └── Robot_Chargers2026
 design/
 src/
 └── main/
@@ -39,7 +39,6 @@ src/
 
 `src/main/deploy`
 - Autonomous & optimized paths with PathPlanner
-- Swerve drive configuration for YAGSL
 
 `src/main/java/frc/robot`
 - Robot code
@@ -49,15 +48,14 @@ src/
 To clone and run the code, you'll need [Git](https://git-scm.com/downloads) or [GitHub Desktop](https://desktop.github.com/download/) and WPILib installed on your computer. Refer to the requirements for a complete list. From the command line:
 ```bash
 # Clone this repository
-$ git clone https://github.com/Chargers-4189/Reefscape-2025.git
+$ git clone https://github.com/Chargers-4189/Rebuilt-2026.git
 ```
 
 ### Requirements
 To contribute or run the code, you must have the following installed:
 - Install the latest version of [WPILib](https://github.com/wpilibsuite/allwpilib/releases/latest)
 - Install the latest version of [FRC Game Tools](https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html)
-- Install the [Seamless Prettier For Java 2022](https://marketplace.visualstudio.com/items?itemName=hyperproof.vscode-ext-prettier-java) VSCode Extension
 
 ## Contributing
 
-For more information about contributing to this project, please read [`CONTRIBUTING.md`](https://github.com/Chargers-4189/Reefscape-2025/blob/main/CONTRIBUTING.md)
+For more information about contributing to this project, please read [`CONTRIBUTING.md`](https://github.com/Chargers-4189/Rebuilt-2026/blob/main/CONTRIBUTING.md).
