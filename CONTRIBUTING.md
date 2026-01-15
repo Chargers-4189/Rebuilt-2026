@@ -3,7 +3,7 @@
 These guidelines are primarily for new students to understand the Git process and how to start contributing to the repository. Following these guidelines helps prevent poor code practices and streamlines development. It also allows us to program and review code efficiently, using a method that builds high-quality code and supports collaboration.
 
 > [!NOTE]
-> Content marked with RECOMMENDATION are not required to be followed. But this standard is designed to simplify development and build consistency.
+> Content marked with [REC] are not required to be followed. But this standard is designed to simplify development and build consistency.
 
 ##### Table of Contents  
 - [CONTRIBUTING](#contributing)
@@ -56,12 +56,11 @@ Code reviews are done via pull requests into the main branch. These ensure that 
 
 ## Conventions
 
-### Commit Messages
+### Commit Messages [REC]
 
-<small>RECOMMENDATION:</small>
 Keep the name clear and concise, accurately describing the topic. Limit the length to around 50 characters or less. You can use the description for more informative messages. Use present tense and an imperative mood.
 
-### Branches
+### Branches [REC]
 
 Keep the name clear and concise, accurately describing the topic. Limit the length to around 30 characters or less. It must also be lowercase and hyphen-separated. Lastly, always use a prefix to denote the topic.
 
@@ -85,42 +84,13 @@ Bug fixes address relatively minor issues. When creating a bug fix, create an is
 
 E.g. `bugfix/swerve-heading-issue`
 
-#### Hot Fixes `hotfix/`
-Hotfixes address significant issues; these are emergencies that can be made directly on `core` branches. When creating a hotfix, create an issue first to document it, then branch off from a `core` branch. Fix the problem and create a pull request to merge it back to the `core` branch. This prefix is designated for bugs that can break the robot or pose safety hazards.
-
-- Hotfix name must be at least 3 characters long
-- Hotfix name must be hyphen-seperated and lowercase
-
-E.g. `hotfix/motor-burnout-issue`
-
 ### Core Branches
 
 > [!WARNING]
->  No direct commits are allowed on these branches. Pull requests are required for merging code.
+>  No direct commits are allowed on these branches. Pull requests are ALWAYS required for merging code.
 
 #### Main `main`
-The main branch contains the most stable code regardless of the robot version release. Since this code must be stable, two code review approvals are required before a pull request can be merged. Other than hotfixes, no direct commits can be made on this branch.
-
-#### Releases `releases/v1.0.0`
-The releases branch contains the most stable code for a specific robot version release. A new version will be released following mechanical changes. Any new mechanisms on the robot will represent a new version. Two code review approvals are required before a pull request can be merged. Other than hotfixes, no direct commits can be made on this branch.
-
-This branch follows the [Semantic Versioning 2.0.0](https://semver.org/) format, representing versions as X.Y.Z. Here, X represents breaking changes that introduce significant mechanical changes, Y indicates when new features are added, and Z denotes bug fixes that don't introduce features.
-
-### Competition Branches
-`gainesville/main` `gwinnett/main`
-
-These competition's main branches contain the most stable code for a specific competition. We separate these branches to differentiate between the competition and current codes. These also require two code review approvals before merging. Again, other than hotfixes, no direct commits can be made on this branch.
-
-### Development Branches
-
-#### Development `dev`
-The development branch contains the latest but unstable code. This is where all the feature and bug branches merge before going into the `core` branches. `dev` is the staging point between active development and releases. One code review approval is required; no direct commits besides hotfixes are allowed.
-
-> [!IMPORTANT]
-> The development branch will not be used during competitions. There are specific branches for each competition.
-
-#### Competition Development `gainesville/dev` `gwinnett/dev`
-These branches contain the latest but unstable code for a specific competition. Unlike the development branch, this does not require code review approval due to how chaotic competition's can be, and direct commits can be made on this branch. Afterward, we can sort out these commits to resolve any errors or bugs on the competition's main branches. 
+The main branch contains the latest working code of the robot. Since this code must be stable (or compiling at the very least), a pull request is required before a push can be merged. Code approvals/reviews are recommended but not necessary.
 
 ## Workflow
 Before you jump in and start contributing, it’s a good idea to get familiar with the Git Workflow. The power of GitHub ensures that the version history is maintained and multiple versions are retained. Likewise, the code is checked for errors with pull requests to prevent further problems. This allows us to build high-quality code and collaborate efficiently. If you would like to learn more, read [here](https://github.com/Chargers-4189/git-lesson/blob/main/github-course.md#workflow)
