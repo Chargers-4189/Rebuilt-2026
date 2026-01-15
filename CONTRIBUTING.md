@@ -83,18 +83,6 @@ Bug fixes address code issues. When creating a bug fix, create an issue first to
 - Bug name must be hyphen-seperated and lowercase
 
 E.g. `bugfix/can-issue`
-```mermaid
-gitGraph
-    commit id: "Add subsystem"
-    commit id: "Add CAN device"
-    branch bugfix/can-issue
-    checkout bugfix/can-issue
-    commit id: "Fix CAN device id"
-    commit id: "Fix CAN bug"
-    checkout main
-    merge bugfix/can-issue
-    commit id: "Add command"
-```
 
 ### Core Branches
 
@@ -106,6 +94,35 @@ The main branch contains the latest working code of the robot. Since this code m
 
 ## Workflow
 Before you jump in and start contributing, it’s a good idea to get familiar with the Git Workflow. The power of GitHub ensures that the version history is maintained and multiple versions are retained. Likewise, the code is checked for errors with pull requests to prevent further problems. This allows us to build high-quality code and collaborate efficiently. If you would like to learn more, read [here](https://github.com/Chargers-4189/git-lesson/blob/main/github-course.md#workflow)
+
+### Example commit and branch history
+```mermaid
+gitGraph
+    commit id: "Template"
+    branch feat/subsystem order: 2
+    checkout feat/subsystem
+    commit id: "Add CAN device"
+    commit id: "Feat: Subsystem"
+    checkout main
+    merge feat/subsystem
+    branch bugfix/can-issue order: 1
+    branch feat/command order: 3
+    checkout feat/command
+    commit id: "Add subsystem support"
+    checkout feat/command
+    commit id: "Add constants"
+    checkout main
+    checkout bugfix/can-issue
+    commit id: "Fix CAN device id"
+    commit id: "Bugfix: CAN bug"
+    checkout main
+    merge bugfix/can-issue
+    checkout feat/command
+    commit id: "Add controls"
+    commit id: "Feat: Command"
+    checkout main
+    merge feat/command
+```
 
 ## Contact
 As always, please email or Discord us if you need help or have a question.

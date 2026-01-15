@@ -58,4 +58,4 @@ To contribute or run the code, you must have the following installed:
 
 ## Contributing
 
-For more information about contributing to this project, please read [`CONTRIBUTING.md`](https://github.com/Chargers-4189/Reefscape-2025/blob/main/CONTRIBUTING.md).
+For more information about contributing to this project, please read [`CONTRIBUTING.md`](https://github.com/Chargers-4189/Rebuilt-2026/blob/main/CONTRIBUTING.md).
