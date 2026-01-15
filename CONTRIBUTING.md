@@ -77,12 +77,24 @@ These branches are used to develop new features and encompass all active develop
 E.g. `feat/swervedrive-auto`
 
 #### Bug Fixes `bugfix/`
-Bug fixes address relatively minor issues. When creating a bug fix, create an issue first to document it, then branch off from `dev` or the branch you're working on. Fix the problem and create a pull request to merge it back to the desired branch.
+Bug fixes address code issues. When creating a bug fix, create an issue first to document it, then branch off from `dev` or the branch you're working on. Fix the problem and create a pull request to merge it back to the desired branch.
 
 - Bug name must be at least 3 characters long
 - Bug name must be hyphen-seperated and lowercase
 
-E.g. `bugfix/swerve-heading-issue`
+E.g. `bugfix/can-issue`
+```mermaid
+gitGraph
+    commit id: "Add subsystem"
+    commit id: "Add CAN device"
+    branch bugfix/can-issue
+    checkout bugfix/can-issue
+    commit id: "Fix CAN device id"
+    commit id: "Fix CAN bug"
+    checkout main
+    merge bugfix/can-issue
+    commit id: "Add command"
+```
 
 ### Core Branches
 
