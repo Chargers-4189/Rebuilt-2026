@@ -56,6 +56,14 @@ Code reviews are done via pull requests into the main branch. These ensure that 
 
 Keep the name clear and concise, accurately describing the topic. Limit the length to around 50 characters or less. You can use the description for more informative messages. Use present tense and an imperative mood.
 
+### Core Branches
+
+> [!WARNING]
+>  No direct commits are allowed on these branches. Pull requests are ALWAYS required for merging code.
+
+#### Main `main`
+The main branch contains the latest working code of the robot. Since this code must be stable (or compiling at the very least), a pull request is required before a push can be merged. Code approvals/reviews are recommended but not necessary.
+
 ### Branches [REC]
 
 Keep the name clear and concise, accurately describing the topic. Limit the length to around 30 characters or less. It must also be lowercase and hyphen-separated. Lastly, always use a prefix to denote the topic.
@@ -64,29 +72,29 @@ Keep the name clear and concise, accurately describing the topic. Limit the leng
 >  When naming your branch, write the full path to the last level. Never start or end a branch with `/`
 
 Here are the prefixes you can use to denote the topic of your branch.
-#### Features `feat/`
-These branches are used to develop new features and encompass all active development. When creating a new feature, branch off from `dev` to keep the latest code.
+#### Commands | Prefix: `commands/`
+This branch is used exclusively for developing commands for subsystems on the robot. When creating a new feature, branch off from `main` to keep the latest code.
 
-- Feature name must be at least 3 characters long
-- Feature name must be hyphen-seperated and lowercase
+- Command name must be at least 3 characters long
+- Command name must be hyphen-seperated and lowercase
 
-E.g. `feat/swervedrive-auto`
+E.g. `commands/default-drive`
 
-#### Bug Fixes `bugfix/`
-Bug fixes address code issues. When creating a bug fix, create an issue first to document it, then branch off from `dev` or the branch you're working on. Fix the problem and create a pull request to merge it back to the desired branch.
+#### Subsystems | Prefix:`subsystems/`
+This branch is used exclusively for developing subsystems on the robot. When creating a new feature, branch off from `main` to keep the latest code.
+
+- Subsystem name must be at least 3 characters long
+- Subsystem name must be hyphen-seperated and lowercase
+
+E.g. `subsystems/swervedrive`
+
+#### Bug Fixes | Prefix: `bugfix/`
+Bug fixes address code issues. When creating a bug fix, create an issue first to document it, then branch off from `main` or the branch you're working on. Fix the problem and create a pull request to merge it back to the desired branch.
 
 - Bug name must be at least 3 characters long
 - Bug name must be hyphen-seperated and lowercase
 
 E.g. `bugfix/can-issue`
-
-### Core Branches
-
-> [!WARNING]
->  No direct commits are allowed on these branches. Pull requests are ALWAYS required for merging code.
-
-#### Main `main`
-The main branch contains the latest working code of the robot. Since this code must be stable (or compiling at the very least), a pull request is required before a push can be merged. Code approvals/reviews are recommended but not necessary.
 
 ## Workflow
 Before you jump in and start contributing, it’s a good idea to get familiar with the Git Workflow. The power of GitHub ensures that the version history is maintained and multiple versions are retained. Likewise, the code is checked for errors with pull requests to prevent further problems. This allows us to build high-quality code and collaborate efficiently. If you would like to learn more, read [here](https://github.com/Chargers-4189/git-lesson/blob/main/github-course.md#workflow)
