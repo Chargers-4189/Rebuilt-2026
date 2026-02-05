@@ -18,10 +18,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ShootFuelNoSwerveAlign;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-    private final CommandXboxController m_driverController =
+    private final CommandXboxController primaryController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      private final Shooter shooter = new Shooter();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -41,6 +44,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+            primaryController.leftTrigger().whileTrue(new ShootFuelNoSwerveAlign(shooter));
     }
 
     private void configureBindings() {
