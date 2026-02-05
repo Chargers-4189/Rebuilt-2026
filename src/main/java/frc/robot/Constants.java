@@ -16,4 +16,12 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class HopperConstants {
+
+    //Subsystem
+    public static final int kMOTOR_ID_RIGHT = 0; //Filler ID's
+    public static final int kMOTOR_ID_LEFT = 0; //Filler ID's
+    
+  }
 }
