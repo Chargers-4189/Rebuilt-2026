@@ -18,13 +18,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ShootFuelNoSwerveAlign;
+import frc.robot.commands.shootFuelNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-      private final Shooter shooter = new Shooter();
+
+    //Subsystem declarations
+    private final Shooter shooter = new Shooter();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -44,10 +46,15 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
-            primaryController.leftTrigger().whileTrue(new ShootFuelNoSwerveAlign(shooter));
+        configureSwerveBindings();
     }
 
     private void configureBindings() {
+        // Shooter Subsystem buttons
+        primaryController.leftTrigger().whileTrue(new shootFuelNoSwerveAlign(shooter));
+    }
+
+    private void configureSwerveBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(

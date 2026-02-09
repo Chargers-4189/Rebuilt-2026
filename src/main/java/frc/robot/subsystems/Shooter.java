@@ -14,22 +14,22 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
 
   //Shooter motor shoots balls upwards from the hopper and indexer motor
-  private final SparkMax ShooterMotor = new SparkMax(
+  private final SparkMax shooterMotor = new SparkMax(
     -1, //CHANGE ID HERE, cement ID then add to constants file
     MotorType.     //motor type currently unknown
   );
   //Indexer motor gets ball from hopper and ready to shoot
-  private final SparkMax IndexerMotor = new SparkMax(
+  private final SparkMax indexerMotor = new SparkMax(
     -1, //CHANGE ID HERE, cement ID then add to constants file
     MotorType.    //motor type currently unknown
   );
   //Hood Motor rotates the shooting direction vertically
-  private final SparkMax HoodMotor = new SparkMax(
+  private final SparkMax hoodMotor = new SparkMax(
     -1, //CHANGE ID HERE, cement ID then add to constants file
     MotorType.    //motor type currently unknown
   );
 
-  private AbsoluteEncoder HoodEncoder = HoodMotor.getAbsoluteEncoder();
+  private AbsoluteEncoder hoodEncoder = hoodMotor.getAbsoluteEncoder();
   
 
 
@@ -38,20 +38,20 @@ public class Shooter extends SubsystemBase {
 
   //Hood
   public void setHoodPower(double hoodMotorPower) {
-    IndexerMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
+    indexerMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
   }
   public double getHoodPosition() {
-    return HoodEncoder.getPosition(); 
+    return hoodEncoder.getPosition(); 
   }
 
   //Indexer
   public void setIndexerPower(double indexerMotorPower) {
-    IndexerMotor.set(indexerMotorPower);  // DIRECTION UNTESTED
+    indexerMotor.set(indexerMotorPower);  // DIRECTION UNTESTED
   }
 
   //Shooter
   public void setShooterPower(double shooterMotorPower) {
-    ShooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
+    shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
   }
 
 
