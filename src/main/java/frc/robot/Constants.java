@@ -22,4 +22,9 @@ public final class Constants {
     public static final int kIntakeMotor = 0;
     public static final int kIntakeEncoder = 0;
   }
+
+  public static class HopperConstants {
+    public static final int kMOTOR_ID_LEFT = 0;
+    public static final int kMOTOR_ID_RIGHT = 0;
+  }
 }
