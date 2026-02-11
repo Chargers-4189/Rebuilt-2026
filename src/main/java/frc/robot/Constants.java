@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public final class IntakeConstants {
+    public static final int kIntakeMotor = 0; //Filler
+    public static final int kIntakeAxisMotor = 1; //Filler
+  }
 }
