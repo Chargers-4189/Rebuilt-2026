@@ -17,6 +17,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public final class IntakeConstants {
+    public static final int kIntakeMotor = 0; //Filler
+    public static final int kIntakeAxisMotor = 0; //Filler
+    public static final int kIntakeEncoder = 0; //Filler
   public static class HopperConstants {
 
     //Subsystem
