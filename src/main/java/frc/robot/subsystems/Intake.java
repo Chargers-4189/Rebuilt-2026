@@ -30,6 +30,10 @@ public class Intake extends SubsystemBase {
     INTAKE_MOTOR.set(-speed); //Change once inverted
   }
 
+  public double getEncoder() {
+    return ENCODER.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
