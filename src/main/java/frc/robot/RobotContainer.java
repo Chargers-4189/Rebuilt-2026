@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
@@ -41,6 +42,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final Intake intake = new Intake();
+    public final Hopper hopper = new Hopper();
 
     public RobotContainer() {
         configureBindings();
