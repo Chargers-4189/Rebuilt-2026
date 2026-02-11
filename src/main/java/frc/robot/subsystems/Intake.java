@@ -4,15 +4,15 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final TalonFX AXIS_MOTOR = new TalonFX(Constants.IntakeConstants.kIntakeAxisMotor);
-  private final TalonFX INTAKE_MOTOR = new TalonFX(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
+  private TalonFXS AXIS_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
+  private TalonFXS INTAKE_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
 
   public Intake() {}
 
@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
 
   //+: Intake, -: Outtake
   public void setIntakeSpeed(double speed) {
-    INTAKE_MOTOR.set(speed);
+    INTAKE_MOTOR.set(-speed); //Change once inverted
   }
 
   @Override
