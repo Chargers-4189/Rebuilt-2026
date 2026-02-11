@@ -19,6 +19,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
     private final CommandXboxController m_driverController =
@@ -39,6 +40,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
+    private final Hopper Hopper = new Hopper();
 
     private final Intake Intake = new Intake();
 
