@@ -14,22 +14,41 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.HoodConstants;
 
-public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
+public class Hood extends SubsystemBase {
+ 
 
-  //Shooter motor shoots balls upwards from the hopper and indexer motor
-  private final TalonFXS shooterMotor = new TalonFXS( 
+
+  private final TalonFXS hoodMotor = new TalonFXS(
     -1 //CHANGE ID HERE, cement ID then add to constants file
   );
- 
-  public Shooter() {}
+
+  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(-1);   //Change channel after looking at wiring later
+  
 
 
-  public void setShooterPower(double shooterMotorPower) {
-    shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
+
+  public Hood() {}
+
+  public void setHoodPower(double hoodMotorPower) {
+    hoodMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
+  }
+  public double getHoodPosition() {
+    return (hoodEncoder.get()/HoodConstants.kGearRatio);
+  }
+  public void zeroEncoder() {
+    hoodEncoder.equals(0);
+  }
+  public void manualHood(boolean directionUp) {
+    if(directionUp){
+      hoodMotor.set(0.1);  //BOTH DIRECTIONS UNTESTED AND SPEED IS ABITRARY
+    }else{
+      hoodMotor.set(-0.1);
+    }
   }
 
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

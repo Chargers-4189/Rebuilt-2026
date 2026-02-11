@@ -15,20 +15,22 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
+public class Indexer extends SubsystemBase {
 
-  //Shooter motor shoots balls upwards from the hopper and indexer motor
-  private final TalonFXS shooterMotor = new TalonFXS( 
+  //Indexer motor gets ball from hopper and ready to shoot
+  private final TalonFXS indexerMotor = new TalonFXS(
     -1 //CHANGE ID HERE, cement ID then add to constants file
-  );
- 
-  public Shooter() {}
+  );  
 
 
-  public void setShooterPower(double shooterMotorPower) {
-    shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
+
+  public Indexer() {}
+
+
+  public void setIndexerPower(double indexerMotorPower) {
+    indexerMotor.set(indexerMotorPower);  // DIRECTION UNTESTED
   }
+
 
   @Override
   public void periodic() {
