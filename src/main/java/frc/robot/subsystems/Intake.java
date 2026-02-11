@@ -6,12 +6,16 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFXS;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS AXIS_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
+  private DutyCycleEncoder ENCODER = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
   private TalonFXS INTAKE_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
 
   public Intake() {}

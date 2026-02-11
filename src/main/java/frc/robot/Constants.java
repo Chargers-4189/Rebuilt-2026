@@ -19,6 +19,7 @@ public final class Constants {
 
   public final class IntakeConstants {
     public static final int kIntakeMotor = 0; //Filler
-    public static final int kIntakeAxisMotor = 1; //Filler
+    public static final int kIntakeAxisMotor = 0; //Filler
+    public static final int kIntakeEncoder = 0; //Filler
   }
 }
