@@ -14,7 +14,7 @@ import frc.robot.Constants;
 public class Hopper extends SubsystemBase {
   /** Creates a new Hopper. */
   //Hopper has 2 motors and 0 sensors
-  private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kMOTOR_ID_LEFT); //Leader
+  //private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kMOTOR_ID_LEFT); //Leader
   private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kMOTOR_ID_RIGHT); //Follower (Set inverted)
 
   public Hopper() {
@@ -24,7 +24,7 @@ public class Hopper extends SubsystemBase {
   //Positive: Feed Into Robot (EAT)
   //Negative: Feed Out of Robot (VOMIT)
   public void setSpeed(double speed) {
-    LEFT_MOTOR.set(speed);
+    //LEFT_MOTOR.set(speed);
     RIGHT_MOTOR.set(-speed);
   }
 
