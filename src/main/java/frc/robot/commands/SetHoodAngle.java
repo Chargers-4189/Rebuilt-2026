@@ -6,16 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
+import frc.robot.Constants.HoodConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetHoodAngle extends Command {
 
   private Hood hood;
   double angle; //position of hood we currently want
-  double currentAngle;
-  double hoodTolerance = 0.5;  //This line should eventually be removed and it's applications should be replaced with this number in the constants file
   /** Creates a new ShootFuel. */
-  public SetHoodAngle(Hood hood, double Angle) {
+  public SetHoodAngle(Hood hood, double angle) {
     this.hood = hood;
     this.angle = angle;
     addRequirements(hood);
@@ -28,14 +27,13 @@ public class SetHoodAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentAngle = hood.getHoodPosition();
 
     //sets the hood angle to the desired hood angle, if the hood angle is within the tolerance we set, then it shoots the fuel
-    if(Math.abs(angle - currentAngle) >= hoodTolerance){
-      if(angle <= currentAngle){
-        hood.setHoodPower(0.05); // this number (currently 0.05) should probably be iterated then put into constants
-      }else if(angle <= currentAngle){
-        hood.setHoodPower(-0.05);
+    if(Math.abs(angle - hood.getHoodPosition()) >= HoodConstants.kHoodTolerance){
+      if(angle <= hood.getHoodPosition()){
+        hood.setHoodPower(HoodConstants.kHoodPower); 
+      }else if(angle <= hood.getHoodPosition()){
+        hood.setHoodPower(-HoodConstants.kHoodPower);
       }
     }
 
@@ -50,7 +48,7 @@ public class SetHoodAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(angle - currentAngle) <= hoodTolerance){
+    if(Math.abs(angle - hood.getHoodPosition()) <= HoodConstants.kHoodTolerance){
       return true;
     }
     return false;

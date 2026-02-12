@@ -20,6 +20,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
 
@@ -65,6 +66,7 @@ public class RobotContainer {
         primaryController.povDown().onTrue(Commands.run(()->{
             hood.manualHood(false);
         }, this.hood));
+
     }
 
     private void configureSwerveBindings() {
