@@ -23,6 +23,8 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
@@ -48,6 +50,10 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
+    private final Hopper Hopper = new Hopper();
+
+    private final Intake Intake = new Intake();
 
     public RobotContainer() {
         configureBindings();
