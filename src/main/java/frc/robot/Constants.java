@@ -24,7 +24,22 @@ public final class Constants {
   }
 
   public static class HopperConstants {
-    public static final int kMOTOR_ID_LEFT = 0;
-    public static final int kMOTOR_ID_RIGHT = 0;
+    //public static final int kHopperMotorLeft = 0;
+    public static final int kHopperMotorRight = 0;
   }
+
+  public static class HoodConstants {
+    public static final int kHoodMotor = 0;
+    public static final int kHoodEncoder = 0;
+  }
+
+  public static class IndexerConstants {
+    public static final int kIndexerMotor = 0;
+  }
+
+  public static class ShooterConstants {
+    public static final int kShooterRightMotor = 0;
+    public static final int kShooterLeftMotor = 0;
+  }
+
 }
