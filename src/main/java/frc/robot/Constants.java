@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DutyCycle;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -21,6 +23,7 @@ public final class Constants {
     public static final double kHoodTolerance = -1; //THIS IS A PLACEHOLDER
     public static final double kHoodPower = .05;  //THIS IS A PLACEHOLDER
     public static final int kMotorCanID = 29;
+    public static final int kEncoderDIO = 1;
   }
   public static class IndexerConstants {
     public static final double kSpeed = 0.1; //THIS IS A PLACEHOLDER
@@ -29,11 +32,13 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final int kMotorCanID = 28;
+  }
 
   public final class IntakeConstants {
     public static final int kIntakeMotor = 0; //Filler
     public static final int kIntakeAxisMotor = 0; //Filler
     public static final int kIntakeEncoder = 0; //Filler
+  }
   public static class HopperConstants {
 
     //Subsystem
