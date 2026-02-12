@@ -23,7 +23,7 @@ public final class Constants {
     public static final double kHoodTolerance = -1; //THIS IS A PLACEHOLDER
     public static final double kHoodPower = .05;  //THIS IS A PLACEHOLDER
     public static final int kMotorCanID = 29;
-    public static final int kEncoderDIO = 1;
+    public static final int kEncoderDIO = 0;
   }
   public static class IndexerConstants {
     public static final double kSpeed = 0.1; //THIS IS A PLACEHOLDER
@@ -35,15 +35,15 @@ public final class Constants {
   }
 
   public final class IntakeConstants {
-    public static final int kIntakeMotor = 0; //Filler
-    public static final int kIntakeAxisMotor = 0; //Filler
-    public static final int kIntakeEncoder = 0; //Filler
+    public static final int kWheelMotor = 21; //Filler
+    public static final int kExtensionMotor = 22;
+    public static final int kExtensionEncoder = 1; //Filler
   }
   public static class HopperConstants {
 
     //Subsystem
-    public static final int kMOTOR_ID_RIGHT = 0; //Filler ID's
-    public static final int kMOTOR_ID_LEFT = 0; //Filler ID's
+    public static final int kMOTOR_ID_RIGHT = 26;
+    //public static final int kMOTOR_ID_LEFT = -1;
     
   }
 }

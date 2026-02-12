@@ -14,24 +14,24 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS AXIS_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
-  private DutyCycleEncoder ENCODER = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
-  private TalonFXS INTAKE_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
+  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor);
+  private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kExtensionEncoder);
+  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kExtensionMotor); //Needs to be inverted
 
   public Intake() {}
 
   //+: Goes Out, -: Goes in
-  public void setAxisSpeed(double speed) {
-    AXIS_MOTOR.set(speed);
+  public void setWheelSpeed(double speed) {
+    WheelMotor.set(-speed);
   }
 
   //+: Intake, -: Outtake
-  public void setIntakeSpeed(double speed) {
-    INTAKE_MOTOR.set(-speed); //Change once inverted
+  public void setExtensionSpeed(double speed) {
+    ExtensionMotor.set(-speed); //Change once inverted
   }
 
   public double getEncoder() {
-    return ENCODER.get();
+    return Encoder.get();
   }
 
   @Override

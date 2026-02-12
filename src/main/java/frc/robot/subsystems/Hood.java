@@ -37,14 +37,6 @@ public class Hood extends SubsystemBase {
   public void zeroEncoder() {
     System.out.println("ERROR: Use Rev Software to reset this.");
   }
-  public void manualHood(boolean directionUp) {
-    if(directionUp){
-      hoodMotor.set(0.1);  //BOTH DIRECTIONS UNTESTED AND SPEED IS ABITRARY
-    }else{
-      hoodMotor.set(-0.1);
-    }
-  }
-
   
   @Override
   public void periodic() {
