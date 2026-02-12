@@ -14,12 +14,13 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
 
   //Indexer motor gets ball from hopper and ready to shoot
   private final TalonFXS indexerMotor = new TalonFXS(
-    -1 //CHANGE ID HERE, cement ID then add to constants file
+    IndexerConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
   );  
 
 

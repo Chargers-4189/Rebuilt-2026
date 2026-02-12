@@ -21,10 +21,10 @@ public class Hood extends SubsystemBase {
 
 
   private final TalonFXS hoodMotor = new TalonFXS(
-    -1 //CHANGE ID HERE, cement ID then add to constants file
+    HoodConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
   );
 
-  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(-1);   //Change channel after looking at wiring later
+  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
   
 
 

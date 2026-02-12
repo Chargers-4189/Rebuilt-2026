@@ -15,19 +15,21 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants.ShooterConstants;
+
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
 
   //Shooter motor shoots balls upwards from the hopper and indexer motor
   private final TalonFXS shooterMotor = new TalonFXS( 
-    -1 //CHANGE ID HERE, cement ID then add to constants file
+    ShooterConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
   );
  
   public Shooter() {}
 
 
   public void setShooterPower(double shooterMotorPower) {
-    shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
+    //shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
   }
 
   @Override
