@@ -17,11 +17,15 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class HopperConstants {
+  public final class IntakeConstants {
+    public static final int kIntakeMotor = 0; //Filler
+    public static final int kIntakeAxisMotor = 0; //Filler
+    public static final int kIntakeEncoder = 0; //Filler
+  }
 
+  public static class HopperConstants {
     //Subsystem
-    public static final int kMOTOR_ID_RIGHT = 0; //Filler ID's
-    public static final int kMOTOR_ID_LEFT = 0; //Filler ID's
-    
+    public static final int kHopperMotorRight = 0; //Filler ID's
+    public static final int kHopperMotorLeft = 0; //Filler ID's
   }
 }
