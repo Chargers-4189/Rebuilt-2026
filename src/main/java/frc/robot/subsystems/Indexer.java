@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
 
 
   public void setIndexerPower(double indexerMotorPower) {
-    indexerMotor.set(indexerMotorPower);  // DIRECTION UNTESTED
+    indexerMotor.set(-indexerMotorPower);   //Direction is now tested
   }
 
 

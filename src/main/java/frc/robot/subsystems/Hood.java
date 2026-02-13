@@ -21,14 +21,11 @@ public class Hood extends SubsystemBase {
 
 
   private final TalonFXS hoodMotor = new TalonFXS(
-    HoodConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
+    HoodConstants.kMotorCanID
   );
 
-  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
+  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(HoodConstants.kEncoderDIO);
   
-
-
-
   public Hood() {}
 
   public void setHoodPower(double hoodMotorPower) {
@@ -38,19 +35,13 @@ public class Hood extends SubsystemBase {
     return (hoodEncoder.get()/HoodConstants.kGearRatio);
   }
   public void zeroEncoder() {
-    hoodEncoder.equals(0);
+    System.out.println("ERROR: Use Rev Software to reset this.");
   }
-  public void manualHood(boolean directionUp) {
-    if(directionUp){
-      hoodMotor.set(0.1);  //BOTH DIRECTIONS UNTESTED AND SPEED IS ABITRARY
-    }else{
-      hoodMotor.set(-0.1);
-    }
-  }
-
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //System.out.print(hoodEncoder.get()+ " ");
+    //System.out.println(hoodEncoder.isConnected());
   }
 }

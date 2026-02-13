@@ -31,9 +31,9 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
     //Subsystem declarations
-    private final Shooter shooter = new Shooter();
-    private final Hood hood = new Hood();
-    private final Indexer indexer = new Indexer();
+    private final Shooter Shooter = new Shooter();
+    private final Hood Hood = new Hood();
+    private final Indexer Indexer = new Indexer();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -62,17 +62,41 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Shooter Subsystem buttons
-        primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
-        primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
-        primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
+        primaryController.y().whileTrue(new ShootNoSwerveAlign(Shooter, Hood, Indexer, 0.5, 0.125));//high speed
+        primaryController.b().whileTrue(new ShootNoSwerveAlign(Shooter, Hood, Indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
+        primaryController.a().whileTrue(new ShootNoSwerveAlign(Shooter, Hood, Indexer, 0.075, 0.125));//low speed
         // Hood Subsystem Buttons
-        primaryController.povUp().onTrue(Commands.run(()->{
-            hood.manualHood(true);
-        }, this.hood));
-        primaryController.povDown().onTrue(Commands.run(()->{
-            hood.manualHood(false);
-        }, this.hood));
+        primaryController.povUp().whileTrue(Commands.run(()->{
+            Hood.setHoodPower(-.1);
+        }, Hood));
+        
+        Hood.setDefaultCommand(Commands.run(() -> {
+            Hood.setHoodPower(0);
+        }, Hood));
 
+        primaryController.povDown().whileTrue(Commands.run(() -> {
+            Hood.setHoodPower(.1);
+        }, Hood));
+        primaryController.povLeft().onTrue(Commands.run(() -> {
+            Indexer.setIndexerPower(0.4);
+        }, Intake)).onFalse(Commands.run(() -> {
+                Indexer.setIndexerPower(0);
+            }, Intake));
+
+        primaryController.leftBumper()
+            .onTrue(Commands.run(() -> {
+                Intake.setWheelSpeed(.5);
+            }, Intake)).onFalse(Commands.run(() -> {
+                Intake.setWheelSpeed(0);
+            }, Intake));
+        
+        primaryController.leftBumper().whileTrue(Commands.run(() -> {
+            Intake.setWheelSpeed(1);
+        }, Intake));
+
+        Intake.setDefaultCommand(Commands.run(() -> {
+            Intake.setWheelSpeed(0);
+        }, Intake));
     }
 
     private void configureSwerveBindings() {
