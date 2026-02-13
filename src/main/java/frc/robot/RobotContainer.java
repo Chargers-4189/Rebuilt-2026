@@ -77,6 +77,11 @@ public class RobotContainer {
         primaryController.povDown().whileTrue(Commands.run(() -> {
             Hood.setHoodPower(.1);
         }, Hood));
+        primaryController.povLeft().onTrue(Commands.run(() -> {
+            Indexer.setIndexerPower(0.4);
+        }, Intake)).onFalse(Commands.run(() -> {
+                Indexer.setIndexerPower(0);
+            }, Intake));
 
         primaryController.leftBumper()
             .onTrue(Commands.run(() -> {

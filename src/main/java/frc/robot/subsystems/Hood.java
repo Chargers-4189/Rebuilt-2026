@@ -41,5 +41,7 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //System.out.print(hoodEncoder.get()+ " ");
+    //System.out.println(hoodEncoder.isConnected());
   }
 }
