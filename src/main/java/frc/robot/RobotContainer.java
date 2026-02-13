@@ -18,11 +18,22 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Indexer;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootNoSwerveAlign;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
-    private final CommandXboxController m_driverController =
+    private final CommandXboxController primaryController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+    //Subsystem declarations
+    private final Shooter shooter = new Shooter();
+    private final Hood hood = new Hood();
+    private final Indexer indexer = new Indexer();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -42,11 +53,29 @@ public class RobotContainer {
     
     private final Hopper Hopper = new Hopper();
 
+    private final Intake Intake = new Intake();
+
     public RobotContainer() {
         configureBindings();
+        configureSwerveBindings();
     }
 
     private void configureBindings() {
+        // Shooter Subsystem buttons
+        primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
+        primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
+        primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
+        // Hood Subsystem Buttons
+        primaryController.povUp().onTrue(Commands.run(()->{
+            hood.manualHood(true);
+        }, this.hood));
+        primaryController.povDown().onTrue(Commands.run(()->{
+            hood.manualHood(false);
+        }, this.hood));
+
+    }
+
+    private void configureSwerveBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
