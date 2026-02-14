@@ -26,7 +26,7 @@ import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
  
-
+  public double offset = 0;
 
   private final TalonFXS hoodMotor = new TalonFXS(
     HoodConstants.kMotorCanID
@@ -47,11 +47,15 @@ public class Hood extends SubsystemBase {
   }
 
   public double getHoodPosition() {
-    return (hoodEncoder.get());
+    return (hoodEncoder.get() - offset);
   }
 
   public void zeroEncoder() {
     System.out.println("ERROR: Use Rev Software to reset this.");
+  }
+
+  public void offsetEncoder() {
+    offset = (hoodEncoder.get() - .676);
   }
 
   /**
@@ -71,9 +75,8 @@ public class Hood extends SubsystemBase {
   public Command SetHoodAngle() {
     return Commands.run(
         () -> {
-          System.out.println("PID: " + m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.676)));
-          hoodMotor.set(
-            m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.676)));
+          hoodMotor.set(MathUtil.clamp(
+            m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.676)), -.6, 0.6));
         }, this).withName("HoodAlign"); // PID math max clamp at 0.4
   }
 

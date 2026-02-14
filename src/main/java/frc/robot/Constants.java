@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DutyCycle;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kTestControllerPort = 1;
   }
   public static class HoodConstants {
     public static final double kGearRatio = 5.5;
@@ -26,7 +27,7 @@ public final class Constants {
     public static final int kEncoderDIO = 0;
 
     public static final double kANGLE = .625;
-    public static final double kP = 0;
+    public static final double kP = 1; //All these are tested and stuff
     public static final double kI = 0;
     public static final double kD = 0;
     
@@ -43,6 +44,22 @@ public final class Constants {
     public static final double kTEST_POWER = .6;
     public static final double kDISTANCE = 3;
     public static final double kFUEL_NUM = 1.5;
+
+    public static final double kSPEED = 0;
+
+    //slot 0 configs
+    public static final double kS = 0.25; // Add 0.25 V output to overcome static friction
+    public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    public static final double kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    public static final double kI = 0; // no output for integrated error
+    public static final double kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+
+  // set Motion Magic settings
+  public static final double MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+  public static final double MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+  public static final double MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
   }
   
   public static class IntakeConstants {

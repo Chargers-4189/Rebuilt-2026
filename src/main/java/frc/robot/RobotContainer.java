@@ -32,6 +32,8 @@ import frc.robot.util.NetworkTables;
 public class RobotContainer {
     private final CommandXboxController primaryController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      private final CommandXboxController testController =
+      new CommandXboxController(OperatorConstants.kTestControllerPort);
 
     //Subsystem declarations
     private final Shooter shooter = new Shooter();
@@ -76,6 +78,18 @@ public class RobotContainer {
         hood.setDefaultCommand(
             hood.SetHoodAngle()
         );
+
+        primaryController.rightTrigger().onTrue(Commands.runOnce(() -> {
+            hood.offsetEncoder();
+        }, hood));
+
+        primaryController.leftTrigger().onTrue(Commands.runOnce(() -> {
+            shooter.ConfigureMotor();
+        }, shooter));
+
+        testController.a().onTrue(Commands.run(() -> {
+            shooter.ConfigureMotor();
+        }, shooter));
 
         primaryController.povDown().whileTrue(Commands.run(() -> {
             hood.setHoodPower(.1);

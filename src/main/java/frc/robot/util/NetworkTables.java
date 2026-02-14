@@ -17,6 +17,20 @@ public class NetworkTables {
         public static DoubleEntry kDISTANCE = shooterTable.getDoubleTopic("kDISTANCE").getEntry(Constants.ShooterConstants.kDISTANCE);
 
         public static DoubleEntry kFUEL_NUM = shooterTable.getDoubleTopic("kFUEL_NUM").getEntry(Constants.ShooterConstants.kFUEL_NUM);
+
+        public static DoubleEntry kSPEED = shooterTable.getDoubleTopic("kSPEED").getEntry(Constants.ShooterConstants.kSPEED);
+        public static DoubleEntry kP = shooterTable.getDoubleTopic("kP").getEntry(Constants.ShooterConstants.kP);
+        public static DoubleEntry kI = shooterTable.getDoubleTopic("kI").getEntry(Constants.ShooterConstants.kI);
+        public static DoubleEntry kD = shooterTable.getDoubleTopic("kD").getEntry(Constants.ShooterConstants.kD);
+        //slot 0 configs
+        public static DoubleEntry kS = shooterTable.getDoubleTopic("kS").getEntry(Constants.ShooterConstants.kS);; // Add 0.25 V output to overcome static friction
+        public static DoubleEntry kV = shooterTable.getDoubleTopic("kV").getEntry(Constants.ShooterConstants.kV);; // A velocity target of 1 rps results in 0.12 V output
+        public static DoubleEntry kA = shooterTable.getDoubleTopic("kA").getEntry(Constants.ShooterConstants.kA);; // An acceleration of 1 rps/s requires 0.01 V output
+
+        // set Motion Magic settings
+        public static DoubleEntry MotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MotionMagicCruiseVelocity").getEntry(Constants.ShooterConstants.MotionMagicCruiseVelocity);; // Target cruise velocity of 80 rps
+        public static DoubleEntry MotionMagicAcceleration = shooterTable.getDoubleTopic("MotionMagicAcceleration").getEntry(Constants.ShooterConstants.MotionMagicAcceleration);; // Target acceleration of 160 rps/s (0.5 seconds)
+        public static DoubleEntry MotionMagicJerk = shooterTable.getDoubleTopic("MotionMagicJerk").getEntry(Constants.ShooterConstants.MotionMagicJerk);; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
 
     public static final class HoodTable {
