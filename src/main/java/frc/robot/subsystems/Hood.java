@@ -31,17 +31,33 @@ public class Hood extends SubsystemBase {
   public void setHoodPower(double hoodMotorPower) {
     hoodMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
   }
+
   public double getHoodPosition() {
-    return (hoodEncoder.get()/HoodConstants.kGearRatio);
+    return (hoodEncoder.get());
   }
+
   public void zeroEncoder() {
     System.out.println("ERROR: Use Rev Software to reset this.");
+  }
+
+  /**
+   * Sets the hood angle to the desired hood angle, if the hood angle is within the tolerance we set, then it shoots the fuel
+   * @param angle the angle to go to
+   */
+  public void setHoodAngle(double angle) {
+    if(Math.abs(angle - getHoodPosition()) >= HoodConstants.kHoodTolerance){
+      if(angle > getHoodPosition()){
+        setHoodPower(HoodConstants.kHoodPower); 
+      }else if(angle < getHoodPosition()){
+        setHoodPower(-HoodConstants.kHoodPower);
+      }
+    }
   }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //System.out.print(hoodEncoder.get()+ " ");
+    System.out.println(getHoodPosition());
     //System.out.println(hoodEncoder.isConnected());
   }
 }

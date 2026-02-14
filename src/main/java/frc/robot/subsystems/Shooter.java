@@ -21,15 +21,19 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
 
   //Shooter motor shoots balls upwards from the hopper and indexer motor
-  private final TalonFXS shooterMotor = new TalonFXS( 
-    ShooterConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
+  private final TalonFXS leftShooterMotor = new TalonFXS( 
+    ShooterConstants.kLeftMotorCanID 
+  );
+  private final TalonFXS rightShooterMotor = new TalonFXS( 
+    ShooterConstants.kRightMotorCanID 
   );
  
   public Shooter() {}
 
 
   public void setShooterPower(double shooterMotorPower) {
-    //shooterMotor.set(shooterMotorPower);  // DIRECTION UNTESTED
+    leftShooterMotor.set(shooterMotorPower);
+    rightShooterMotor.set(-shooterMotorPower);
   }
 
   @Override

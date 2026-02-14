@@ -20,10 +20,12 @@ public final class Constants {
   }
   public static class HoodConstants {
     public static final double kGearRatio = 5.5;
-    public static final double kHoodTolerance = -1; //THIS IS A PLACEHOLDER
-    public static final double kHoodPower = .05;  //THIS IS A PLACEHOLDER
+    public static final double kHoodTolerance = .01; //THIS IS A PLACEHOLDER
+    public static final double kHoodPower = .1;  //THIS IS A PLACEHOLDER
     public static final int kMotorCanID = 29;
     public static final int kEncoderDIO = 0;
+
+    public static final double kANGLE = .625;
   }
   public static class IndexerConstants {
     public static final double kSpeed = 0.1; //THIS IS A PLACEHOLDER
@@ -31,18 +33,23 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int kMotorCanID = 28;
+    public static final int kLeftMotorCanID = 27;
+    public static final int kRightMotorCanID = 28;
+
+    public static final double kTEST_POWER = .6;
+    public static final double kDISTANCE = 3;
+    public static final double kFUEL_NUM = 1.5;
   }
   
   public static class IntakeConstants {
-    public static final int kIntakeMotor = 0; //Filler
-    public static final int kIntakeAxisMotor = 0; //Filler
-    public static final int kIntakeEncoder = 0; //Filler
+    public static final int kIntakeMotor = 21; 
+    public static final int kIntakeAxisMotor = 22;
+    public static final int kIntakeEncoder = 1; 
   }
 
   public static class HopperConstants {
     //Subsystem
-    public static final int kHopperMotorRight = 0; //Filler ID's
-    public static final int kHopperMotorLeft = 0; //Filler ID's
+    public static final int kHopperMotorRight = 26; 
+    public static final int kHopperMotorLeft = 0; //Filler ID
   }
 }
