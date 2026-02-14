@@ -20,7 +20,7 @@ public final class Constants {
   }
   public static class HoodConstants {
     public static final double kGearRatio = 5.5;
-    public static final double kHoodTolerance = .01; //THIS IS A PLACEHOLDER
+    public static final double kHoodTolerance = .02; //THIS IS A PLACEHOLDER
     public static final double kHoodPower = .1;  //THIS IS A PLACEHOLDER
     public static final int kMotorCanID = 29;
     public static final int kEncoderDIO = 0;

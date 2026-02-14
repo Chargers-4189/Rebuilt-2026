@@ -28,5 +28,7 @@ public class NetworkTables {
     public static void initialize() {
         ShooterTable.kPOWER.set(ShooterTable.kPOWER.get());
         HoodTable.kANGLE.set(HoodTable.kANGLE.get());
+        ShooterTable.kFUEL_NUM.set(ShooterTable.kFUEL_NUM.get());
+        ShooterTable.kDISTANCE.set(ShooterTable.kDISTANCE.get());
     }
 }
