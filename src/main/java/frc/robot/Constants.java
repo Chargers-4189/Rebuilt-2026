@@ -26,6 +26,10 @@ public final class Constants {
     public static final int kEncoderDIO = 0;
 
     public static final double kANGLE = .625;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    
   }
   public static class IndexerConstants {
     public static final double kSpeed = 0.1; //THIS IS A PLACEHOLDER

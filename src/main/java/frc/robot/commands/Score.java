@@ -39,7 +39,7 @@ public class Score extends Command {
     double power = 0.0222112*dist + .0225543*ShooterTable.kFUEL_NUM.get() + .374194*angle + .147292;
 
     System.out.println(angle + " " + power);
-    hood.setHoodAngle(angle);
+    //hood.setHoodAngle(angle);
     shooter.setShooterPower(power);
   }
 

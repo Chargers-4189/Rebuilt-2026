@@ -23,11 +23,17 @@ public class NetworkTables {
         static NetworkTable hoodTable = networkInstance.getTable("hoodTable");
 
         public static DoubleEntry kANGLE = hoodTable.getDoubleTopic("kANGLE").getEntry(Constants.HoodConstants.kANGLE);
+        public static DoubleEntry kP = hoodTable.getDoubleTopic("kP").getEntry(Constants.HoodConstants.kP);
+        public static DoubleEntry kI = hoodTable.getDoubleTopic("kI").getEntry(Constants.HoodConstants.kI);
+        public static DoubleEntry kD = hoodTable.getDoubleTopic("kD").getEntry(Constants.HoodConstants.kD);
     }
 
     public static void initialize() {
         ShooterTable.kPOWER.set(ShooterTable.kPOWER.get());
         HoodTable.kANGLE.set(HoodTable.kANGLE.get());
+        HoodTable.kP.set(HoodTable.kP.get());
+        HoodTable.kI.set(HoodTable.kI.get());
+        HoodTable.kD.set(HoodTable.kD.get());
         ShooterTable.kFUEL_NUM.set(ShooterTable.kFUEL_NUM.get());
         ShooterTable.kDISTANCE.set(ShooterTable.kDISTANCE.get());
     }

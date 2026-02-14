@@ -21,7 +21,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.Score;
-import frc.robot.commands.SetHoodAngle;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
@@ -74,9 +73,9 @@ public class RobotContainer {
             Hood.setHoodPower(-.1);
         }, Hood)); **/
         
-        hood.setDefaultCommand(Commands.run(() -> {
-            hood.setHoodPower(0);
-        }, hood));
+        hood.setDefaultCommand(
+            hood.SetHoodAngle()
+        );
 
         primaryController.povDown().whileTrue(Commands.run(() -> {
             hood.setHoodPower(.1);
