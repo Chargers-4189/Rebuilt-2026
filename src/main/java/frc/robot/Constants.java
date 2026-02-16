@@ -35,13 +35,14 @@ public final class Constants {
   }
   public static class IndexerConstants {
     public static final int kMotorCanID = 25;
+    public static double kSpeed;
   }
 
   public static class ShooterConstants {
     public static final int kLeftMotorCanID = 27;
     public static final int kRightMotorCanID = 28;
 
-    public static final double kTolerance = 2;
+    public static final double kTolerance = 5;
 
     public static final double kTEST_POWER = .6;
     public static final double kDISTANCE = 3;

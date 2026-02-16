@@ -20,6 +20,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.Score;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
@@ -107,8 +108,8 @@ public class RobotContainer {
         }, hood));
         primaryController.povLeft().onTrue(Commands.run(() -> {
             hopper.setSpeed(0.4);
-            indexer.setIndexerPower(0.4);
-        }, indexer, hopper));
+        }, hopper));
+        primaryController.povLeft().onTrue(new MoveIndexer(indexer, shooter));
         primaryController.povRight().onTrue(Commands.run(() -> {
             hopper.setSpeed(0);
             indexer.setIndexerPower(0);
