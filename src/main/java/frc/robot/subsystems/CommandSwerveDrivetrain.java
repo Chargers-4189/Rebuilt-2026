@@ -249,11 +249,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
          try {
                 
+            //find camera mounting points and apply them ere
             Transform3d transform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
             PhotonPoseEstimator poseEST = new PhotonPoseEstimator(layout, transform); 
             EstimatedRobotPose poser = poseEST.estimateAverageBestTargetsPose(vision.leftCamBestResult()).get();
 
-            this.addVisionMeasurement(poser.estimatedPose.toPose2d(), kNumConfigAttempts);
+            this.addVisionMeasurement(poser.estimatedPose.toPose2d(), poser.timestampSeconds); //
             //this.updateSimState(m_drivetrainId, );
             
             
