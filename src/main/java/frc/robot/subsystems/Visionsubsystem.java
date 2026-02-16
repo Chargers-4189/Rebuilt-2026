@@ -59,15 +59,22 @@ public class Visionsubsystem extends SubsystemBase {
     }
   }
 
-  public double getDistanceFromBlueHub(){
-    return getDistanceFromHub(hubPosBlue);
+  public double getDistanceFromHub(){
+    if(swerve.m_isBlueAlliance){
+      return getDistanceFromBlueHub();
+    } else {
+      return getDistanceFromRedHub();
+    }
+  }
+  private double getDistanceFromBlueHub(){
+    return getDistanceFromLocation(hubPosBlue);
   }
 
-  public double getDistanceFromRedHub(){
-    return getDistanceFromHub(hubPosRed);
+  private double getDistanceFromRedHub(){
+    return getDistanceFromLocation(hubPosRed);
   }
 
-  private double getDistanceFromHub(Pose2d hubLocation){
+  private double getDistanceFromLocation(Pose2d hubLocation){
       
       double botX = swerve.getState().Pose.getX();
       double botY = swerve.getState().Pose.getY();
