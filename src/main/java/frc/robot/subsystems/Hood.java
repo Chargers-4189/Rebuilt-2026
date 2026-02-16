@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
@@ -43,11 +45,11 @@ public class Hood extends SubsystemBase {
   public Hood() {}
 
   public void setHoodPower(double hoodMotorPower) {
-    hoodMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
+    hoodMotor.set(-hoodMotorPower);
   }
 
   public double getHoodPosition() {
-    return (hoodEncoder.get() - offset);
+    return (-hoodEncoder.get() - offset);
   }
 
   public void zeroEncoder() {
@@ -55,7 +57,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void offsetEncoder() {
-    offset = (hoodEncoder.get() - .915);
+    offset = getHoodPosition();
   }
 
   /**
@@ -72,12 +74,16 @@ public class Hood extends SubsystemBase {
   //   }
   // }
 
-  public Command SetHoodAngle() {
+  
+  public Command setHoodAngleCommand(DoubleSupplier angle) {
     return Commands.run(
         () -> {
-          hoodMotor.set(MathUtil.clamp(
-            m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.915)), -.915, 0.915));
+          setHoodAngle(angle.getAsDouble());
         }, this).withName("HoodAlign"); // PID math max clamp at 0.4
+  }
+
+  public void setHoodAngle(double angle) {
+    hoodMotor.set(MathUtil.clamp(m_hoodFeedback.calculate(getHoodPosition(), MathUtil.clamp(angle, 0, 0.675)),-0.4, 0.4));
   }
 
   

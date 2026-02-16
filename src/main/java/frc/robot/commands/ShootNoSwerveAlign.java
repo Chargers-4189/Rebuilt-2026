@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.NetworkTables;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Hood;
 
@@ -28,7 +29,7 @@ public class ShootNoSwerveAlign extends ParallelCommandGroup {
     this.shooter = shooter;
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(3), new MoveIndexer(indexer, shooter)),
-        hood.SetHoodAngle(),
+        hood.setHoodAngleCommand(() -> NetworkTables.HoodTable.kANGLE.get()),
         new Shoot(shooter, speed)
     );
   }

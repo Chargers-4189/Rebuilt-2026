@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.NetworkTables;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Hood;
 
@@ -19,6 +20,6 @@ public class ShootFuelNoSwerveAlign extends SequentialCommandGroup {
   public ShootFuelNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, double speed, double angle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new MoveIndexer(indexer, shooter), hood.SetHoodAngle(), new Shoot(shooter, speed));
+    addCommands(new MoveIndexer(indexer, shooter), hood.setHoodAngleCommand(() -> NetworkTables.HoodTable.kANGLE.get()), new Shoot(shooter, speed));
   }
 }

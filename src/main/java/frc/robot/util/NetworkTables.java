@@ -15,14 +15,11 @@ public class NetworkTables {
 
         public static DoublePublisher velocity = shooterTable.getDoubleTopic("Velocity").publish();
 
-
         public static DoubleEntry kPOWER = shooterTable.getDoubleTopic("kPOWER").getEntry(Constants.ShooterConstants.kTEST_POWER);
-
         public static DoubleEntry kDISTANCE = shooterTable.getDoubleTopic("kDISTANCE").getEntry(Constants.ShooterConstants.kDISTANCE);
-
         public static DoubleEntry kFUEL_NUM = shooterTable.getDoubleTopic("kFUEL_NUM").getEntry(Constants.ShooterConstants.kFUEL_NUM);
-
         public static DoubleEntry kSPEED = shooterTable.getDoubleTopic("kSPEED").getEntry(Constants.ShooterConstants.kSPEED);
+
         public static DoubleEntry kP = shooterTable.getDoubleTopic("kP").getEntry(Constants.ShooterConstants.kP);
         public static DoubleEntry kI = shooterTable.getDoubleTopic("kI").getEntry(Constants.ShooterConstants.kI);
         public static DoubleEntry kD = shooterTable.getDoubleTopic("kD").getEntry(Constants.ShooterConstants.kD);
@@ -35,6 +32,20 @@ public class NetworkTables {
         public static DoubleEntry MotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MotionMagicCruiseVelocity").getEntry(Constants.ShooterConstants.MotionMagicCruiseVelocity);; // Target cruise velocity of 80 rps
         public static DoubleEntry MotionMagicAcceleration = shooterTable.getDoubleTopic("MotionMagicAcceleration").getEntry(Constants.ShooterConstants.MotionMagicAcceleration);; // Target acceleration of 160 rps/s (0.5 seconds)
         public static DoubleEntry MotionMagicJerk = shooterTable.getDoubleTopic("MotionMagicJerk").getEntry(Constants.ShooterConstants.MotionMagicJerk);; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+        public static void initialize() {
+            velocity.set(0.0);
+            kPOWER.set(kPOWER.get());
+            kS.set(kS.get());
+            kV.set(kV.get());
+            kA.set(kA.get());
+            kP.set(kP.get());
+            kI.set(kI.get());
+            kD.set(kD.get());
+            MotionMagicCruiseVelocity.set(MotionMagicCruiseVelocity.get());
+            kFUEL_NUM.set(kFUEL_NUM.get());
+            kDISTANCE.set(kDISTANCE.get());
+        }
     }
 
     public static final class HoodTable {
@@ -47,17 +58,9 @@ public class NetworkTables {
     }
 
     public static void initialize() {
-        ShooterTable.velocity.set(0.0);
-        ShooterTable.kPOWER.set(ShooterTable.kPOWER.get());
         HoodTable.kANGLE.set(HoodTable.kANGLE.get());
-        ShooterTable.kS.set(ShooterTable.kS.get());
-        ShooterTable.kV.set(ShooterTable.kV.get());
-        ShooterTable.kA.set(ShooterTable.kA.get());
-        ShooterTable.kP.set(ShooterTable.kP.get());
-        ShooterTable.kI.set(ShooterTable.kI.get());
-        ShooterTable.kD.set(ShooterTable.kD.get());
-        ShooterTable.MotionMagicCruiseVelocity.set(ShooterTable.MotionMagicCruiseVelocity.get());
-        ShooterTable.kFUEL_NUM.set(ShooterTable.kFUEL_NUM.get());
-        ShooterTable.kDISTANCE.set(ShooterTable.kDISTANCE.get());
+        HoodTable.kP.set(HoodTable.kP.get());
+        HoodTable.kI.set(HoodTable.kI.get());
+        HoodTable.kD.set(HoodTable.kD.get());
     }
 }

@@ -58,11 +58,10 @@ public final class Constants {
     public static final double kI = 0.0; // no output for integrated error
     public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 
-  // set Motion Magic settings
-  public static final double MotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
-  public static final double MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-  public static final double MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
+    // set Motion Magic settings
+    public static final double MotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
+    public static final double MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    public static final double MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
   }
   
   public static class IntakeConstants {

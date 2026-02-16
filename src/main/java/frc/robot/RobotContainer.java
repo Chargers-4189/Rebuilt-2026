@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -77,7 +78,7 @@ public class RobotContainer {
         }, Hood)); **/
         
         hood.setDefaultCommand(
-            hood.SetHoodAngle()
+            hood.setHoodAngleCommand(() -> NetworkTables.HoodTable.kANGLE.get())
         );
 
         primaryController.rightTrigger().onTrue(Commands.runOnce(() -> {
@@ -101,10 +102,10 @@ public class RobotContainer {
         }, shooter));
 
         primaryController.povDown().whileTrue(Commands.run(() -> {
-            hood.setHoodPower(.1);
+            hood.setHoodPower(-.1);
         }, hood));
         primaryController.povUp().whileTrue(Commands.run(() -> {
-            hood.setHoodPower(-.1);
+            hood.setHoodPower(.1);
         }, hood));
         primaryController.povLeft().onTrue(Commands.run(() -> {
             hopper.setSpeed(0.4);
