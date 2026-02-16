@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.Optional;
 
+import org.opencv.core.Mat;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -14,6 +15,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -89,13 +91,35 @@ public class Vision extends SubsystemBase {
       return Math.sqrt(diff);
   }
 
-  public double getRotationToHub(){
-    return 0.0;
+  public double getRotationFromHub(){
+    if(swerve.m_isBlueAlliance){
+      return getRotationToBlueHub();
+    } else {
+      return getRotationToRedHub();
+    }
+  }
+  private double getRotationToRedHub(){
+    return getRotationToLocation(hubPosRed);
+  }
+
+  private double getRotationToBlueHub(){
+    return getRotationToLocation(hubPosBlue);
+  }
+  private double getRotationToLocation(Pose2d location){
+    double botX = swerve.getState().Pose.getX();
+    double botY = swerve.getState().Pose.getY();
+
+    double hubX = location.getX();
+    double hubY = location.getY();
+
+    double xDiff = botX - hubX;
+    double yDiff = botY - hubY;
+
+    return Math.atan2(yDiff,xDiff);
   }
   @Override
   public void periodic() {
     this.addVisionMeasurement(leftcamera, leftCamTransform);
     this.addVisionMeasurement(rightCamera, rightCamTransform);
-    // This method will be called once per scheduler run
   }
 }
