@@ -21,13 +21,14 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class Visionsubsystem extends SubsystemBase {
 
   private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
   Pose2d hubPosBlue = new Pose2d(Units.feetToMeters(179.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
-  Pose2d humPosRed = new Pose2d(Units.feetToMeters(466.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
+  Pose2d hubPosRed = new Pose2d(Units.feetToMeters(466.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
   // todo: name the camera 
   PhotonCamera leftcamera = new PhotonCamera("");
   Transform3d leftCamTransform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
@@ -35,10 +36,10 @@ public class Visionsubsystem extends SubsystemBase {
   PhotonCamera rightCamera = new PhotonCamera("");
   Transform3d rightCamTransform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
   
-  TunerSwerveDrivetrain swerve;
+  CommandSwerveDrivetrain swerve;
   //42in
-  //
-  public Visionsubsystem(TunerSwerveDrivetrain swerve) {
+  //eturn 0.0;
+  public Visionsubsystem(CommandSwerveDrivetrain swerve) {
     this.swerve = swerve;
   }
 
@@ -59,7 +60,34 @@ public class Visionsubsystem extends SubsystemBase {
   }
 
   public double getDistanceFromHub(){
-    return 0.0;
+    if(swerve.isBlueAlliance()){
+      
+      double botX = swerve.getState().Pose.getX();
+      double botY = swerve.getState().Pose.getY();
+
+      double hubX = hubPosBlue.getX();
+      double hubY = hubPosBlue.getY();
+
+      double xDiff = botX - hubX;
+      double yDiff = botY - hubY;
+
+      double diff = (xDiff * xDiff) + (yDiff * yDiff);
+
+      return Math.sqrt(diff);
+    }else{
+      double botX = swerve.getState().Pose.getX();
+      double botY = swerve.getState().Pose.getY();
+
+      double hubX = hubPosRed.getX();
+      double hubY = hubPosRed.getY();
+
+      double xDiff = botX - hubX;
+      double yDiff = botY - hubY;
+
+      double diff = (xDiff * xDiff) + (yDiff * yDiff);
+
+      return Math.sqrt(diff);
+    }
   }
 
   public double getRotationToHub(){
