@@ -31,7 +31,7 @@ public class Score extends Command {
   @Override
   public void execute() {
     double dist = ShooterTable.kDISTANCE.get();
-    double angle = .66;
+    double angle = .915;
     if (dist > 7) {
       angle -= .04*(dist - 7);
     }

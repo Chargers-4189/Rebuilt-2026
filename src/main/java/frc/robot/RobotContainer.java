@@ -87,8 +87,16 @@ public class RobotContainer {
             shooter.ConfigureMotor();
         }, shooter));
 
-        testController.a().onTrue(Commands.run(() -> {
+        testController.a().onTrue(Commands.runOnce(() -> {
             shooter.ConfigureMotor();
+        }, shooter));
+
+        testController.b().onTrue(Commands.run(() -> {
+            shooter.setShooterPowerNoPID(0);
+        }, shooter));
+
+        testController.y().onTrue(Commands.run(() -> {
+            shooter.setShooterPower(NetworkTables.ShooterTable.MotionMagicCruiseVelocity.get());
         }, shooter));
 
         primaryController.povDown().whileTrue(Commands.run(() -> {
@@ -111,9 +119,8 @@ public class RobotContainer {
                 shooter.setShooterPower(NetworkTables.ShooterTable.kPOWER.get()); //6 volts
             }, shooter)).onFalse(Commands.run(() -> {
                 shooter.setShooterPower(0);
-            }, shooter));
-
-        primaryController.leftBumper()
+            }, shooter));        
+            primaryController.leftBumper()
             .onTrue(Commands.run(() -> {
                 intake.setWheelSpeed(.6);
             }, intake)).onFalse(Commands.run(() -> {

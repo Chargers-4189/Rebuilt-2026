@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
@@ -11,6 +12,9 @@ public class NetworkTables {
 
     public static final class ShooterTable {
         static NetworkTable shooterTable = networkInstance.getTable("shootTable");
+
+        public static DoublePublisher velocity = shooterTable.getDoubleTopic("Velocity").publish();
+
 
         public static DoubleEntry kPOWER = shooterTable.getDoubleTopic("kPOWER").getEntry(Constants.ShooterConstants.kTEST_POWER);
 
@@ -43,11 +47,16 @@ public class NetworkTables {
     }
 
     public static void initialize() {
+        ShooterTable.velocity.set(0.0);
         ShooterTable.kPOWER.set(ShooterTable.kPOWER.get());
         HoodTable.kANGLE.set(HoodTable.kANGLE.get());
-        HoodTable.kP.set(HoodTable.kP.get());
-        HoodTable.kI.set(HoodTable.kI.get());
-        HoodTable.kD.set(HoodTable.kD.get());
+        ShooterTable.kS.set(ShooterTable.kS.get());
+        ShooterTable.kV.set(ShooterTable.kV.get());
+        ShooterTable.kA.set(ShooterTable.kA.get());
+        ShooterTable.kP.set(ShooterTable.kP.get());
+        ShooterTable.kI.set(ShooterTable.kI.get());
+        ShooterTable.kD.set(ShooterTable.kD.get());
+        ShooterTable.MotionMagicCruiseVelocity.set(ShooterTable.MotionMagicCruiseVelocity.get());
         ShooterTable.kFUEL_NUM.set(ShooterTable.kFUEL_NUM.get());
         ShooterTable.kDISTANCE.set(ShooterTable.kDISTANCE.get());
     }

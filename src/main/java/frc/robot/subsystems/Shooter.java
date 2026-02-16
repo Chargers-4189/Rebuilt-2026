@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.hardware.core.CoreTalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -47,7 +48,8 @@ public class Shooter extends SubsystemBase {
 
   public void ConfigureMotor() {
     talonFXSConfigs = new TalonFXSConfiguration();
-    // set slot 0 gains
+    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+    // set slot 0 gainss
     slot0Configs = talonFXSConfigs.Slot0;
     slot0Configs.kS = NetworkTables.ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
     slot0Configs.kV = NetworkTables.ShooterTable.kV.get(); // A velocity target of 1 rps results in 0.12 V output
@@ -65,9 +67,14 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterPower(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    leftShooterMotor.setControl(m_request.withVelocity(0.001));
-    //rightShooterMotor.setControl(m_request.withVelocity(-0.001));
+    leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
+    rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+  }
 
+  public double getVelocity() {
+    //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
+    return (leftShooterMotor.getVelocity().getValueAsDouble());
+    //rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
   }
 
   public void setShooterPowerNoPID(double shooterMotorPower) {
@@ -78,5 +85,6 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    NetworkTables.ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
   }
 }

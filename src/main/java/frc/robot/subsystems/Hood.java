@@ -55,7 +55,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void offsetEncoder() {
-    offset = (hoodEncoder.get() - .676);
+    offset = (hoodEncoder.get() - .915);
   }
 
   /**
@@ -76,7 +76,7 @@ public class Hood extends SubsystemBase {
     return Commands.run(
         () -> {
           hoodMotor.set(MathUtil.clamp(
-            m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.676)), -.6, 0.6));
+            m_hoodFeedback.calculate(hoodEncoder.get(), MathUtil.clamp(NetworkTables.HoodTable.kANGLE.get(), 0, 0.915)), -.915, 0.915));
         }, this).withName("HoodAlign"); // PID math max clamp at 0.4
   }
 
@@ -84,7 +84,7 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println(getHoodPosition());
+    //System.out.println(getHoodPosition());
     //System.out.println(hoodEncoder.isConnected());
     m_hoodFeedback.setPID(
       NetworkTables.HoodTable.kP.get(),

@@ -7,11 +7,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
+import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveIndexer extends Command {
   /** Creates a new Shoot. */
   private Indexer indexer;
+  private Stopwatch stopwatch = new Stopwatch();
+  private boolean step;
   public MoveIndexer(Indexer indexer) {
     this.indexer = indexer;
     addRequirements(indexer);
@@ -19,12 +22,25 @@ public class MoveIndexer extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    indexer.setIndexerPower(0.4);
+    stopwatch.start(500);
+    step = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.setIndexerPower(IndexerConstants.kSpeed);
+    if(stopwatch.hasTriggered()){
+      if(step){
+        indexer.setIndexerPower(0.4);
+      }else if(!step){
+        indexer.setIndexerPower(-0.1);
+      }
+      stopwatch.reset();
+      stopwatch.start(500);
+      step = !step;
+    }
   }
 
   // Called once the command ends or is interrupted.
