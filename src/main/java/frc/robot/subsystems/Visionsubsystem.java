@@ -57,6 +57,14 @@ public class Visionsubsystem extends SubsystemBase {
       }
     }
   }
+
+  public double getDistanceFromHub(){
+    return 0.0;
+  }
+
+  public double getRotationToHub(){
+    return 0.0;
+  }
   @Override
   public void periodic() {
     this.addVisionMeasurement(leftcamera, leftCamTransform);
