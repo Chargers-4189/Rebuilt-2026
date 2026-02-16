@@ -6,18 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
-import frc.robot.Constants.HoodConstants;
+import frc.robot.subsystems.Shooter;
+import frc.robot.util.NetworkTables.ShooterTable;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetHoodAngle extends Command {
+public class Score extends Command {
 
   private Hood hood;
-  double angle; //position of hood we currently want
-  /** Creates a new ShootFuel. */
-  public SetHoodAngle(Hood hood, double angle) {
+  private Shooter shooter;
+  
+  /** Creates a new Score. */
+  public Score(Hood hood, Shooter shooter) {
     this.hood = hood;
-    this.angle = angle;
-    addRequirements(hood);
+    this.shooter = shooter;
+    addRequirements(hood, shooter);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -27,30 +30,29 @@ public class SetHoodAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    //sets the hood angle to the desired hood angle, if the hood angle is within the tolerance we set, then it shoots the fuel
-    if(Math.abs(angle - hood.getHoodPosition()) >= HoodConstants.kHoodTolerance){
-      if(angle <= hood.getHoodPosition()){
-        hood.setHoodPower(HoodConstants.kHoodPower); 
-      }else if(angle <= hood.getHoodPosition()){
-        hood.setHoodPower(-HoodConstants.kHoodPower);
-      }
+    double dist = ShooterTable.kDISTANCE.get();
+    double angle = .915;
+    if (dist > 7) {
+      angle -= .04*(dist - 7);
     }
 
+    double power = 0.0222112*dist + .0225543*ShooterTable.kFUEL_NUM.get() + .374194*angle + .147292;
+
+    System.out.println(angle + " " + power);
+    //hood.setHoodAngle(angle);
+    shooter.setShooterPower(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooter.setShooterPower(0);
     hood.setHoodPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(angle - hood.getHoodPosition()) <= HoodConstants.kHoodTolerance){
-      return true;
-    }
     return false;
   }
 }

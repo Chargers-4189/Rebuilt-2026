@@ -19,6 +19,6 @@ public class ShootFuelNoSwerveAlign extends SequentialCommandGroup {
   public ShootFuelNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, double speed, double angle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new MoveIndexer(indexer), new SetHoodAngle(hood, angle), new Shoot(shooter, speed));
+    addCommands(new MoveIndexer(indexer, shooter), hood.SetHoodAngle(), new Shoot(shooter, speed));
   }
 }

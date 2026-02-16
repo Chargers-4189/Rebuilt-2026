@@ -14,9 +14,9 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor);
-  private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kExtensionEncoder);
-  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kExtensionMotor); //Needs to be inverted
+  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor);
+  private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
+  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor); //Needs to be inverted
 
   public Intake() {}
 
