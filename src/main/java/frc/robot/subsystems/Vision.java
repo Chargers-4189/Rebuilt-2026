@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class Visionsubsystem extends SubsystemBase {
+public class Vision extends SubsystemBase {
 
   private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
@@ -39,10 +39,9 @@ public class Visionsubsystem extends SubsystemBase {
   CommandSwerveDrivetrain swerve;
   //42in
   //eturn 0.0;
-  public Visionsubsystem(CommandSwerveDrivetrain swerve) {
+  public Vision(CommandSwerveDrivetrain swerve) {
     this.swerve = swerve;
   }
-
 
   public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform){
     PhotonPoseEstimator leftPoseEstimator = new PhotonPoseEstimator(layout, robotTransform); 

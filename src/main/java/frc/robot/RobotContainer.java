@@ -25,7 +25,7 @@ import frc.robot.commands.Score;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Visionsubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
@@ -58,8 +58,8 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     
-    private final Visionsubsystem vision = new Visionsubsystem(drivetrain);
-    
+    private final Vision vision = new Vision(drivetrain);
+
     private final Hopper hopper = new Hopper();
 
     private final Intake intake = new Intake();
