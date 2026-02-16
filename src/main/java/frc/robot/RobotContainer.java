@@ -25,6 +25,7 @@ import frc.robot.commands.Score;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Visionsubsystem;
 import frc.robot.util.NetworkTables;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
@@ -36,7 +37,7 @@ public class RobotContainer {
       private final CommandXboxController testController =
       new CommandXboxController(OperatorConstants.kTestControllerPort);
 
-    //Subsystem declarations
+    //Subsystem declaration
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
@@ -56,6 +57,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
+    private final Visionsubsystem vision = new Visionsubsystem(drivetrain);
     
     private final Hopper hopper = new Hopper();
 

@@ -43,17 +43,10 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-    Pose2d hubPOSBlue = new Pose2d(Units.feetToMeters(179.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
-    Pose2d humPOSRed = new Pose2d(Units.feetToMeters(466.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
 
-    Visionsubsystem vision = new Visionsubsystem(); 
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-
-    // TODO: add the field layout
-    private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -246,21 +239,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-
-         try {
-                
-            //find camera mounting points and apply them ere
-            Transform3d transform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
-            PhotonPoseEstimator poseEST = new PhotonPoseEstimator(layout, transform); 
-            EstimatedRobotPose poser = poseEST.estimateAverageBestTargetsPose(vision.leftCamBestResult()).get();
-
-            this.addVisionMeasurement(poser.estimatedPose.toPose2d(), poser.timestampSeconds); //
-            //this.updateSimState(m_drivetrainId, );
+        //this.updateSimState(m_drivetrainId, );
             
             
-         } catch (Exception e) {
-            // TODO: unhandle the exception
-         }
+         
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
