@@ -16,6 +16,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,7 +52,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
 
     // TODO: add the field layout
-    private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField();
+    private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -253,7 +254,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             EstimatedRobotPose poser = poseEST.estimateAverageBestTargetsPose(vision.leftCamBestResult()).get();
 
             this.addVisionMeasurement(poser.estimatedPose.toPose2d(), kNumConfigAttempts);
-            this.updateSimState(m_drivetrainId, );
+            //this.updateSimState(m_drivetrainId, );
             
             
          } catch (Exception e) {
