@@ -59,14 +59,21 @@ public class Visionsubsystem extends SubsystemBase {
     }
   }
 
-  public double getDistanceFromHub(){
-    if(swerve.isBlueAlliance()){
+  public double getDistanceFromBlueHub(){
+    return getDistanceFromHub(hubPosBlue);
+  }
+
+  public double getDistanceFromRedHub(){
+    return getDistanceFromHub(hubPosRed);
+  }
+
+  private double getDistanceFromHub(Pose2d hubLocation){
       
       double botX = swerve.getState().Pose.getX();
       double botY = swerve.getState().Pose.getY();
 
-      double hubX = hubPosBlue.getX();
-      double hubY = hubPosBlue.getY();
+      double hubX = hubLocation.getX();
+      double hubY = hubLocation.getY();
 
       double xDiff = botX - hubX;
       double yDiff = botY - hubY;
@@ -74,20 +81,6 @@ public class Visionsubsystem extends SubsystemBase {
       double diff = (xDiff * xDiff) + (yDiff * yDiff);
 
       return Math.sqrt(diff);
-    }else{
-      double botX = swerve.getState().Pose.getX();
-      double botY = swerve.getState().Pose.getY();
-
-      double hubX = hubPosRed.getX();
-      double hubY = hubPosRed.getY();
-
-      double xDiff = botX - hubX;
-      double yDiff = botY - hubY;
-
-      double diff = (xDiff * xDiff) + (yDiff * yDiff);
-
-      return Math.sqrt(diff);
-    }
   }
 
   public double getRotationToHub(){
