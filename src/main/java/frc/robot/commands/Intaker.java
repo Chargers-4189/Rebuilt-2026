@@ -44,7 +44,7 @@ public class Intaker extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //There not a really good way to finish this command here to my knowledge - Jack
+    //I dont know/have a good at the time of making this to end this command - Jack
     return false;
   }
 }

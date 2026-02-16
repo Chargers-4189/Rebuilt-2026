@@ -34,11 +34,11 @@ public final class Constants {
     public static final int kIntakeMotor = 0; //Filler
     public static final int kIntakeAxisMotor = 0; //Filler
     public static final int kIntakeEncoder = 0; //Filler
-
+    
     public static final double kIntakeAxisSpeed = 0.5; //Change Later
     public static final double kIntakeAxisOuterLimit = 0.0; //Change Later
-    public static final double kIntakeAxisInnerLimit = 0.0; //Cjange Later
-
+    public static final double kIntakeAxisInnerLimit = 0.0; //Change Later
+    
     public static final double kIntakeSpeed = 1;
   }
   public static class HopperConstants {

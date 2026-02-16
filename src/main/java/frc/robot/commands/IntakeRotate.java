@@ -47,6 +47,7 @@ public class IntakeRotate extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
     if(rotateOut == true && Intake.getEncoder() <= Constants.IntakeConstants.kIntakeAxisOuterLimit) {
       return true;
     }else if(rotateOut == false && Intake.getEncoder() >= Constants.IntakeConstants.kIntakeAxisInnerLimit) {
