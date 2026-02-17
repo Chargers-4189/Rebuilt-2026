@@ -75,5 +75,7 @@ public final class Constants {
     //Subsystem
     public static final int kHopperMotorRight = 26; 
     public static final int kHopperMotorLeft = 0; //Filler ID
+
+    public static final double kHopperSpeed = 1.0;
   }
 }

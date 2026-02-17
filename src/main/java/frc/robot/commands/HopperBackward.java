@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.Hopper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HopperBackward extends Command {
@@ -25,7 +27,7 @@ public class HopperBackward extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Hopper.setSpeed(- 1.0);
+    Hopper.setSpeed(- Constants.HopperConstants.kHopperSpeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -35,6 +37,7 @@ public class HopperBackward extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //Dont have a way/idea of how to end this cmd at this time
     return false;
   }
 }
