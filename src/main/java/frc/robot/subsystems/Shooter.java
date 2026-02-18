@@ -41,6 +41,8 @@ public class Shooter extends SubsystemBase {
   private Slot0Configs slot0Configs;
   private MotionMagicConfigs motionMagicConfigs;
   private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+
+  private double targetVelocity;
  
   public Shooter() {
     ConfigureMotor();
@@ -67,14 +69,19 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterPower(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+    targetVelocity = shooterMotorPower;
+    leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
+    rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
   }
 
   public double getVelocity() {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
     return (leftShooterMotor.getVelocity().getValueAsDouble());
     //rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+  }
+
+  public double getTargetVelocity() {
+    return targetVelocity;
   }
 
   public void setShooterPowerNoPID(double shooterMotorPower) {

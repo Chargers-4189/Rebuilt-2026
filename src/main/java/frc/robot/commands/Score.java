@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.ScoringCalculator;
 import frc.robot.util.NetworkTables.ShooterTable;
 
@@ -17,14 +18,16 @@ public class Score extends Command {
 
   private Hood hood;
   private Shooter shooter;
+  private Vision vision;
 
   private double angle;
   private double power;
   
   /** Creates a new Score. */
-  public Score(Hood hood, Shooter shooter) {
+  public Score(Hood hood, Shooter shooter, Vision vision) {
     this.hood = hood;
     this.shooter = shooter;
+    this.vision = vision;
     addRequirements(hood, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -36,10 +39,12 @@ public class Score extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angle = ScoringCalculator.calculateHoodAngle(ShooterTable.kDISTANCE.get());
-    power = ScoringCalculator.calculateShootingPower(ShooterTable.kDISTANCE.get());
+    double distance = vision.getDistanceFromHub();
+    //double distance = ShooterTable.kDISTANCE.get();
+    angle = ScoringCalculator.calculateHoodAngle(distance);
+    power = ScoringCalculator.calculateShootingPower(distance);
 
-    System.out.println(angle + " " + power);
+    System.out.println(distance + " " + angle + " " + power);
 
     hood.setHoodAngle(angle);
     shooter.setShooterPower(power);

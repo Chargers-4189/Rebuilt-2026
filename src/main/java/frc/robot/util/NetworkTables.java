@@ -1,11 +1,15 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.Constants;
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 
 public class NetworkTables {
     static NetworkTableInstance networkInstance = NetworkTableInstance.getDefault();
@@ -33,7 +37,7 @@ public class NetworkTables {
         public static DoubleEntry MotionMagicAcceleration = shooterTable.getDoubleTopic("MotionMagicAcceleration").getEntry(Constants.ShooterConstants.MotionMagicAcceleration);; // Target acceleration of 160 rps/s (0.5 seconds)
         public static DoubleEntry MotionMagicJerk = shooterTable.getDoubleTopic("MotionMagicJerk").getEntry(Constants.ShooterConstants.MotionMagicJerk);; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-        public static void initialize() {
+        public static void init() {
             velocity.set(0.0);
             kPOWER.set(kPOWER.get());
             kS.set(kS.get());
@@ -55,12 +59,35 @@ public class NetworkTables {
         public static DoubleEntry kP = hoodTable.getDoubleTopic("kP").getEntry(Constants.HoodConstants.kP);
         public static DoubleEntry kI = hoodTable.getDoubleTopic("kI").getEntry(Constants.HoodConstants.kI);
         public static DoubleEntry kD = hoodTable.getDoubleTopic("kD").getEntry(Constants.HoodConstants.kD);
+
+        public static Object kS;
+
+        public static Object MotionMagicAcceleration;
+
+        public static Object MotionMagicJerk;
+
+        public static void init() {
+            kANGLE.set(kANGLE.get());
+            kP.set(kP.get());
+            kI.set(kI.get());
+            kD.set(kD.get());
+        }
+    }
+
+    public static final class SwerveTable {
+        static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
+
+        public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
+        public static StructPublisher<Rotation3d> gyroAngle = swerveTable.getStructTopic("", Rotation3d.struct).publish();
+
+        public static void init() {
+
+        }
     }
 
     public static void initialize() {
-        HoodTable.kANGLE.set(HoodTable.kANGLE.get());
-        HoodTable.kP.set(HoodTable.kP.get());
-        HoodTable.kI.set(HoodTable.kI.get());
-        HoodTable.kD.set(HoodTable.kD.get());
+        ShooterTable.init();
+        HoodTable.init();
+        SwerveTable.init();
     }
 }

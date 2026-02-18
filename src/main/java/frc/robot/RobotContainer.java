@@ -72,20 +72,24 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Shooter Subsystem buttons
-        primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
-        primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
-        primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
+        //primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
+        //primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
+        //primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
         // Hood Subsystem Buttons
         /* primaryController.povUp().whileTrue(Commands.run(()->{
             Hood.setHoodPower(-.1);
         }, Hood)); **/
         
-        hood.setDefaultCommand(
+        /*hood.setDefaultCommand(
             hood.setHoodAngleCommand(() -> NetworkTables.HoodTable.kANGLE.get())
-        );
+        );*/
+
+        primaryController.start().onTrue(Commands.runOnce(() -> {
+            
+        }, hood));
 
         primaryController.rightTrigger().onTrue(Commands.runOnce(() -> {
-            hood.offsetEncoder();
+            
         }, hood));
 
         primaryController.leftTrigger().onTrue(Commands.runOnce(() -> {
@@ -106,10 +110,14 @@ public class RobotContainer {
 
         primaryController.povDown().whileTrue(Commands.run(() -> {
             hood.setHoodPower(-.1);
+        }, hood)).onFalse(Commands.run(() -> {
+            hood.setHoodPower(0);
         }, hood));
         primaryController.povUp().whileTrue(Commands.run(() -> {
             hood.setHoodPower(.1);
-        }, hood));
+        }, hood)).onFalse(Commands.run(() -> {
+            hood.setHoodPower(0);
+        }, hood));;
         primaryController.povLeft().onTrue(Commands.run(() -> {
             hopper.setSpeed(0.4);
         }, hopper));
@@ -133,7 +141,7 @@ public class RobotContainer {
             }, intake));
         
         primaryController.x()
-            .whileTrue(new Score(hood, shooter));
+            .whileTrue(new Score(hood, shooter, vision));
         
         /*primaryController.leftBumper().whileTrue(Commands.run(() -> {
             Intake.setWheelSpeed(1);

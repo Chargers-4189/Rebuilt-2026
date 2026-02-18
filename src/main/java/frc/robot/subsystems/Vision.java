@@ -29,33 +29,32 @@ public class Vision extends SubsystemBase {
 
   private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  Pose2d hubPosBlue = new Pose2d(Units.feetToMeters(179.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
-  Pose2d hubPosRed = new Pose2d(Units.feetToMeters(466.56),Units.feetToMeters(158.32),new Rotation2d(0,0));
+  Pose2d hubPosBlue = new Pose2d(Units.inchesToMeters(179.56),Units.inchesToMeters(158.32),new Rotation2d(0,0));
+  Pose2d hubPosRed = new Pose2d(Units.inchesToMeters(466.56),Units.inchesToMeters(158.32),new Rotation2d(0,0));
   // todo: name the camera 
-  PhotonCamera leftcamera = new PhotonCamera("");
-  Transform3d leftCamTransform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
+  PhotonCamera leftcamera = new PhotonCamera("LeftCam");
+  Transform3d leftCamTransform = new Transform3d(-Units.inchesToMeters(13),-Units.inchesToMeters(3),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
 
-  PhotonCamera rightCamera = new PhotonCamera("");
-  Transform3d rightCamTransform = new Transform3d(0,0,0, new Rotation3d(0,0,0));
+  PhotonCamera rightCamera = new PhotonCamera("RightCam");
+  Transform3d rightCamTransform = new Transform3d(-Units.inchesToMeters(13),-Units.inchesToMeters(-5.5),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
   
   CommandSwerveDrivetrain swerve;
   //42in
-  //eturn 0.0;
+  //return 0.0;
   public Vision(CommandSwerveDrivetrain swerve) {
     this.swerve = swerve;
   }
 
   public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform){
-    PhotonPoseEstimator leftPoseEstimator = new PhotonPoseEstimator(layout, robotTransform); 
+    PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(layout, robotTransform); 
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
     if(!results.isEmpty()){
-
-       Optional<EstimatedRobotPose> leftEstimatedPoseOptional = leftPoseEstimator.estimateAverageBestTargetsPose(results.get(0));
+       Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(results.get(0));
         
-      if(leftEstimatedPoseOptional.isPresent()){
-        EstimatedRobotPose leftEstimatedPose = leftEstimatedPoseOptional.get();
-        swerve.addVisionMeasurement(leftEstimatedPose.estimatedPose.toPose2d(), leftEstimatedPose.timestampSeconds);
+      if(estimatedPoseOptional.isPresent()){
+        EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+        swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
       }
     }
   }
@@ -98,6 +97,7 @@ public class Vision extends SubsystemBase {
       return getRotationToRedHub();
     }
   }
+
   private double getRotationToRedHub(){
     return getRotationToLocation(hubPosRed);
   }
