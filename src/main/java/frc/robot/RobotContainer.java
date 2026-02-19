@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -23,14 +22,11 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.Score;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
-import frc.robot.util.NetworkTables;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
@@ -135,7 +131,7 @@ public class RobotContainer {
             }, shooter));        
             primaryController.leftBumper()
             .onTrue(Commands.run(() -> {
-                intake.setWheelSpeed(.6);
+                intake.setWheelSpeed(1);
             }, intake)).onFalse(Commands.run(() -> {
                 intake.setWheelSpeed(0);
             }, intake));

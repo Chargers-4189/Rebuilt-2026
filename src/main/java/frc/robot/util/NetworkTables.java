@@ -6,10 +6,8 @@ import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.Constants;
-import edu.wpi.first.math.geometry.struct.Pose2dStruct;
 
 public class NetworkTables {
     static NetworkTableInstance networkInstance = NetworkTableInstance.getDefault();
@@ -78,7 +76,8 @@ public class NetworkTables {
         static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
 
         public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
-        public static StructPublisher<Rotation3d> gyroAngle = swerveTable.getStructTopic("", Rotation3d.struct).publish();
+        public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro", Rotation3d.struct).publish();
+        public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
 
         public static void init() {
 

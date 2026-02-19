@@ -6,21 +6,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.hardware.core.CoreTalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;

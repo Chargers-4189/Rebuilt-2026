@@ -18,9 +18,10 @@ import frc.robot.subsystems.Hood;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootNoSwerveAlign extends ParallelCommandGroup {
   /** Creates a new test. */
-  private final Hood hood;
-  private final Indexer indexer;
-  private final Shooter shooter;
+  private Hood hood;
+  private Indexer indexer;
+  private Shooter shooter;
+
   public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, double speed, double angle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());

@@ -32,7 +32,7 @@ public class ScoringCalculator {
     }
 
     private static double superInterpolate(double distance, double[] values) {
-        double dist_inches = Units.metersToInches(distance);
+        double dist_inches = Units.metersToInches(distance) - 13.5;
         if (dist_inches < distances[0]) {
             return values[0];
         } else if (dist_inches < distances[1]) {

@@ -6,29 +6,14 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.NetworkTables.HoodTable;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-
 import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
@@ -126,7 +111,7 @@ public class Hood extends SubsystemBase {
     // This method will be called once per scheduler run
     //System.out.println(hoodEncoder.get() + " " + getHoodPosition() + offset);
     //System.out.println(hoodEncoder.isConnected());
-    System.out.println("encoder " + getHoodPosition());
+    //System.out.println("encoder " + getHoodPosition());
     
     m_hoodFeedback.setPID(
       HoodTable.kP.get(),
