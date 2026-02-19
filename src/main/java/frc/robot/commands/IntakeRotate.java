@@ -12,6 +12,18 @@ import frc.robot.subsystems.Intake;
 public class IntakeRotate extends Command {
   /** Creates a new IntakeRotate. */
 
+  /**
+  * @author Jack Koster
+  * 
+  * @param Intake Subsystem
+  * @param rotateOut True if its going out of the bot, false if going into the bot
+  * 
+  * @constants kIntakeAxisOuterLimit, kIntakeAxisInnerLimit, kIntakeAxisSpeed
+  * 
+  * This is the command that rotates the intake in and out of the bot.
+  * The signs (<, >. etc) will need to be changed based on the values of both the Inner and Outer limit.
+  */
+
   private Intake Intake;
   private boolean rotateOut;
 

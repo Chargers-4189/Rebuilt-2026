@@ -11,8 +11,20 @@ import frc.robot.subsystems.Intake;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Intaker extends Command {
   /** Creates a new Intaker. */
+
+  /**
+   * @author Jack Koster
+   * 
+   * @param Intake Subsystem
+   * @param isIntaking True if the robot is gathering (Intaking) balls, False if its depositing balls (Vomiting).
+   * 
+   * @constants kIntakeSpeed
+   * 
+   * This is the command that moves the motors in the Intake that intake / outtake the balls.
+   */
+
   private Intake Intake;
-  private boolean isIntaking; //true is intake, false is outtake
+  private boolean isIntaking;
   
   public Intaker(Intake Intake, boolean isIntaking) {
     // Use addRequirements() here to declare subsystem dependencies.

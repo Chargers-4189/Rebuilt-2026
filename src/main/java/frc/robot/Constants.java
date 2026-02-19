@@ -40,6 +40,9 @@ public final class Constants {
     public static final double kIntakeAxisInnerLimit = 0.0; //Change Later
     
     public static final double kIntakeSpeed = 1;
+
+    public static final int kTauntAmount = 3; //This is how many times it goes up and down
+    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
   }
   public static class HopperConstants {
 
