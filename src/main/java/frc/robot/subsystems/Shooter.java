@@ -13,7 +13,7 @@ import com.ctre.phoenix6.signals.MotorArrangementValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.util.NetworkTables;
+import frc.robot.util.NetworkTables.ShooterTable;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -42,16 +42,16 @@ public class Shooter extends SubsystemBase {
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     // set slot 0 gainss
     slot0Configs = talonFXSConfigs.Slot0;
-    slot0Configs.kS = NetworkTables.ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = NetworkTables.ShooterTable.kV.get(); // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = NetworkTables.ShooterTable.kA.get(); // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = NetworkTables.ShooterTable.kP.get(); // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = NetworkTables.ShooterTable.kI.get(); // no output for integrated error
-    slot0Configs.kD = NetworkTables.ShooterTable.kD.get(); // no output for error derivative
+    slot0Configs.kS = ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
+    slot0Configs.kV = ShooterTable.kV.get(); // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kA = ShooterTable.kA.get(); // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kP = ShooterTable.kP.get(); // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = ShooterTable.kI.get(); // no output for integrated error
+    slot0Configs.kD = ShooterTable.kD.get(); // no output for error derivative
     // set Motion Magic settings
     motionMagicConfigs = talonFXSConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicAcceleration = NetworkTables.ShooterTable.MotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
-    motionMagicConfigs.MotionMagicJerk = NetworkTables.ShooterTable.MotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicAcceleration = ShooterTable.kMotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = ShooterTable.kMotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
     leftShooterMotor.getConfigurator().apply(talonFXSConfigs);
     rightShooterMotor.getConfigurator().apply(talonFXSConfigs);
   }
@@ -81,6 +81,6 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    NetworkTables.ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
+    ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
   }
 }

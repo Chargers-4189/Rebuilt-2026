@@ -20,11 +20,14 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.MoveHood;
 import frc.robot.commands.MoveIndexer;
+import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.NetworkTables;
+import frc.robot.util.NetworkTables.IntakeTable;
+import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
@@ -67,85 +70,34 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // Shooter Subsystem buttons
-        //primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
-        //primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
-        //primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
-        // Hood Subsystem Buttons
-        /* primaryController.povUp().whileTrue(Commands.run(()->{
-            Hood.setHoodPower(-.1);
-        }, Hood)); **/
-        
-        /*hood.setDefaultCommand(
-            hood.setHoodAngleCommand(() -> NetworkTables.HoodTable.kANGLE.get())
-        );*/
 
-        primaryController.start().onTrue(Commands.runOnce(() -> {
-            
-        }, hood));
+        //Intake
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
 
-        primaryController.rightTrigger().onTrue(Commands.runOnce(() -> {
-            
-        }, hood));
-
-        primaryController.leftTrigger().onTrue(Commands.runOnce(() -> {
-            shooter.ConfigureMotor();
-        }, shooter));
-
-        testController.a().onTrue(Commands.runOnce(() -> {
-            shooter.ConfigureMotor();
-        }, shooter));
-
-        testController.b().onTrue(Commands.run(() -> {
-            shooter.setShooterPowerNoPID(0);
-        }, shooter));
-
-        testController.y().onTrue(Commands.run(() -> {
-            shooter.setShooterPower(NetworkTables.ShooterTable.MotionMagicCruiseVelocity.get());
-        }, shooter));
-
-        primaryController.povDown().whileTrue(Commands.run(() -> {
-            hood.setHoodPower(-.1);
-        }, hood)).onFalse(Commands.run(() -> {
-            hood.setHoodPower(0);
-        }, hood));
-        primaryController.povUp().whileTrue(Commands.run(() -> {
-            hood.setHoodPower(.1);
-        }, hood)).onFalse(Commands.run(() -> {
-            hood.setHoodPower(0);
-        }, hood));;
-        primaryController.povLeft().onTrue(Commands.run(() -> {
-            hopper.setSpeed(0.4);
-        }, hopper));
-        primaryController.povLeft().onTrue(new MoveIndexer(indexer, shooter));
+        //Hopper & Shooter
+        primaryController.povLeft().onTrue(Commands.parallel(
+            Commands.run(() -> hopper.setSpeed(0.4), hopper),
+            new MoveIndexer(indexer, shooter))
+        );
         primaryController.povRight().onTrue(Commands.run(() -> {
             hopper.setSpeed(0);
             indexer.setIndexerPower(0);
         }, indexer, hopper));
 
-        primaryController.rightBumper()
+        //Manual Hood
+        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
+        primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+
+        //Calibration Shoot
+        primaryController.x()
             .onTrue(Commands.run(() -> {
-                shooter.setShooterPower(NetworkTables.ShooterTable.kPOWER.get()); //6 volts
+                shooter.setShooterPower(ShooterTable.kPower.get());
             }, shooter)).onFalse(Commands.run(() -> {
                 shooter.setShooterPower(0);
-            }, shooter));        
-            primaryController.leftBumper()
-            .onTrue(Commands.run(() -> {
-                intake.setWheelSpeed(1);
-            }, intake)).onFalse(Commands.run(() -> {
-                intake.setWheelSpeed(0);
-            }, intake));
+            }, shooter));
         
-        primaryController.x()
-            .whileTrue(new Score(hood, shooter, vision));
-        
-        /*primaryController.leftBumper().whileTrue(Commands.run(() -> {
-            Intake.setWheelSpeed(1);
-        }, Intake)); **/
-
-        intake.setDefaultCommand(Commands.run(() -> {
-            intake.setWheelSpeed(0);
-        }, intake));
+        //Shoot
+        primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
     }
 
     private void configureSwerveBindings() {
