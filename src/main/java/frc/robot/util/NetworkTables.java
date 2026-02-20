@@ -18,6 +18,7 @@ public class NetworkTables {
         public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
         public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro Rotation", Rotation3d.struct).publish();
         public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
+        public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
 
         public static void init() {}
     }
@@ -55,6 +56,8 @@ public class NetworkTables {
 
     public static final class HoodTable {
         static NetworkTable hoodTable = networkInstance.getTable("hoodTable");
+
+        public static DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
 
         public static DoubleEntry kPower = hoodTable.getDoubleTopic("Hood Power").getEntry(Constants.HoodConstants.kPower);
 

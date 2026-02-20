@@ -135,7 +135,8 @@ public class Vision extends SubsystemBase {
     this.addVisionMeasurement(leftcamera, leftCamTransform);
     this.addVisionMeasurement(rightCamera, rightCamTransform);
 
-    System.out.println(getDistanceFromHub());
+    //System.out.println(getDistanceFromHub());
     SwerveTable.aprilTagPose.set(findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d()));
+    SwerveTable.hubDistance.set(getDistanceFromHub());
   }
 }

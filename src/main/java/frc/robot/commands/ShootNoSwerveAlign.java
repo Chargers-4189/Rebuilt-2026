@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -22,7 +23,7 @@ public class ShootNoSwerveAlign extends ParallelCommandGroup {
   private Indexer indexer;
   private Shooter shooter;
 
-  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, double speed, double angle) {
+  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, DoubleEntry speed, double angle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     this.hood = hood;
@@ -30,7 +31,7 @@ public class ShootNoSwerveAlign extends ParallelCommandGroup {
     this.shooter = shooter;
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(3), new MoveIndexer(indexer, shooter)),
-        //hood.setHoodAngleCommand(() -> HoodTable.kTestAngle.get()),
+        hood.setHoodAngleCommand(() -> HoodTable.kTestAngle.get()),
         new Shoot(shooter, speed)
     );
   }
