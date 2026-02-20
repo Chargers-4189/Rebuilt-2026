@@ -33,6 +33,7 @@ public class IntakeTaunt extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.Intake = Intake;
     addRequirements(Intake);
+    this.loops = 0;
   }
 
   // Called when the command is initially scheduled.
