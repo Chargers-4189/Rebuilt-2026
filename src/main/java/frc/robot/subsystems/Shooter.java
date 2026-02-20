@@ -6,25 +6,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.hardware.core.CoreTalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.util.NetworkTables;
+import frc.robot.util.NetworkTables.ShooterTable;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -41,6 +30,8 @@ public class Shooter extends SubsystemBase {
   private Slot0Configs slot0Configs;
   private MotionMagicConfigs motionMagicConfigs;
   private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+
+  private double targetVelocity;
  
   public Shooter() {
     ConfigureMotor();
@@ -51,30 +42,35 @@ public class Shooter extends SubsystemBase {
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     // set slot 0 gainss
     slot0Configs = talonFXSConfigs.Slot0;
-    slot0Configs.kS = NetworkTables.ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = NetworkTables.ShooterTable.kV.get(); // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = NetworkTables.ShooterTable.kA.get(); // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = NetworkTables.ShooterTable.kP.get(); // An error of 1 rps results in 0.11 V output
-    slot0Configs.kI = NetworkTables.ShooterTable.kI.get(); // no output for integrated error
-    slot0Configs.kD = NetworkTables.ShooterTable.kD.get(); // no output for error derivative
+    slot0Configs.kS = ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
+    slot0Configs.kV = ShooterTable.kV.get(); // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kA = ShooterTable.kA.get(); // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kP = ShooterTable.kP.get(); // An error of 1 rps results in 0.11 V output
+    slot0Configs.kI = ShooterTable.kI.get(); // no output for integrated error
+    slot0Configs.kD = ShooterTable.kD.get(); // no output for error derivative
     // set Motion Magic settings
     motionMagicConfigs = talonFXSConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicAcceleration = NetworkTables.ShooterTable.MotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
-    motionMagicConfigs.MotionMagicJerk = NetworkTables.ShooterTable.MotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicAcceleration = ShooterTable.kMotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = ShooterTable.kMotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
     leftShooterMotor.getConfigurator().apply(talonFXSConfigs);
     rightShooterMotor.getConfigurator().apply(talonFXSConfigs);
   }
 
   public void setShooterPower(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+    targetVelocity = shooterMotorPower;
+    leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
+    rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
   }
 
   public double getVelocity() {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
     return (leftShooterMotor.getVelocity().getValueAsDouble());
     //rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+  }
+
+  public double getTargetVelocity() {
+    return targetVelocity;
   }
 
   public void setShooterPowerNoPID(double shooterMotorPower) {
@@ -85,6 +81,6 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    NetworkTables.ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
+    ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
   }
 }

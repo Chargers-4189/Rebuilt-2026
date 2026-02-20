@@ -4,29 +4,23 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
-import frc.robot.util.ScoringCalculator;
+import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Score extends Command {
+public class RunIntakeWheels extends Command {
 
-  private Hood hood;
-  private Shooter shooter;
-  private Vision vision;
-
-  private double angle;
-  private double power;
+  Intake intake;
+  DoubleSupplier power;
   
-  /** Creates a new Score. */
-  public Score(Hood hood, Shooter shooter, Vision vision) {
-    this.hood = hood;
-    this.shooter = shooter;
-    this.vision = vision;
-    addRequirements(hood, shooter);
+  /** Creates a new MoveIntake. */
+  public RunIntakeWheels(Intake intake, DoubleSupplier power) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.intake = intake;
+    this.power = power;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -36,22 +30,13 @@ public class Score extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double distance = vision.getDistanceFromHub();
-    //double distance = ShooterTable.kDISTANCE.get();
-    angle = ScoringCalculator.calculateHoodAngle(distance);
-    power = ScoringCalculator.calculateShootingPower(distance);
-
-    System.out.println(distance + " " + angle + " " + power);
-
-    hood.setHoodAngle(angle);
-    shooter.setShooterPower(power);
+    intake.setWheelSpeed(power.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterPower(0);
-    hood.setHoodPower(0);
+    intake.setWheelSpeed(0);
   }
 
   // Returns true when the command should end.

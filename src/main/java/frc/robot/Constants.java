@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.wpilibj.DutyCycle;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -20,35 +17,61 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kTestControllerPort = 1;
   }
+
+  public static class IntakeConstants {
+    //IDs
+    public static final int kIntakeMotor = 21; 
+    public static final int kIntakeAxisMotor = 22;
+    public static final int kIntakeEncoder = 1; 
+
+    //Modifiables
+    public static final double kPower = 1;
+  }
+
+  public static class HopperConstants {
+    //IDs
+    public static final int kHopperMotorRight = 26; 
+    public static final int kHopperMotorLeft = 0; //Filler ID
+
+    //Modifiables
+    public static final int kPower = 1;
+  }
+
+  public static class IndexerConstants {
+    //IDs
+    public static final int kMotorCanID = 25;
+
+    //Modifiables
+    public static final double kPower = 1;
+  }
+
   public static class HoodConstants {
-    public static final double kGearRatio = 5.5;
-    public static final double kHoodTolerance = .02; //THIS IS A PLACEHOLDER
-    public static final double kHoodPower = .1;  //THIS IS A PLACEHOLDER
+    //IDs
     public static final int kMotorCanID = 29;
     public static final int kEncoderDIO = 0;
 
+    //Fixed
+    public static final double kGearRatio = 5.5;
+
+    //Modifiables
+    public static final double kPower = .1;
+
     public static final double kANGLE = .915;
-    public static final double kP = 1; //All these are tested and stuff
+    public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
-    
-  }
-  public static class IndexerConstants {
-    public static final int kMotorCanID = 25;
-    public static double kSpeed;
   }
 
   public static class ShooterConstants {
+    //IDs
     public static final int kLeftMotorCanID = 27;
     public static final int kRightMotorCanID = 28;
 
+    //Modifiables
+    public static final double kTestPower = .5;
+    public static final double kTestDistance = 0;
+    
     public static final double kTolerance = 5;
-
-    public static final double kTEST_POWER = .6;
-    public static final double kDISTANCE = 3;
-    public static final double kFUEL_NUM = 1.5;
-
-    public static final double kSPEED = 0;
 
     //slot 0 configs
     public static final double kS = 0.83; // Add 0.25 V output to overcome static friction
@@ -58,22 +81,9 @@ public final class Constants {
     public static final double kI = 0.0; // no output for integrated error
     public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 
-  // set Motion Magic settings
-  public static final double MotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
-  public static final double MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-  public static final double MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
-  }
-  
-  public static class IntakeConstants {
-    public static final int kIntakeMotor = 21; 
-    public static final int kIntakeAxisMotor = 22;
-    public static final int kIntakeEncoder = 1; 
-  }
-
-  public static class HopperConstants {
-    //Subsystem
-    public static final int kHopperMotorRight = 26; 
-    public static final int kHopperMotorLeft = 0; //Filler ID
+    // set Motion Magic settings
+    public static final double kMotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
+    public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
   }
 }
