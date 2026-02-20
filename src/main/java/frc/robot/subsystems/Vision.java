@@ -35,10 +35,10 @@ public class Vision extends SubsystemBase {
 
   // todo: name the camera 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
-  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(13),Units.inchesToMeters(3),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
+  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
 
   PhotonCamera rightCamera = new PhotonCamera("RightCam");
-  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(13),Units.inchesToMeters(-5.5),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
+  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(-7.5),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-50),0));
   
   CommandSwerveDrivetrain swerve;
   //42in

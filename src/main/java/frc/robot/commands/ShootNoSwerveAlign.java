@@ -30,7 +30,7 @@ public class ShootNoSwerveAlign extends ParallelCommandGroup {
     this.shooter = shooter;
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(3), new MoveIndexer(indexer, shooter)),
-        hood.setHoodAngleCommand(() -> HoodTable.kAngle.get()),
+        //hood.setHoodAngleCommand(() -> HoodTable.kTestAngle.get()),
         new Shoot(shooter, speed)
     );
   }

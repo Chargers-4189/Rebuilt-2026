@@ -58,14 +58,14 @@ public class NetworkTables {
 
         public static DoubleEntry kPower = hoodTable.getDoubleTopic("Hood Power").getEntry(Constants.HoodConstants.kPower);
 
-        public static DoubleEntry kAngle = hoodTable.getDoubleTopic("Hood Angle").getEntry(Constants.HoodConstants.kANGLE);
+        public static DoubleEntry kTestAngle = hoodTable.getDoubleTopic("Hood Angle").getEntry(Constants.HoodConstants.kTestAngle);
         public static DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
         public static DoubleEntry kI = hoodTable.getDoubleTopic("I (Hood)").getEntry(Constants.HoodConstants.kI);
         public static DoubleEntry kD = hoodTable.getDoubleTopic("D (Hood)").getEntry(Constants.HoodConstants.kD);
 
         public static void init() {
             kPower.set(kPower.get());
-            kAngle.set(kAngle.get());
+            kTestAngle.set(kTestAngle.get());
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());

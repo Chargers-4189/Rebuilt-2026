@@ -26,6 +26,7 @@ import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.subsystems.Intake;
@@ -87,6 +88,8 @@ public class RobotContainer {
         //Manual Hood
         primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
         primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+
+        hood.setDefaultCommand(new MoveHood(hood, () -> HoodTable.kTestAngle.get()));
 
         //Calibration Shoot
         primaryController.x()
