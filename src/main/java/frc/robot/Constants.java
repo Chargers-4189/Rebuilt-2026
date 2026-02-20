@@ -18,6 +18,12 @@ public final class Constants {
     public static final int kTestControllerPort = 1;
   }
 
+  public static class SwerveConstants {
+    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output
+    public static final double kI = 0.0; // no output for integrated error
+    public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
+  }
+
   public static class IntakeConstants {
     //IDs
     public static final int kIntakeMotor = 21; 
