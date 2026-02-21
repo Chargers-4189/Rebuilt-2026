@@ -41,6 +41,7 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
+    private final Intake intake = new Intake();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -61,8 +62,6 @@ public class RobotContainer {
     private final Vision vision = new Vision(drivetrain);
 
     private final Hopper hopper = new Hopper();
-
-    private final Intake intake = new Intake();
 
     public RobotContainer() {
         configureBindings();
