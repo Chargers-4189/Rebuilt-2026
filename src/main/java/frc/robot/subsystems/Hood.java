@@ -56,6 +56,10 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(-MathUtil.clamp(m_hoodFeedback.calculate((getHoodPosition() + .2) % 1, (angle + .2) % 1),-0.4, 0.4));
   }
 
+  public void setHoodAngle(DoubleSupplier angle) {
+    setHoodAngle(angle.getAsDouble());
+  }
+
   
   @Override
   public void periodic() {
@@ -65,6 +69,9 @@ public class Hood extends SubsystemBase {
     //System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
     //System.out.print("Encoder: " + getHoodPosition() + " ");
     //System.out.println();
+
+    HoodTable.hoodEncoder.set(getHoodPosition());
+
     
     m_hoodFeedback.setPID(
       HoodTable.kP.get(),

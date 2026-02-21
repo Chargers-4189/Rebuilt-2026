@@ -18,6 +18,7 @@ public class NetworkTables {
         public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
         public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro Rotation", Rotation3d.struct).publish();
         public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
+        public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
 
         public static void init() {}
     }
@@ -56,16 +57,18 @@ public class NetworkTables {
     public static final class HoodTable {
         static NetworkTable hoodTable = networkInstance.getTable("hoodTable");
 
+        public static DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
+
         public static DoubleEntry kPower = hoodTable.getDoubleTopic("Hood Power").getEntry(Constants.HoodConstants.kPower);
 
-        public static DoubleEntry kAngle = hoodTable.getDoubleTopic("Hood Angle").getEntry(Constants.HoodConstants.kANGLE);
+        public static DoubleEntry kTestAngle = hoodTable.getDoubleTopic("Hood Angle").getEntry(Constants.HoodConstants.kTestAngle);
         public static DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
         public static DoubleEntry kI = hoodTable.getDoubleTopic("I (Hood)").getEntry(Constants.HoodConstants.kI);
         public static DoubleEntry kD = hoodTable.getDoubleTopic("D (Hood)").getEntry(Constants.HoodConstants.kD);
 
         public static void init() {
             kPower.set(kPower.get());
-            kAngle.set(kAngle.get());
+            kTestAngle.set(kTestAngle.get());
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());

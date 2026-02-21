@@ -55,8 +55,8 @@ public final class Constants {
 
     //Modifiables
     public static final double kPower = .1;
-
-    public static final double kANGLE = .915;
+    public static final double kTestAngle = 0
+    ;
     public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
