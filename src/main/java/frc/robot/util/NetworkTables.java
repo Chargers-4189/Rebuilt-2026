@@ -20,7 +20,15 @@ public class NetworkTables {
         public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
         public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
 
-        public static void init() {}
+        public static DoubleEntry kP = swerveTable.getDoubleTopic("P (Swerve)").getEntry(Constants.SwerveConstants.kP);
+        public static DoubleEntry kI = swerveTable.getDoubleTopic("I (Swerve)").getEntry(Constants.SwerveConstants.kI);
+        public static DoubleEntry kD = swerveTable.getDoubleTopic("D (Swerve)").getEntry(Constants.SwerveConstants.kD);
+
+        public static void init() {
+            kP.set(kP.get());
+            kI.set(kI.get());
+            kD.set(kD.get());
+        }
     }
 
     public static final class IntakeTable {

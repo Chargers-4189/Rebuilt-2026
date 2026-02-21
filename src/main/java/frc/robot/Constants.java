@@ -18,6 +18,12 @@ public final class Constants {
     public static final int kTestControllerPort = 1;
   }
 
+  public static class SwerveConstants {
+    public static final double kP = 0.1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
+
   public static class IntakeConstants {
     //IDs
     public static final int kIntakeMotor = 21; 
