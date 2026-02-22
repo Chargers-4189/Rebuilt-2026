@@ -67,7 +67,8 @@ public class NetworkTables {
 
         public static DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
 
-        public static DoubleEntry kPower = hoodTable.getDoubleTopic("Hood Power").getEntry(Constants.HoodConstants.kPower);
+        public static DoubleEntry kManualPower = hoodTable.getDoubleTopic("Hood Manual Power").getEntry(Constants.HoodConstants.kManualPower);
+        public static DoubleEntry kAutoPower = hoodTable.getDoubleTopic("Hood Auto Power").getEntry(Constants.HoodConstants.kAutoPower);
 
         public static DoubleEntry kTestAngle = hoodTable.getDoubleTopic("Hood Angle").getEntry(Constants.HoodConstants.kTestAngle);
         public static DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
@@ -75,7 +76,7 @@ public class NetworkTables {
         public static DoubleEntry kD = hoodTable.getDoubleTopic("D (Hood)").getEntry(Constants.HoodConstants.kD);
 
         public static void init() {
-            kPower.set(kPower.get());
+            kManualPower.set(kManualPower.get());
             kTestAngle.set(kTestAngle.get());
             kP.set(kP.get());
             kI.set(kI.get());
