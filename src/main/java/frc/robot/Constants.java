@@ -64,7 +64,9 @@ public final class Constants {
   public static final double MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
   }
-  
+  public static class DriveConstants {
+        public static final double kSPEED = 0;
+  }
   public static class IntakeConstants {
     public static final int kIntakeMotor = 21; 
     public static final int kIntakeAxisMotor = 22;

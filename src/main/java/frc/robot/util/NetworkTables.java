@@ -46,6 +46,11 @@ public class NetworkTables {
         public static DoubleEntry kD = hoodTable.getDoubleTopic("kD").getEntry(Constants.HoodConstants.kD);
     }
 
+    public static final class DriveTable {
+        static NetworkTable driveTable = networkInstance.getTable("DriveTable");
+        public static DoubleEntry kSPEED = driveTable.getDoubleTopic("kSPEED").getEntry(Constants.DriveConstants.kSPEED);
+    }
+
     public static void initialize() {
         ShooterTable.velocity.set(0.0);
         ShooterTable.kPOWER.set(ShooterTable.kPOWER.get());
