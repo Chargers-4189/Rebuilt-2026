@@ -20,17 +20,24 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.ShootNoSwerveAlign;
+import frc.robot.commands.MoveHood;
+import frc.robot.commands.MoveIndexer;
+import frc.robot.commands.RunIntakeWheels;
+import frc.robot.commands.Score;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.IntakeTable;
+import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      private final CommandXboxController testController =
+      new CommandXboxController(OperatorConstants.kTestControllerPort);
 
-    //Subsystem declarations
+    //Subsystem declaration
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
@@ -51,9 +58,11 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     
-    private final Hopper Hopper = new Hopper();
+    private final Vision vision = new Vision(drivetrain);
 
-    private final Intake Intake = new Intake();
+    private final Hopper hopper = new Hopper();
+
+    private final Intake intake = new Intake();
 
     public RobotContainer() {
         configureBindings();
@@ -61,18 +70,34 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // Shooter Subsystem buttons
-        primaryController.y().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.5, 0.125));//high speed
-        primaryController.b().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.25, 0.125));//medium speed  ANGLES CHOSEN ARBITRARILY
-        primaryController.a().whileTrue(new ShootNoSwerveAlign(shooter, hood, indexer, 0.075, 0.125));//low speed
-        // Hood Subsystem Buttons
-        primaryController.povUp().onTrue(Commands.run(()->{
-            hood.manualHood(true);
-        }, this.hood));
-        primaryController.povDown().onTrue(Commands.run(()->{
-            hood.manualHood(false);
-        }, this.hood));
 
+        //Intake
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
+
+        //Hopper & Shooter
+        primaryController.povLeft().onTrue(Commands.parallel(
+            Commands.run(() -> hopper.setSpeed(0.4), hopper),
+            new MoveIndexer(indexer, shooter))
+        );
+        primaryController.povRight().onTrue(Commands.run(() -> {
+            hopper.setSpeed(0);
+            indexer.setIndexerPower(0);
+        }, indexer, hopper));
+
+        //Manual Hood
+        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
+        primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+
+        //Calibration Shoot
+        primaryController.x()
+            .onTrue(Commands.run(() -> {
+                shooter.setShooterPower(ShooterTable.kPower.get());
+            }, shooter)).onFalse(Commands.run(() -> {
+                shooter.setShooterPower(0);
+            }, shooter));
+        
+        //Shoot
+        primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
     }
 
     private void configureSwerveBindings() {

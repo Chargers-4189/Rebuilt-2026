@@ -5,17 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Hopper extends SubsystemBase {
   /** Creates a new Hopper. */
   //Hopper has 2 motors and 0 sensors
-  //private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kMOTOR_ID_LEFT); //Leader
-  private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kMOTOR_ID_RIGHT); //Follower (Set inverted)
+  //private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kHopperMotorLeft); //Leader
+  private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kHopperMotorRight); //Follower (Set inverted)
 
   public Hopper() {
     

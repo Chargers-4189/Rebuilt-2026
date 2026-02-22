@@ -7,31 +7,29 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS AXIS_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
-  private DutyCycleEncoder ENCODER = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
-  private TalonFXS INTAKE_MOTOR = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
+  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor);
+  private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
+  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor); //Needs to be inverted
 
   public Intake() {}
 
   //+: Goes Out, -: Goes in
-  public void setAxisSpeed(double speed) {
-    AXIS_MOTOR.set(speed);
+  public void setWheelSpeed(double speed) {
+    WheelMotor.set(-speed);
   }
 
   //+: Intake, -: Outtake
-  public void setIntakeSpeed(double speed) {
-    INTAKE_MOTOR.set(-speed); //Change once inverted
+  public void setExtensionSpeed(double speed) {
+    ExtensionMotor.set(-speed); //Change once inverted
   }
 
   public double getEncoder() {
-    return ENCODER.get();
+    return Encoder.get();
   }
 
   @Override

@@ -4,53 +4,72 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
-import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
+import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.hardware.TalonFXS;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
+import frc.robot.util.NetworkTables.HoodTable;
+import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
  
-
+  public double offset = 0;
 
   private final TalonFXS hoodMotor = new TalonFXS(
-    HoodConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
+    HoodConstants.kMotorCanID
   );
 
   private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
-  
-
-
+  private final PIDController m_hoodFeedback = new PIDController(
+    HoodTable.kP.get(),
+    HoodTable.kI.get(),
+    HoodTable.kD.get()
+  );
 
   public Hood() {}
 
   public void setHoodPower(double hoodMotorPower) {
-    hoodMotor.set(hoodMotorPower);  // DIRECTION UNTESTED
+    hoodMotor.set(-hoodMotorPower);
   }
+
   public double getHoodPosition() {
-    return (hoodEncoder.get()/HoodConstants.kGearRatio);
+    return 1 - hoodEncoder.get();
   }
+
   public void zeroEncoder() {
-    hoodEncoder.equals(0);
+    System.out.println("ERROR: Use Rev Software to reset this.");
   }
-  public void manualHood(boolean directionUp) {
-    if(directionUp){
-      hoodMotor.set(0.1);  //BOTH DIRECTIONS UNTESTED AND SPEED IS ABITRARY
-    }else{
-      hoodMotor.set(-0.1);
-    }
+  
+  public Command setHoodAngleCommand(DoubleSupplier angle) {
+    return Commands.run(
+        () -> {
+          setHoodAngle(angle.getAsDouble());
+        }, this).withName("HoodAlign"); // PID math max clamp at 0.4
+  }
+
+  public void setHoodAngle(double angle) {
+    hoodMotor.set(-MathUtil.clamp(m_hoodFeedback.calculate((getHoodPosition() + .2) % 1, (angle + .2) % 1),-0.4, 0.4));
   }
 
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //System.out.print("Connected: " + hoodEncoder.isConnected() + " ");
+    //System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
+    //System.out.print("Encoder: " + getHoodPosition() + " ");
+    //System.out.println();
+    
+    m_hoodFeedback.setPID(
+      HoodTable.kP.get(),
+      HoodTable.kI.get(),
+      HoodTable.kD.get()
+    );
   }
 }

@@ -4,15 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
@@ -29,7 +21,7 @@ public class Indexer extends SubsystemBase {
 
 
   public void setIndexerPower(double indexerMotorPower) {
-    indexerMotor.set(indexerMotorPower);  // DIRECTION UNTESTED
+    indexerMotor.set(-indexerMotorPower);   //Direction is now tested
   }
 
 
