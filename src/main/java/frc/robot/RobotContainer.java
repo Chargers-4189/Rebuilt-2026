@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -87,8 +88,8 @@ public class RobotContainer {
         }, indexer, hopper));
 
         //Manual Hood
-        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
-        primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
+        primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
 
         hood.setDefaultCommand(Commands.run(() -> {
             hood.setHoodAngle(HoodTable.kTestAngle);

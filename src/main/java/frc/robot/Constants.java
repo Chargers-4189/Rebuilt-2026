@@ -54,9 +54,10 @@ public final class Constants {
     public static final double kGearRatio = 5.5;
 
     //Modifiables
-    public static final double kPower = .1;
-    public static final double kTestAngle = 0
-    ;
+    public static final double kManualPower = .1;
+    public static final double kAutoPower = .4;
+    public static final double kTestAngle = 0;
+
     public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
