@@ -58,6 +58,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void setHoodAngle(double angle) {
+    HoodTable.hoodGoal.set(angle);
     hoodMotor.set(
       -MathUtil.clamp(m_hoodFeedback.calculate(
         offsetEncoder.calculate(getHoodPosition()),
@@ -83,7 +84,6 @@ public class Hood extends SubsystemBase {
     //System.out.println();
 
     HoodTable.hoodEncoder.set(getHoodPosition());
-
     
     m_hoodFeedback.setPID(
       HoodTable.kP.get(),

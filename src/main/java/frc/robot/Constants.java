@@ -31,9 +31,16 @@ public final class Constants {
     public static final int kIntakeEncoder = 1; 
 
     //Modifiables
-    public static final double kPower = 1;
-  }
+    public static final double kIntakeAxisSpeed = 0.25; //Change Later
+    public static final double kIntakeAxisOuterLimit = 53.0; //Change Later
+    public static final double kIntakeAxisInnerLimit = 85.0; //Change Later
+    
+    public static final double kIntakeSpeed = 1;
 
+    public static final int kTauntAmount = 3; //This is how many times it goes up and down
+    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
+  }
+  
   public static class HopperConstants {
     //IDs
     public static final int kHopperMotorRight = 26; 
@@ -62,7 +69,7 @@ public final class Constants {
     //Modifiables
     public static final double kManualPower = .1;
     public static final double kAutoPower = .4;
-    public static final double kTestAngle = 0;
+    public static final double kDefaultAngle = 0.05;
 
     public static final double kP = 3;
     public static final double kI = 0;
@@ -78,7 +85,7 @@ public final class Constants {
     public static final double kTestPower = .5;
     public static final double kTestDistance = 0;
     
-    public static final double kTolerance = 5;
+    public static final double kTolerance = 1.5;
 
     //slot 0 configs
     public static final double kS = 0.83; // Add 0.25 V output to overcome static friction
@@ -92,5 +99,6 @@ public final class Constants {
     public static final double kMotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
     public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    public static final int kMotorCanID = 28;
   }
 }

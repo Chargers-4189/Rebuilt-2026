@@ -6,26 +6,28 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFXS;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.NetworkTables.HoodTable;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor);
+  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
   private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
-  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor); //Needs to be inverted
+  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
 
   public Intake() {}
 
-  //+: Goes Out, -: Goes in
+  //+: Fuel go in robot, -: Fuel go out robot
   public void setWheelSpeed(double speed) {
-    WheelMotor.set(-speed);
+    WheelMotor.set(-speed); //Change once inverted
   }
 
-  //+: Intake, -: Outtake
+  //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
   public void setExtensionSpeed(double speed) {
-    ExtensionMotor.set(-speed); //Change once inverted
+    ExtensionMotor.set(speed);
   }
 
   public double getEncoder() {
@@ -35,5 +37,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println(getEncoder());
   }
 }

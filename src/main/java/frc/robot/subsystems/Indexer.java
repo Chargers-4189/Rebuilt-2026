@@ -15,10 +15,7 @@ public class Indexer extends SubsystemBase {
     IndexerConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
   );  
 
-
-
   public Indexer() {}
-
 
   public void setIndexerPower(double indexerMotorPower) {
     indexerMotor.set(-indexerMotorPower);   //Direction is now tested

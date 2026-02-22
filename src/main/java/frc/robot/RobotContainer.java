@@ -24,6 +24,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.IntakeRotate;
 import frc.robot.commands.MoveHood;
 import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.RunIntakeWheels;
@@ -82,8 +83,15 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        //Intake
-        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
+        //Deploy Intake
+        intake.setDefaultCommand(Commands.run(() -> {
+            System.out.println(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+            
+            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+        }, intake));
+
+        //Intake Fuel
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kIntakeSpeed));
 
         //Hopper & Shooter
         primaryController.povLeft().onTrue(Commands.parallel(
@@ -100,7 +108,7 @@ public class RobotContainer {
         primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
 
         hood.setDefaultCommand(Commands.run(() -> {
-            hood.setHoodAngle(HoodTable.kTestAngle);
+            hood.setHoodAngle(HoodTable.kDefaultAngle);
         }, hood));
 
         //Calibration Shoot
@@ -108,6 +116,17 @@ public class RobotContainer {
         
         //Shoot
         primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
+
+
+
+
+        /*
+        //Remove later
+        primaryController.leftTrigger().whileTrue(new RunIntakeWheels(intake, () -> Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.rightTrigger().whileTrue(new RunIntakeWheels(intake, () -> -Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.leftBumper().whileTrue(new IntakeRotate(intake, true)); //Doesnt work
+        primaryController.rightBumper().whileTrue(new IntakeRotate(intake, false)); //Doesnt work
+        */
     }
 
     private void configureSwerveBindings() {
