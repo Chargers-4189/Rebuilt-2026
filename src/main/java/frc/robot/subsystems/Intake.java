@@ -12,20 +12,20 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor);
+  private TalonFXS WheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
   private DutyCycleEncoder Encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
-  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor); //Needs to be inverted
+  private TalonFXS ExtensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
 
   public Intake() {}
 
-  //+: Goes Out, -: Goes in
+  //+: BALLS GO INTO ROBOT, -: BALLS GO OUT OF ROBOT
   public void setWheelSpeed(double speed) {
-    WheelMotor.set(-speed);
+    WheelMotor.set(-speed); //Change once inverted
   }
 
-  //+: Intake, -: Outtake
+  //+: ROTATES CW (OUT), -: ROTATES CCW (IN)
   public void setExtensionSpeed(double speed) {
-    ExtensionMotor.set(-speed); //Change once inverted
+    ExtensionMotor.set(speed);
   }
 
   public double getEncoder() {
@@ -35,5 +35,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println(getEncoder());
   }
 }

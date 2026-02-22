@@ -20,6 +20,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.IntakeRotate;
 import frc.robot.commands.MoveHood;
 import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.RunIntakeWheels;
@@ -72,7 +73,7 @@ public class RobotContainer {
     private void configureBindings() {
 
         //Intake
-        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
+        //primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
 
         //Hopper & Shooter
         primaryController.povLeft().onTrue(Commands.parallel(
@@ -97,7 +98,14 @@ public class RobotContainer {
             }, shooter));
         
         //Shoot
-        primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
+        //primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
+
+
+        //Remove later
+        primaryController.leftTrigger().whileTrue(new RunIntakeWheels(intake, () -> Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.rightTrigger().whileTrue(new RunIntakeWheels(intake, () -> -Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.leftBumper().whileTrue(new IntakeRotate(intake, true)); //Doesnt work
+        primaryController.rightBumper().whileTrue(new IntakeRotate(intake, false)); //Doesnt work
     }
 
     private void configureSwerveBindings() {

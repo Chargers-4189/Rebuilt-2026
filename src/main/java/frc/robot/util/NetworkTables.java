@@ -25,10 +25,10 @@ public class NetworkTables {
     public static final class IntakeTable {
         static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
-        public static DoubleEntry kPower = intakeTable.getDoubleTopic("Intake Power").getEntry(Constants.IntakeConstants.kPower);
+        public static DoubleEntry kIntakeSpeed = intakeTable.getDoubleTopic("Intake Power").getEntry(Constants.IntakeConstants.kIntakeSpeed);
 
         public static void init() {
-            kPower.set(kPower.get());
+            kIntakeSpeed.set(kIntakeSpeed.get());
         }
     }
 

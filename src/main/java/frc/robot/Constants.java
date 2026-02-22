@@ -25,9 +25,16 @@ public final class Constants {
     public static final int kIntakeEncoder = 1; 
 
     //Modifiables
-    public static final double kPower = 1;
-  }
+    public static final double kIntakeAxisSpeed = 0.25; //Change Later
+    public static final double kIntakeAxisOuterLimit = 53.0; //Change Later
+    public static final double kIntakeAxisInnerLimit = 85.0; //Change Later
+    
+    public static final double kIntakeSpeed = 1;
 
+    public static final int kTauntAmount = 3; //This is how many times it goes up and down
+    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
+  }
+  
   public static class HopperConstants {
     //IDs
     public static final int kHopperMotorRight = 26; 
@@ -86,26 +93,5 @@ public final class Constants {
     public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     public static final int kMotorCanID = 28;
-  }
-  public final class IntakeConstants {
-    public static final int kIntakeMotor = 0; //Filler
-    public static final int kIntakeAxisMotor = 0; //Filler
-    public static final int kIntakeEncoder = 0; //Filler
-    
-    public static final double kIntakeAxisSpeed = 0.5; //Change Later
-    public static final double kIntakeAxisOuterLimit = 0.0; //Change Later
-    public static final double kIntakeAxisInnerLimit = 0.0; //Change Later
-    
-    public static final double kIntakeSpeed = 1;
-
-    public static final int kTauntAmount = 3; //This is how many times it goes up and down
-    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
-  }
-  public static class HopperConstants {
-
-    //Subsystem
-    public static final int kMOTOR_ID_RIGHT = 0; //Filler ID's
-    public static final int kMOTOR_ID_LEFT = 0; //Filler ID's
-    
   }
 }

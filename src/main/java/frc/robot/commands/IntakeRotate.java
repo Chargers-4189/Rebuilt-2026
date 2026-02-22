@@ -30,7 +30,7 @@ public class IntakeRotate extends Command {
   public IntakeRotate(Intake Intake, boolean rotateOut) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.Intake = Intake;
-    addRequirements(Intake);
+    addRequirements();
     this.rotateOut = rotateOut;
   }
 
@@ -42,18 +42,18 @@ public class IntakeRotate extends Command {
   @Override
   public void execute() {
     //Moves out of bot
-    if(rotateOut == true && Intake.getEncoder() > Constants.IntakeConstants.kIntakeAxisOuterLimit) {
-      Intake.setAxisSpeed(Constants.IntakeConstants.kIntakeAxisSpeed);
+    if(rotateOut == true && Intake.getEncoder() > Constants.IntakeConstants.kIntakeAxisOuterLimit && Intake.getEncoder() <= Constants.IntakeConstants.kIntakeAxisOuterLimit) {
+      Intake.setExtensionSpeed(Constants.IntakeConstants.kIntakeAxisSpeed);
     //Moves into Bot
-    }else if(rotateOut == false && Intake.getEncoder() < Constants.IntakeConstants.kIntakeAxisInnerLimit) {
-      Intake.setAxisSpeed(-Constants.IntakeConstants.kIntakeAxisSpeed);
+    }else if(rotateOut == false && Intake.getEncoder() < Constants.IntakeConstants.kIntakeAxisInnerLimit && Intake.getEncoder() >= Constants.IntakeConstants.kIntakeAxisInnerLimit) {
+      Intake.setExtensionSpeed(-Constants.IntakeConstants.kIntakeAxisSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Intake.setAxisSpeed(0);
+    Intake.setExtensionSpeed(0);
   }
 
   // Returns true when the command should end.
