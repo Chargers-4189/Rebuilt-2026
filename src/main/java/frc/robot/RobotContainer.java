@@ -79,8 +79,15 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        //Intake
-        //primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
+        //Deploy Intake
+        intake.setDefaultCommand(Commands.run(() -> {
+            System.out.println(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+            
+            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+        }, intake));
+
+        //Intake Fuel
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kIntakeSpeed));
 
         //Hopper & Shooter
         primaryController.povLeft().onTrue(Commands.parallel(
@@ -97,21 +104,25 @@ public class RobotContainer {
         primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
 
         hood.setDefaultCommand(Commands.run(() -> {
-            hood.setHoodAngle(HoodTable.kTestAngle);
+            hood.setHoodAngle(HoodTable.kDefaultAngle);
         }, hood));
 
         //Calibration Shoot
         primaryController.x().whileTrue(new Shoot(shooter, ShooterTable.kPower));
         
         //Shoot
-        //primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
+        primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
 
 
+
+
+        /*
         //Remove later
         primaryController.leftTrigger().whileTrue(new RunIntakeWheels(intake, () -> Constants.IntakeConstants.kIntakeSpeed));
         primaryController.rightTrigger().whileTrue(new RunIntakeWheels(intake, () -> -Constants.IntakeConstants.kIntakeSpeed));
         primaryController.leftBumper().whileTrue(new IntakeRotate(intake, true)); //Doesnt work
         primaryController.rightBumper().whileTrue(new IntakeRotate(intake, false)); //Doesnt work
+        */
     }
 
     private void configureSwerveBindings() {

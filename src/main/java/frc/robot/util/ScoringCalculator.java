@@ -16,7 +16,7 @@ public class ScoringCalculator {
      * @return hood rotation (encoder difference from the bottom)
      */
     public static double calculateHoodAngle(double distance) {
-        return .05 * distance + .05;
+        return .05 * distance - .05;
     }
 
     /**

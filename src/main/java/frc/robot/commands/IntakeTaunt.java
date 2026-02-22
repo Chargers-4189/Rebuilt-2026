@@ -19,10 +19,7 @@ public class IntakeTaunt extends Command {
    * 
    * @constants kTauntFraction, KTauntAmount 
    * 
-   * The this command was made per request of Byran.
-   * This is unecessary for the function of the robot but its funny.
-   * It is effective a 'taunt' or 'emote', the bot will raise and lower the intake like its putting its hands up and down.
-   * This file is untested so please dont use it.
+   * This command moves the intake upwards a few times to help push fuel into the main section of the hopper.
    */
 
   private Intake Intake;

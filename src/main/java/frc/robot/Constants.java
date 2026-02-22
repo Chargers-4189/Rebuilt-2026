@@ -69,7 +69,7 @@ public final class Constants {
     //Modifiables
     public static final double kManualPower = .1;
     public static final double kAutoPower = .4;
-    public static final double kTestAngle = 0;
+    public static final double kDefaultAngle = 0.05;
 
     public static final double kP = 3;
     public static final double kI = 0;
@@ -85,7 +85,7 @@ public final class Constants {
     public static final double kTestPower = .5;
     public static final double kTestDistance = 0;
     
-    public static final double kTolerance = 5;
+    public static final double kTolerance = 1.5;
 
     //slot 0 configs
     public static final double kS = 0.83; // Add 0.25 V output to overcome static friction

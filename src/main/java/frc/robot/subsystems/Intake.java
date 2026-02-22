@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFXS;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.NetworkTables.HoodTable;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -18,12 +20,12 @@ public class Intake extends SubsystemBase {
 
   public Intake() {}
 
-  //+: BALLS GO INTO ROBOT, -: BALLS GO OUT OF ROBOT
+  //+: Fuel go in robot, -: Fuel go out robot
   public void setWheelSpeed(double speed) {
     WheelMotor.set(-speed); //Change once inverted
   }
 
-  //+: ROTATES CW (OUT), -: ROTATES CCW (IN)
+  //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
   public void setExtensionSpeed(double speed) {
     ExtensionMotor.set(speed);
   }
