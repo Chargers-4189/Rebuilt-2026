@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.IntakeRotate;
@@ -25,10 +26,14 @@ import frc.robot.commands.MoveHood;
 import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
+import frc.robot.util.NetworkTables.SwerveTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
@@ -42,6 +47,7 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
+    private final Intake intake = new Intake();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -50,20 +56,21 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
+    private final SwerveRequest.FieldCentricFacingAngle driveWithAngle = new SwerveRequest.FieldCentricFacingAngle()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final SwerveSubsystem drivetrain = TunerConstants.createDrivetrain();
     
     private final Vision vision = new Vision(drivetrain);
 
     private final Hopper hopper = new Hopper();
-
-    private final Intake intake = new Intake();
 
     public RobotContainer() {
         configureBindings();
@@ -86,16 +93,15 @@ public class RobotContainer {
         }, indexer, hopper));
 
         //Manual Hood
-        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
-        primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
+        primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
+
+        hood.setDefaultCommand(Commands.run(() -> {
+            hood.setHoodAngle(HoodTable.kTestAngle);
+        }, hood));
 
         //Calibration Shoot
-        primaryController.x()
-            .onTrue(Commands.run(() -> {
-                shooter.setShooterPower(ShooterTable.kPower.get());
-            }, shooter)).onFalse(Commands.run(() -> {
-                shooter.setShooterPower(0);
-            }, shooter));
+        primaryController.x().whileTrue(new Shoot(shooter, ShooterTable.kPower));
         
         //Shoot
         //primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
@@ -109,17 +115,26 @@ public class RobotContainer {
     }
 
     private void configureSwerveBindings() {
+
+        primaryController.rightBumper().whileTrue(
+            drivetrain.applyRequest(() ->
+                driveWithAngle.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(vision.getRotationFromHub())
+                    .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
+                    .withMaxAbsRotationalRate(MaxAngularRate)
+            )
+        );
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-primaryController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -127,23 +142,27 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        drivetrain.registerTelemetry(logger::telemeterize);
+
+        
+        /*
+        
+        primaryController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        primaryController.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-primaryController.getLeftY(), -primaryController.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        primaryController.back().and(primaryController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        primaryController.back().and(primaryController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        primaryController.start().and(primaryController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        primaryController.start().and(primaryController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        primaryController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-
+        */
     }
 
     public Command getAutonomousCommand() {

@@ -12,8 +12,8 @@ import frc.robot.subsystems.Hood;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveHood extends Command {
 
-  Hood hood;
-  DoubleSupplier power;
+  private Hood hood;
+  private DoubleSupplier power;
   /** Creates a new MoveHood. */
   public MoveHood(Hood hood, DoubleSupplier power) {
     // Use addRequirements() here to declare subsystem dependencies.

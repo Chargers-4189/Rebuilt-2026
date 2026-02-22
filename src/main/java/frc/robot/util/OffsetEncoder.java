@@ -4,32 +4,25 @@
 
 package frc.robot.util;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 /** Add your docs here. */
 public class OffsetEncoder {
 
-    private DutyCycleEncoder encoder;
     private double min;
     private double max;
 
-    public OffsetEncoder(int channel, double min, double max, boolean inverted) {
-        this.encoder = new DutyCycleEncoder(channel);
-        encoder.setInverted(inverted);
-    }
-    
-    public OffsetEncoder(int channel, double min, double max) {
-        this(channel, min, max, false);
+    public OffsetEncoder(double min, double max) {
+        this.min = min;
+        this.max = max;
     }
 
-    public double getEncoder() {
+    public double calculate(double value) {
         double offset = (max + min) / 2;
         if (min > max) {
             offset += 0.5;
         }
-        return (encoder.get() + offset) % 1;
+        return (value - offset) % 1;
     }
 
     public void setBounds(double min, double max) {
