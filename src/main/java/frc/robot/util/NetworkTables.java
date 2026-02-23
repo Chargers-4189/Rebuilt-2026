@@ -46,11 +46,12 @@ public class NetworkTables {
         public static DoubleEntry kIntakePower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kIntakePower);
         public static DoubleEntry kExtensionMaxPower = intakeTable.getDoubleTopic("Intake Extension Power").getEntry(Constants.IntakeConstants.kExtensionMaxPower);
 
+        public static DoubleEntry kDefaultAngle = intakeTable.getDoubleTopic("Intake Default Angle").getEntry(Constants.IntakeConstants.kDefaultAngle);
         public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
-
-        public static Object goal;
+        public static DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
+        public static DoubleEntry kGravityAngle = intakeTable.getDoubleTopic("Gravity Angle (Intake)").getEntry(Constants.IntakeConstants.kGravityAngle);
 
         public static void init() {
             kIntakePower.set(kIntakePower.get());
@@ -58,6 +59,9 @@ public class NetworkTables {
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
+            kDefaultAngle.set(kDefaultAngle.get());
+            kG.set(kG.get());
+            kGravityAngle.set(kGravityAngle.get());
         }
     }
 

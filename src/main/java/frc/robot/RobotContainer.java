@@ -122,6 +122,10 @@ public class RobotContainer {
             intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
         }, intake));
 
+        primaryController.a().whileTrue(Commands.run(() -> {
+            intake.setExtensionAngle(IntakeTable.kDefaultAngle.get());
+        }));
+
         //Intake Fuel
         primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kIntakePower));
 

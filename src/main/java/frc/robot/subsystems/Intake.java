@@ -43,14 +43,14 @@ public class Intake extends SubsystemBase {
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
   private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
-  private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675);
+  private OffsetEncoder offsetEncoder = new OffsetEncoder(.415, .849);
 
   private ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.18399, 0);
 
   private final PIDController intakeController = new PIDController(
-    HoodTable.kP.get(),
-    HoodTable.kI.get(),
-    HoodTable.kD.get()
+    IntakeTable.kP.get(),
+    IntakeTable.kI.get(),
+    IntakeTable.kD.get()
   );
 
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
@@ -94,9 +94,9 @@ private final SysIdRoutine m_sysIdRoutine =
   public void setExtensionAngle(double angle) {
     IntakeTable.extensionGoal.set(angle);
     extensionMotor.set(
-      -MathUtil.clamp(intakeController.calculate(
-        offsetEncoder.calculate(getEncoder()),
-        offsetEncoder.calculate(angle)
+      MathUtil.clamp(intakeController.calculate(
+        offsetEncoder.convertCurrent(getEncoder()),
+        offsetEncoder.convertGoal(angle)
       ),
       -IntakeTable.kExtensionMaxPower.get(),
       IntakeTable.kExtensionMaxPower.get())
@@ -111,5 +111,11 @@ private final SysIdRoutine m_sysIdRoutine =
   public void periodic() {
     // This method will be called once per scheduler run
     System.out.println(getEncoder());
+
+    intakeController.setPID(
+      IntakeTable.kP.get(),
+      IntakeTable.kI.get(),
+      IntakeTable.kD.get()
+    );
   }
 }

@@ -12,7 +12,7 @@ public class Hopper extends SubsystemBase {
   /** Creates a new Hopper. */
   //Hopper has 2 motors and 0 sensors
   //private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kHopperMotorLeft); //Leader
-  private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kHopperMotorRight); //Follower (Set inverted)
+  private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kMotorRight); //Follower (Set inverted)
 
   public Hopper() {
     

@@ -49,12 +49,13 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kDefaultAngle = 0;
   }
   
   public static class HopperConstants {
     //IDs
-    public static final int kHopperMotorRight = 26; 
-    public static final int kHopperMotorLeft = 0; //Filler ID
+    public static final int kMotorRight = 26; 
+    public static final int kMotorLeft = -1; //Filler ID
 
     //Modifiables
     public static final int kPower = 1;
