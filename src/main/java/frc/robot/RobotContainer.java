@@ -6,28 +6,45 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.IntakeRotate;
 import frc.robot.commands.MoveHood;
-import frc.robot.commands.MoveIndexer;
+import frc.robot.commands.LoadFuel;
 import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
+import frc.robot.commands.AlignShooter;
+import frc.robot.commands.AlignShooter;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
+import frc.robot.util.NetworkTables.SwerveTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
@@ -37,10 +54,12 @@ public class RobotContainer {
       private final CommandXboxController testController =
       new CommandXboxController(OperatorConstants.kTestControllerPort);
 
+
     //Subsystem declaration
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
+    private final Intake intake = new Intake();
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -48,112 +67,171 @@ public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+    
+    private final SwerveRequest.FieldCentricFacingAngle driveWithAngle = new SwerveRequest.FieldCentricFacingAngle()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+            .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
     
-    private final Vision vision = new Vision(drivetrain);
+    private final Vision vision = new Vision(swerve);
 
     private final Hopper hopper = new Hopper();
 
-    private final Intake intake = new Intake();
-
     public RobotContainer() {
+        //configureSystemIdBindings();
         configureBindings();
         configureSwerveBindings();
     }
 
+    private void configureSystemIdBindings() {
+        primaryController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+        primaryController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+
+        /*
+        * Joystick Y = quasistatic forward
+        * Joystick A = quasistatic reverse
+        * Joystick B = dynamic forward
+        * Joystick X = dyanmic reverse
+        */
+        primaryController.y().whileTrue(intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        primaryController.a().whileTrue(intake.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        primaryController.b().whileTrue(intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        primaryController.x().whileTrue(intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+        //Deploy Intake
+        intake.setDefaultCommand(Commands.run(() -> {            
+            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+        }, intake));
+    }
+
     private void configureBindings() {
 
-        //Intake
-        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kPower));
+        //Deploy Intake
+        intake.setDefaultCommand(Commands.run(() -> {
+            //System.out.println(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+            
+            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+        }, intake));
+
+        primaryController.a().whileTrue(Commands.run(() -> {
+            intake.setExtensionAngle(IntakeTable.kDefaultAngle.get());
+        }));
+
+        //Intake Fuel
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kIntakePower));
 
         //Hopper & Shooter
+
+        /*
         primaryController.povLeft().onTrue(Commands.parallel(
             Commands.run(() -> hopper.setSpeed(0.4), hopper),
-            new MoveIndexer(indexer, shooter))
-        );
+            new MoveIndexer(indexer, shooter, swerve))
+        );*/
+
+        /*
         primaryController.povRight().onTrue(Commands.run(() -> {
             hopper.setSpeed(0);
             indexer.setIndexerPower(0);
         }, indexer, hopper));
+        */
 
         //Manual Hood
-        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -.1));
-        primaryController.povUp().whileTrue(new MoveHood(hood, () -> .1));
+        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
+        primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
+
+        hood.setDefaultCommand(Commands.run(() -> {
+            hood.setHoodAngle(HoodTable.kDefaultAngle);
+        }, hood));
 
         //Calibration Shoot
-        primaryController.x()
-            .onTrue(Commands.run(() -> {
-                shooter.setShooterPower(ShooterTable.kPower.get());
-            }, shooter)).onFalse(Commands.run(() -> {
-                shooter.setShooterPower(0);
-            }, shooter));
+        primaryController.x().whileTrue(new Shoot(shooter, ShooterTable.kPower));
         
-        //Shoot
-        primaryController.rightBumper().whileTrue(new Score(hood, shooter, vision));
+        //Score
+        primaryController.rightBumper().whileTrue(new Score(shooter, hood, indexer, swerve, vision, hopper));
+
+
+
+
+        /*
+        //Remove later
+        primaryController.leftTrigger().whileTrue(new RunIntakeWheels(intake, () -> Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.rightTrigger().whileTrue(new RunIntakeWheels(intake, () -> -Constants.IntakeConstants.kIntakeSpeed));
+        primaryController.leftBumper().whileTrue(new IntakeRotate(intake, true)); //Doesnt work
+        primaryController.rightBumper().whileTrue(new IntakeRotate(intake, false)); //Doesnt work
+        */
     }
 
     private void configureSwerveBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+
+        primaryController.rightBumper().whileTrue(
+            swerve.applyRequest(() ->
+                driveWithAngle.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(vision.getRotationFromHub())
+                    .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
+                    .withMaxAbsRotationalRate(MaxAngularRate * SwerveTable.kMaxPower.get())
+                    .withTargetRateFeedforward(swerve.calculateFeedForward(vision.getRotationFromHub()))
             )
         );
-
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        swerve.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            swerve.applyRequest(() ->
+                drive.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-primaryController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
         RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
+            swerve.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        swerve.registerTelemetry(logger::telemeterize);
+
+        
+        /*
+        
+        primaryController.a().whileTrue(swerve.applyRequest(() -> brake));
+        primaryController.b().whileTrue(swerve.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-primaryController.getLeftY(), -primaryController.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        primaryController.back().and(primaryController.y()).whileTrue(swerve.sysIdDynamic(Direction.kForward));
+        primaryController.back().and(primaryController.x()).whileTrue(swerve.sysIdDynamic(Direction.kReverse));
+        primaryController.start().and(primaryController.y()).whileTrue(swerve.sysIdQuasistatic(Direction.kForward));
+        primaryController.start().and(primaryController.x()).whileTrue(swerve.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        primaryController.leftBumper().onTrue(swerve.runOnce(swerve::seedFieldCentric));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-
+        */
     }
 
     public Command getAutonomousCommand() {
-        // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(/*Rotation2d.kZero*/)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-        );
+    try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
     }
+  }
 }

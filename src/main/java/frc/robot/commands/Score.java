@@ -4,59 +4,32 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hood;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.ScoringCalculator;
+import frc.robot.util.NetworkTables.HoodTable;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Hopper;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Score extends Command {
 
-  private Hood hood;
-  private Shooter shooter;
-  private Vision vision;
-
-  private double angle;
-  private double power;
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class Score extends ParallelCommandGroup {
   
-  /** Creates a new Score. */
-  public Score(Hood hood, Shooter shooter, Vision vision) {
-    this.hood = hood;
-    this.shooter = shooter;
-    this.vision = vision;
-    addRequirements(hood, shooter);
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    double distance = vision.getDistanceFromHub();
-    //double distance = ShooterTable.kDISTANCE.get();
-    angle = ScoringCalculator.calculateHoodAngle(distance);
-    power = ScoringCalculator.calculateShootingPower(distance);
-
-    System.out.println(distance + " " + angle + " " + power);
-
-    hood.setHoodAngle(angle);
-    shooter.setShooterPower(power);
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    shooter.setShooterPower(0);
-    hood.setHoodPower(0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  /** Creates a new test. */
+  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
+        new AlignShooter(hood, shooter, vision)
+    );
   }
 }
+

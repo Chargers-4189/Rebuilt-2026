@@ -18,6 +18,18 @@ public final class Constants {
     public static final int kTestControllerPort = 1;
   }
 
+  public static class SwerveConstants {
+
+    //Constants for Angle Align
+    public static final double kP = 4.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.2;
+    public static final double kS = 0.3;
+    public static final double kMaxPower = 0.3;
+
+    public static final double kTolerance = 0.01;
+  }
+
   public static class IntakeConstants {
     //IDs
     public static final int kIntakeMotor = 21; 
@@ -25,13 +37,25 @@ public final class Constants {
     public static final int kIntakeEncoder = 1; 
 
     //Modifiables
-    public static final double kPower = 1;
-  }
+    public static final double kIntakeAxisSpeed = 0.25; //Change Later
+    public static final double kIntakeAxisOuterLimit = 53.0; //Change Later
+    public static final double kIntakeAxisInnerLimit = 85.0; //Change Later
+    
+    public static final double kIntakePower = 1;
+    public static final double kExtensionMaxPower = 1;
 
+    public static final int kTauntAmount = 3; //This is how many times it goes up and down
+    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kDefaultAngle = 0;
+  }
+  
   public static class HopperConstants {
     //IDs
-    public static final int kHopperMotorRight = 26; 
-    public static final int kHopperMotorLeft = 0; //Filler ID
+    public static final int kMotorRight = 26; 
+    public static final int kMotorLeft = -1; //Filler ID
 
     //Modifiables
     public static final int kPower = 1;
@@ -42,7 +66,9 @@ public final class Constants {
     public static final int kMotorCanID = 25;
 
     //Modifiables
-    public static final double kPower = 1;
+    public static final double kPower = .4;
+
+    public static final double kReversePower = -.1;
   }
 
   public static class HoodConstants {
@@ -54,9 +80,10 @@ public final class Constants {
     public static final double kGearRatio = 5.5;
 
     //Modifiables
-    public static final double kPower = .1;
+    public static final double kManualPower = .1;
+    public static final double kAutoPower = .4;
+    public static final double kDefaultAngle = 0.05;
 
-    public static final double kANGLE = .915;
     public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
@@ -71,13 +98,13 @@ public final class Constants {
     public static final double kTestPower = .5;
     public static final double kTestDistance = 0;
     
-    public static final double kTolerance = 5;
+    public static final double kTolerance = 1.5;
 
     //slot 0 configs
     public static final double kS = 0.83; // Add 0.25 V output to overcome static friction
     public static final double kV = 0.115; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output
+    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output 
     public static final double kI = 0.0; // no output for integrated error
     public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 
@@ -85,5 +112,6 @@ public final class Constants {
     public static final double kMotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
     public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    public static final int kMotorCanID = 28;
   }
 }

@@ -14,31 +14,36 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.util.NetworkTables.HoodTable;
+import frc.robot.util.OffsetEncoder;
 import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
- 
-  public double offset = 0;
 
   private final TalonFXS hoodMotor = new TalonFXS(
     HoodConstants.kMotorCanID
   );
 
+  private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675);
+
   private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
-  private final PIDController m_hoodFeedback = new PIDController(
+  private final PIDController hoodController = new PIDController(
     HoodTable.kP.get(),
     HoodTable.kI.get(),
     HoodTable.kD.get()
   );
 
-  public Hood() {}
+
+
+  public Hood() {
+    hoodEncoder.setInverted(true);
+  }
 
   public void setHoodPower(double hoodMotorPower) {
     hoodMotor.set(-hoodMotorPower);
   }
 
   public double getHoodPosition() {
-    return 1 - hoodEncoder.get();
+    return hoodEncoder.get();
   }
 
   public void zeroEncoder() {
@@ -53,7 +58,19 @@ public class Hood extends SubsystemBase {
   }
 
   public void setHoodAngle(double angle) {
-    hoodMotor.set(-MathUtil.clamp(m_hoodFeedback.calculate((getHoodPosition() + .2) % 1, (angle + .2) % 1),-0.4, 0.4));
+    HoodTable.hoodGoal.set(angle);
+    hoodMotor.set(
+      -MathUtil.clamp(hoodController.calculate(
+        offsetEncoder.convertCurrent(getHoodPosition()),
+        offsetEncoder.convertGoal(angle)
+      ),
+      -HoodConstants.kAutoPower,
+      HoodConstants.kAutoPower)
+    );
+  }
+
+  public void setHoodAngle(DoubleSupplier angle) {
+    setHoodAngle(angle.getAsDouble());
   }
 
   
@@ -65,8 +82,10 @@ public class Hood extends SubsystemBase {
     //System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
     //System.out.print("Encoder: " + getHoodPosition() + " ");
     //System.out.println();
+
+    HoodTable.hoodEncoder.set(getHoodPosition());
     
-    m_hoodFeedback.setPID(
+    hoodController.setPID(
       HoodTable.kP.get(),
       HoodTable.kI.get(),
       HoodTable.kD.get()

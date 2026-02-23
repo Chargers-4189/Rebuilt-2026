@@ -10,6 +10,8 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.proto.Photon;
+import org.photonvision.targeting.PhotonPipelineMetadata;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -35,15 +37,15 @@ public class Vision extends SubsystemBase {
 
   // todo: name the camera 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
-  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(13),Units.inchesToMeters(3),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
+  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
 
   PhotonCamera rightCamera = new PhotonCamera("RightCam");
-  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(13),Units.inchesToMeters(-5.5),Units.inchesToMeters(13), new Rotation3d(0,Units.degreesToRadians(-45),0));
+  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(-7.5),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-50),0));
   
-  CommandSwerveDrivetrain swerve;
+  SwerveSubsystem swerve;
   //42in
   //return 0.0;
-  public Vision(CommandSwerveDrivetrain swerve) {
+  public Vision(SwerveSubsystem swerve) {
     this.swerve = swerve;
   }
 
@@ -89,7 +91,7 @@ public class Vision extends SubsystemBase {
       return Math.sqrt(diff);
   }
 
-  public double getRotationFromHub(){
+  public Rotation2d getRotationFromHub(){
     if(swerve.m_isBlueAlliance){
       return getRotationToBlueHub();
     } else {
@@ -97,24 +99,24 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private double getRotationToRedHub(){
+  private Rotation2d getRotationToRedHub(){
     return getRotationToLocation(hubPoseRed);
   }
 
-  private double getRotationToBlueHub(){
+  private Rotation2d getRotationToBlueHub(){
     return getRotationToLocation(hubPoseBlue);
   }
-  private double getRotationToLocation(Pose2d location){
+  private Rotation2d getRotationToLocation(Pose2d location){
     double botX = swerve.getState().Pose.getX();
     double botY = swerve.getState().Pose.getY();
 
     double hubX = location.getX();
     double hubY = location.getY();
 
-    double xDiff = botX - hubX;
-    double yDiff = botY - hubY;
+    double xDiff = hubX - botX;
+    double yDiff = hubY - botY;
 
-    return Math.atan2(yDiff,xDiff);
+    return new Rotation2d(xDiff, yDiff);
   }
 
   private Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
@@ -135,7 +137,8 @@ public class Vision extends SubsystemBase {
     this.addVisionMeasurement(leftcamera, leftCamTransform);
     this.addVisionMeasurement(rightCamera, rightCamTransform);
 
-    System.out.println(getDistanceFromHub());
-    SwerveTable.aprilTagPose.set(findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d()));
+    //System.out.println(getDistanceFromHub());
+    SwerveTable.hubRotation.set(getRotationFromHub().getRotations());
+    SwerveTable.hubDistance.set(getDistanceFromHub());
   }
 }
