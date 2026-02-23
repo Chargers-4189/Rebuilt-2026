@@ -26,7 +26,7 @@ public class Hood extends SubsystemBase {
   private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675);
 
   private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
-  private final PIDController m_hoodFeedback = new PIDController(
+  private final PIDController hoodController = new PIDController(
     HoodTable.kP.get(),
     HoodTable.kI.get(),
     HoodTable.kD.get()
@@ -60,7 +60,7 @@ public class Hood extends SubsystemBase {
   public void setHoodAngle(double angle) {
     HoodTable.hoodGoal.set(angle);
     hoodMotor.set(
-      -MathUtil.clamp(m_hoodFeedback.calculate(
+      -MathUtil.clamp(hoodController.calculate(
         offsetEncoder.calculate(getHoodPosition()),
         offsetEncoder.calculate(angle)
       ),
@@ -85,7 +85,7 @@ public class Hood extends SubsystemBase {
 
     HoodTable.hoodEncoder.set(getHoodPosition());
     
-    m_hoodFeedback.setPID(
+    hoodController.setPID(
       HoodTable.kP.get(),
       HoodTable.kI.get(),
       HoodTable.kD.get()

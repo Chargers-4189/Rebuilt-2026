@@ -112,8 +112,8 @@ public class Vision extends SubsystemBase {
     double hubX = location.getX();
     double hubY = location.getY();
 
-    double xDiff = botX - hubX;
-    double yDiff = botY - hubY;
+    double xDiff = hubX - botX;
+    double yDiff = hubY - botY;
 
     return new Rotation2d(xDiff, yDiff);
   }
@@ -137,7 +137,7 @@ public class Vision extends SubsystemBase {
     this.addVisionMeasurement(rightCamera, rightCamTransform);
 
     //System.out.println(getDistanceFromHub());
-    SwerveTable.aprilTagPose.set(findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d()));
+    SwerveTable.hubRotation.set(getRotationFromHub().getRotations());
     SwerveTable.hubDistance.set(getDistanceFromHub());
   }
 }

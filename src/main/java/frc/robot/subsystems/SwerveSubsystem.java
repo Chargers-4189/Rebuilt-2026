@@ -44,6 +44,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    private double rotationalGoal;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -289,7 +291,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         }
 
         SwerveTable.robotPose.set(this.getState().Pose);
-        SwerveTable.gyroRotation.set(this.getRotation3d());
+        SwerveTable.robotRotation.set(this.getState().Pose.getRotation().getRotations());
     }
 
     private void startSimThread() {
@@ -353,5 +355,33 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     @Override
     public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
+    }
+
+    /**
+     * Calculates feed forward for angle align
+     * @param hubRotation Rotation to align to
+     * @return feedforward (kS only)
+     */
+    public double calculateFeedForward(Rotation2d hubRotation) {
+        double current = getState().Pose.getRotation().getRotations();
+        rotationalGoal = hubRotation.getRotations();
+
+        double output = SwerveTable.kS.get();
+
+        if (rotationalGoal < current) {
+            output *= -1;
+        }
+        if (Math.abs(rotationalGoal - current) > .5) {
+            output *= -1;
+        }
+        
+        return output;
+    }
+
+    public double getRotationalGoal() {
+        return rotationalGoal;
+    }
+    public double getRotations() {
+        return getState().Pose.getRotation().getRotations();
     }
 }

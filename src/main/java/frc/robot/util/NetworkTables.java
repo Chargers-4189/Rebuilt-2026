@@ -16,28 +16,48 @@ public class NetworkTables {
         static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
 
         public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
-        public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro Rotation", Rotation3d.struct).publish();
-        public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
+        //public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro Rotation", Rotation3d.struct).publish();
+        //public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
         public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
+        public static DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
+        public static DoublePublisher robotRotation = swerveTable.getDoubleTopic("Robot Rotation").publish();
 
         public static DoubleEntry kP = swerveTable.getDoubleTopic("P (Swerve)").getEntry(Constants.SwerveConstants.kP);
         public static DoubleEntry kI = swerveTable.getDoubleTopic("I (Swerve)").getEntry(Constants.SwerveConstants.kI);
         public static DoubleEntry kD = swerveTable.getDoubleTopic("D (Swerve)").getEntry(Constants.SwerveConstants.kD);
+        public static DoubleEntry kS = swerveTable.getDoubleTopic("S (Swerve)").getEntry(Constants.SwerveConstants.kS);
+        public static DoubleEntry kMaxPower = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
 
         public static void init() {
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
+            kS.set(kS.get());
+            kMaxPower.set(kMaxPower.get());
         }
     }
 
     public static final class IntakeTable {
         static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
-        public static DoubleEntry kIntakeSpeed = intakeTable.getDoubleTopic("Intake Power").getEntry(Constants.IntakeConstants.kIntakeSpeed);
+        public static DoublePublisher encoder = intakeTable.getDoubleTopic("Intake Encoder").publish();
+        public static DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Goal").publish();
+
+        public static DoubleEntry kIntakePower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kIntakePower);
+        public static DoubleEntry kExtensionMaxPower = intakeTable.getDoubleTopic("Intake Extension Power").getEntry(Constants.IntakeConstants.kExtensionMaxPower);
+
+        public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
+        public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
+        public static DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
+
+        public static Object goal;
 
         public static void init() {
-            kIntakeSpeed.set(kIntakeSpeed.get());
+            kIntakePower.set(kIntakePower.get());
+            kExtensionMaxPower.set(kExtensionMaxPower.get());
+            kP.set(kP.get());
+            kI.set(kI.get());
+            kD.set(kD.get());
         }
     }
 
@@ -56,9 +76,11 @@ public class NetworkTables {
         static NetworkTable indexerTable = networkInstance.getTable("indexerTable");
 
         public static DoubleEntry kPower = indexerTable.getDoubleTopic("Indexer Power").getEntry(Constants.IndexerConstants.kPower);
+        public static DoubleEntry kReversePower = indexerTable.getDoubleTopic("Indexer Reverse Power").getEntry(Constants.IndexerConstants.kReversePower);
 
         public static void init() {
             kPower.set(kPower.get());
+            kReversePower.set(kReversePower.get());
         }
     }
 

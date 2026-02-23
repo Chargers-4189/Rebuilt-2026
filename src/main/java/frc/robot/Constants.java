@@ -19,9 +19,15 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kP = 0.1;
+
+    //Constants for Angle Align
+    public static final double kP = 4.0;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0.2;
+    public static final double kS = 0.3;
+    public static final double kMaxPower = 0.3;
+
+    public static final double kTolerance = 0.01;
   }
 
   public static class IntakeConstants {
@@ -35,10 +41,14 @@ public final class Constants {
     public static final double kIntakeAxisOuterLimit = 53.0; //Change Later
     public static final double kIntakeAxisInnerLimit = 85.0; //Change Later
     
-    public static final double kIntakeSpeed = 1;
+    public static final double kIntakePower = 1;
+    public static final double kExtensionMaxPower = 1;
 
     public static final int kTauntAmount = 3; //This is how many times it goes up and down
     public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
   
   public static class HopperConstants {
@@ -55,7 +65,9 @@ public final class Constants {
     public static final int kMotorCanID = 25;
 
     //Modifiables
-    public static final double kPower = 1;
+    public static final double kPower = .4;
+
+    public static final double kReversePower = -.1;
   }
 
   public static class HoodConstants {
@@ -91,7 +103,7 @@ public final class Constants {
     public static final double kS = 0.83; // Add 0.25 V output to overcome static friction
     public static final double kV = 0.115; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output
+    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output 
     public static final double kI = 0.0; // no output for integrated error
     public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 

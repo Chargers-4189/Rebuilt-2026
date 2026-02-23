@@ -9,28 +9,24 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Hopper;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootNoSwerveAlign extends ParallelCommandGroup {
+  
   /** Creates a new test. */
-  private Hood hood;
-  private Indexer indexer;
-  private Shooter shooter;
-
-  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, DoubleEntry speed, double angle) {
+  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, SwerveSubsystem swerve, DoubleEntry speed, double angle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    this.hood = hood;
-    this.indexer = indexer;
-    this.shooter = shooter;
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new MoveIndexer(indexer, shooter)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
         new Shoot(shooter, speed)
     );
   }
