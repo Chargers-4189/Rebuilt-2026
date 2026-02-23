@@ -12,10 +12,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -222,7 +225,7 @@ public class RobotContainer {
         */
     }
 
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() { /*
     try{
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
@@ -233,5 +236,23 @@ public class RobotContainer {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
     }
-  }
+  }*/
+
+  Pose2d currentRobotPose = swerve.getState().Pose;
+    Pose2d twoFeetForward = currentRobotPose.plus(new Transform2d(1,0,currentRobotPose.getRotation())); 
+
+    PathConstraints constraints = PathConstraints.unlimitedConstraints(12);
+    // try {
+    //         return AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test.path"),constraints);
+    // } catch (Exception e) {
+    //     return Commands.none();
+    // }
+    // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
+
+    try {
+        return AutoBuilder.followPath(PathPlannerPath.fromPathFile("test"));
+    } catch(Exception e){
+        return Commands.none();
+    }
+    }
 }

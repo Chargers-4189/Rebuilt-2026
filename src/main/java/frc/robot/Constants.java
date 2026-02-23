@@ -50,6 +50,8 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kDefaultAngle = 0;
+    public static final double kG = 0;
+    public static final double kGravityAngle = 0;
   }
   
   public static class HopperConstants {
