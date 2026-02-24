@@ -39,6 +39,7 @@ import frc.robot.commands.LoadFuel;
 import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
 import frc.robot.commands.AlignShooter;
+import frc.robot.commands.ExampleAutoScore;
 import frc.robot.commands.AlignShooter;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
@@ -81,7 +82,8 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    //Disabled Telemetry:
+    //private final Telemetry logger = new Telemetry(MaxSpeed);
 
     public final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
     
@@ -202,7 +204,8 @@ public class RobotContainer {
             swerve.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        swerve.registerTelemetry(logger::telemeterize);
+        //Disabled Telemetry:
+        //swerve.registerTelemetry(logger::telemeterize);
 
         
         /*
@@ -249,10 +252,6 @@ public class RobotContainer {
     // }
     // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
-    try {
-        return AutoBuilder.followPath(PathPlannerPath.fromPathFile("test"));
-    } catch(Exception e){
-        return Commands.none();
-    }
+        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
     }
 }

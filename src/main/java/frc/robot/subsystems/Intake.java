@@ -110,7 +110,7 @@ private final SysIdRoutine m_sysIdRoutine =
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println(getEncoder());
+    //System.out.println(getEncoder());
 
     intakeController.setPID(
       IntakeTable.kP.get(),

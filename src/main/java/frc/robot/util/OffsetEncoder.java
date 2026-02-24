@@ -11,7 +11,6 @@ public class OffsetEncoder {
 
     private double min;
     private double max;
-    private double offset;
 
     public OffsetEncoder(double min, double max) {
         this.min = min;
@@ -19,23 +18,39 @@ public class OffsetEncoder {
     }
 
     public double convertCurrent(double value) {
-        offset = (max + min) / 2;
+        double offset = (max + min) / 2;
         if (min > max) {
             offset += 0.5;
         }
-        return (value - offset) % 1;
+        return positiveMod((value + offset), 1);
     }
 
     public double convertGoal(double value) {
-        offset = (max + min) / 2;
+        double offset = (max + min) / 2;
         if (min > max) {
             offset += 0.5;
         }
-        return (value - offset + min) % 1 ;
+        return positiveMod((value + offset + min), 1);
     }
 
     public void setBounds(double min, double max) {
         this.min = min;
         this.max = max;
+    }
+
+    /**
+     * Calculates a positive modulus; always returns a positive result.
+     *
+     * @param x the input number
+     * @param m the modulus
+     * 
+     * @return x mod m
+     */
+    public double positiveMod(double x, double m) {
+        double mod = x % m;
+        if (mod < 0) {
+            mod += m;
+        }
+        return mod;
     }
 }
