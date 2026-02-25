@@ -4,10 +4,19 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
@@ -24,6 +33,9 @@ public class LoadFuel extends Command {
   private SwerveSubsystem swerve;
   private boolean checkAlignment;
   private Hopper hopper;
+  private boolean alreadyAligned;
+  private boolean alreadyFast;
+
   public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean checkAlignment) {
     this.indexer = indexer;
     this.shooter = shooter;
@@ -35,29 +47,32 @@ public class LoadFuel extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    alreadyAligned = false;
+    alreadyFast = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!checkAlignment) {
+    if (!checkAlignment && alreadyAligned) {
       indexer.setIndexerPower(IndexerTable.kPower.get());
       hopper.setSpeed(HopperTable.kPower.get());
-      return;
-    }
-    
-    if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterConstants.kTolerance){
-      System.out.println("Not Enough Power");
-      indexer.setIndexerPower(IndexerConstants.kReversePower);
-      hopper.setSpeed(0);
-    } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveConstants.kTolerance) {
-      System.out.println("Not Rotated Enough");
-      indexer.setIndexerPower(IndexerConstants.kReversePower);
-      hopper.setSpeed(0);
     } else {
-      indexer.setIndexerPower(IndexerTable.kPower.get());
-      hopper.setSpeed(HopperTable.kPower.get());
-    }
+      if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterConstants.kTolerance){
+        System.out.println("Not Enough Power");
+        indexer.setIndexerPower(IndexerConstants.kReversePower);
+        hopper.setSpeed(0);
+      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveConstants.kTolerance) {
+        System.out.println("Not Rotated Enough");
+        indexer.setIndexerPower(IndexerConstants.kReversePower);
+        hopper.setSpeed(0);        
+      } else {
+        indexer.setIndexerPower(IndexerTable.kPower.get());
+        hopper.setSpeed(HopperTable.kPower.get());
+        alreadyAligned = true;
+      }
+  }
   }
 
   // Called once the command ends or is interrupted.

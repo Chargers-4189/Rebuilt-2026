@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -28,6 +29,9 @@ public class NetworkTables {
         public static DoubleEntry kS = swerveTable.getDoubleTopic("S (Swerve)").getEntry(Constants.SwerveConstants.kS);
         public static DoubleEntry kMaxPower = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
 
+        public static DoubleEntry kTolerance = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
+
+
         public static void init() {
             kP.set(kP.get());
             kI.set(kI.get());
@@ -43,25 +47,44 @@ public class NetworkTables {
         public static DoublePublisher encoder = intakeTable.getDoubleTopic("Intake Encoder").publish();
         public static DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Goal").publish();
 
-        public static DoubleEntry kIntakePower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kIntakePower);
-        public static DoubleEntry kExtensionMaxPower = intakeTable.getDoubleTopic("Intake Extension Power").getEntry(Constants.IntakeConstants.kExtensionMaxPower);
-
+        public static DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);
+        public static DoubleEntry kManualExtensionPower = intakeTable.getDoubleTopic("Intake Manual Extension Power").getEntry(Constants.IntakeConstants.kManualExtensionPower);
+    
         public static DoubleEntry kDefaultAngle = intakeTable.getDoubleTopic("Intake Default Angle").getEntry(Constants.IntakeConstants.kDefaultAngle);
+
+        public static DoubleEntry kAutoExtensionMaxPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoExtensionMaxPower);
         public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
-        public static DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
-        public static DoubleEntry kGravityAngle = intakeTable.getDoubleTopic("Gravity Angle (Intake)").getEntry(Constants.IntakeConstants.kGravityAngle);
+        //public static DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
+        //public static DoubleEntry kGravityAngle = intakeTable.getDoubleTopic("Gravity Angle (Intake)").getEntry(Constants.IntakeConstants.kGravityAngle);
+
+        public static IntegerEntry kTauntAmount = intakeTable.getIntegerTopic("Taunt Number").getEntry(Constants.IntakeConstants.kTauntAmount);
+        public static IntegerEntry kTauntFraction = intakeTable.getIntegerTopic("Taunt Fraction").getEntry(Constants.IntakeConstants.kTauntFraction);
+
+        public static DoubleEntry kTolerance = intakeTable.getDoubleTopic("Intake Tolerance").getEntry(Constants.IntakeConstants.kTolerance);
+        public static DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
+        public static DoubleEntry kInnerExtensionLimit = intakeTable.getDoubleTopic("Intake Inner Limit").getEntry(Constants.IntakeConstants.kInnerExtensionLimit);
 
         public static void init() {
-            kIntakePower.set(kIntakePower.get());
-            kExtensionMaxPower.set(kExtensionMaxPower.get());
+            kWheelPower.set(kWheelPower.get());
+            kManualExtensionPower.set(kManualExtensionPower.get());
+
+            kDefaultAngle.set(kDefaultAngle.get());
+
+            kAutoExtensionMaxPower.set(kAutoExtensionMaxPower.get());
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
-            kDefaultAngle.set(kDefaultAngle.get());
-            kG.set(kG.get());
-            kGravityAngle.set(kGravityAngle.get());
+            //kG.set(kG.get());
+            //kGravityAngle.set(kGravityAngle.get());
+
+            kTauntAmount.set(kTauntAmount.get());
+            kTauntFraction.set(kTauntFraction.get());
+
+            kTolerance.set(kTolerance.get());
+            kOuterExtensionLimit.set(kOuterExtensionLimit.get());
+            kInnerExtensionLimit.set(kInnerExtensionLimit.get());
         }
     }
 

@@ -37,19 +37,24 @@ public final class Constants {
     public static final int kIntakeEncoder = 1; 
 
     //Modifiables
-    public static final double kIntakeAxisSpeed = 0.25; //Change Later
-    public static final double kIntakeAxisOuterLimit = 53.0; //Change Later
-    public static final double kIntakeAxisInnerLimit = 85.0; //Change Later
-    
-    public static final double kIntakePower = 1;
-    public static final double kExtensionMaxPower = 1;
+    public static final double kWheelPower = 1;
+    public static final double kManualExtensionPower = .25;
+
+    public static final double kDefaultAngle = 0;
+
+    public static final double kAutoExtensionMaxPower = .25;
+    public static final double kP = 2;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    //public static final double kG = 0;
+    //public static final double kGravityAngle = .1;
 
     public static final int kTauntAmount = 3; //This is how many times it goes up and down
     public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kDefaultAngle = 0;
+
+    public static final double kTolerance = 0.03;
+    public static final double kOuterExtensionLimit = 0.03; //Change Later
+    public static final double kInnerExtensionLimit = 0.4; //Change Later
   }
   
   public static class HopperConstants {

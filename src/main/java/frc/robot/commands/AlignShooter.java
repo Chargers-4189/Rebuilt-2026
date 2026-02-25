@@ -45,6 +45,7 @@ public class AlignShooter extends Command {
 
     hood.setHoodAngle(angle);
     shooter.setShooterPower(power);
+    
   }
 
   // Called once the command ends or is interrupted.

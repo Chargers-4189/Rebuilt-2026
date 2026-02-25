@@ -12,10 +12,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -36,6 +39,7 @@ import frc.robot.commands.LoadFuel;
 import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
 import frc.robot.commands.AlignShooter;
+import frc.robot.commands.ExampleAutoScore;
 import frc.robot.commands.AlignShooter;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
@@ -78,7 +82,8 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    //Disabled Telemetry:
+    //private final Telemetry logger = new Telemetry(MaxSpeed);
 
     public final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
     
@@ -119,15 +124,21 @@ public class RobotContainer {
         intake.setDefaultCommand(Commands.run(() -> {
             //System.out.println(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
             
-            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+            intake.setExtensionSpeed(
+                IntakeTable.kManualExtensionPower.get() 
+                * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis())
+            );
         }, intake));
 
         primaryController.a().whileTrue(Commands.run(() -> {
             intake.setExtensionAngle(IntakeTable.kDefaultAngle.get());
         }));
 
+        primaryController.b().onTrue(new IntakeRotate(intake, true));
+        primaryController.y().onTrue(new IntakeRotate(intake, false));
+
         //Intake Fuel
-        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kIntakePower));
+        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
 
         //Hopper & Shooter
 
@@ -156,7 +167,18 @@ public class RobotContainer {
         primaryController.x().whileTrue(new Shoot(shooter, ShooterTable.kPower));
         
         //Score
-        primaryController.rightBumper().whileTrue(new Score(shooter, hood, indexer, swerve, vision, hopper));
+        primaryController.rightBumper().whileTrue(Commands.parallel(
+            new Score(shooter, hood, indexer, swerve, vision, hopper),
+            swerve.applyRequest(() ->
+                driveWithAngle.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withTargetDirection(vision.getRotationFromHub())
+                    .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
+                    .withMaxAbsRotationalRate(MaxAngularRate * SwerveTable.kMaxPower.get())
+                    .withTargetRateFeedforward(swerve.calculateFeedForward(vision.getRotationFromHub()))
+                )
+            )
+        );
 
 
 
@@ -171,17 +193,6 @@ public class RobotContainer {
     }
 
     private void configureSwerveBindings() {
-
-        primaryController.rightBumper().whileTrue(
-            swerve.applyRequest(() ->
-                driveWithAngle.withVelocityX(-primaryController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-primaryController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withTargetDirection(vision.getRotationFromHub())
-                    .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
-                    .withMaxAbsRotationalRate(MaxAngularRate * SwerveTable.kMaxPower.get())
-                    .withTargetRateFeedforward(swerve.calculateFeedForward(vision.getRotationFromHub()))
-            )
-        );
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         swerve.setDefaultCommand(
@@ -199,7 +210,8 @@ public class RobotContainer {
             swerve.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        swerve.registerTelemetry(logger::telemeterize);
+        //Disabled Telemetry:
+        //swerve.registerTelemetry(logger::telemeterize);
 
         
         /*
@@ -222,7 +234,7 @@ public class RobotContainer {
         */
     }
 
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() { /*
     try{
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
@@ -233,5 +245,19 @@ public class RobotContainer {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
     }
-  }
+  }*/
+
+  Pose2d currentRobotPose = swerve.getState().Pose;
+    Pose2d twoFeetForward = currentRobotPose.plus(new Transform2d(1,0,currentRobotPose.getRotation())); 
+
+    PathConstraints constraints = PathConstraints.unlimitedConstraints(12);
+    // try {
+    //         return AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test.path"),constraints);
+    // } catch (Exception e) {
+    //     return Commands.none();
+    // }
+    // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
+
+        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+    }
 }

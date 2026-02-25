@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
+
 //import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -28,6 +30,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         NetworkTables.initialize();
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
