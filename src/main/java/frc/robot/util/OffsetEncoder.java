@@ -33,6 +33,10 @@ public class OffsetEncoder {
         return positiveMod((value + offset + min), 1);
     }
 
+    public double compare(double current, double goal) {
+        return convertGoal(goal) - convertCurrent(current);
+    }
+
     public void setBounds(double min, double max) {
         this.min = min;
         this.max = max;

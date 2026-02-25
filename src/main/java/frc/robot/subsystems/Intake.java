@@ -6,34 +6,21 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.Units.VoltsPerRadianPerSecond;
 
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
-import com.revrobotics.spark.config.FeedForwardConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.VelocityUnit;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.HoodConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.OffsetEncoder;
 
@@ -92,14 +79,14 @@ private final SysIdRoutine m_sysIdRoutine =
   }
 
   public void setExtensionAngle(double angle) {
-    IntakeTable.extensionGoal.set(angle);
+    IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
     extensionMotor.set(
       MathUtil.clamp(intakeController.calculate(
         offsetEncoder.convertCurrent(getEncoder()),
         offsetEncoder.convertGoal(angle)
       ),
-      -IntakeTable.kExtensionMaxPower.get(),
-      IntakeTable.kExtensionMaxPower.get())
+      -IntakeTable.kAutoExtensionMaxPower.get(),
+      IntakeTable.kAutoExtensionMaxPower.get())
     );
   }
 
@@ -107,10 +94,14 @@ private final SysIdRoutine m_sysIdRoutine =
     return encoder.get();
   }
 
+  public OffsetEncoder getOffsetEncoder() {
+    return offsetEncoder;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //System.out.println(getEncoder());
+    IntakeTable.encoder.set(getEncoder());
 
     intakeController.setPID(
       IntakeTable.kP.get(),

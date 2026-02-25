@@ -43,10 +43,10 @@ public class IntakeTaunt extends Command {
   @Override
   public void execute() {
     //This code makes sure its in the correct position before getting 'silly'
-    if(Intake.getEncoder() <= Constants.IntakeConstants.kIntakeAxisOuterLimit && inPositiion == false) {
+    if(Intake.getEncoder() <= Constants.IntakeConstants.kOuterExtensionLimit && inPositiion == false) {
       inPositiion = true;
-    }else if(Intake.getEncoder() > Constants.IntakeConstants.kIntakeAxisOuterLimit && inPositiion == false) {
-      Intake.setExtensionSpeed(Constants.IntakeConstants.kIntakeAxisSpeed);
+    }else if(Intake.getEncoder() > Constants.IntakeConstants.kOuterExtensionLimit && inPositiion == false) {
+      Intake.setExtensionSpeed(Constants.IntakeConstants.kAutoExtensionMaxPower);
     }
 
     //Make it start from the lower area and go up like a 1/4 or a 1/3 inside then back down 2-3 times
@@ -56,14 +56,14 @@ public class IntakeTaunt extends Command {
       if(loops % 2 == 0) {
         Intake.setExtensionSpeed(1.0);
         //This kerfuffle of a statement is what makes it go only a fraction of the way up, using only the constant file. (CHANGE THE + / - DEPENDING IF THE INNER IS GREATER THEN THE OUTER)
-        if(Intake.getEncoder() >= (Constants.IntakeConstants.kIntakeAxisInnerLimit - (Math.floor(Math.abs(Constants.IntakeConstants.kIntakeAxisOuterLimit - Constants.IntakeConstants.kIntakeAxisInnerLimit) / Constants.IntakeConstants.kTauntFraction)))) {
+        if(Intake.getEncoder() >= (Constants.IntakeConstants.kInnerExtensionLimit - (Math.floor(Math.abs(Constants.IntakeConstants.kOuterExtensionLimit - Constants.IntakeConstants.kInnerExtensionLimit) / Constants.IntakeConstants.kTauntFraction)))) {
           Intake.setExtensionSpeed(0.0);
           loops++;
         }
       //Going outside the robot
       }else if(loops % 2 == 1) {
         Intake.setExtensionSpeed(-1.0);
-        if(Intake.getEncoder() <= Constants.IntakeConstants.kIntakeAxisOuterLimit) {
+        if(Intake.getEncoder() <= Constants.IntakeConstants.kOuterExtensionLimit) {
           Intake.setExtensionSpeed(0.0);
           loops++;
         }

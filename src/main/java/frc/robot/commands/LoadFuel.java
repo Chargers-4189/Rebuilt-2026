@@ -66,8 +66,7 @@ public class LoadFuel extends Command {
       } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveConstants.kTolerance) {
         System.out.println("Not Rotated Enough");
         indexer.setIndexerPower(IndexerConstants.kReversePower);
-        hopper.setSpeed(0);
-        
+        hopper.setSpeed(0);        
       } else {
         indexer.setIndexerPower(IndexerTable.kPower.get());
         hopper.setSpeed(HopperTable.kPower.get());
