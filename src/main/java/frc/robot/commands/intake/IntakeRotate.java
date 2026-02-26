@@ -55,7 +55,7 @@ public class IntakeRotate extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setExtensionSpeed(0);
+    intake.setExtensionPower(0);
   }
 
   // Returns true when the command should end.

@@ -22,10 +22,10 @@ import frc.robot.subsystems.Hopper;
 public class ShootNoSwerveAlign extends ParallelCommandGroup {
   
   /** Creates a new ShootNoSwerveAlign. */
-  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, SwerveSubsystem swerve, DoubleEntry speed, double angle) {
+  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, SwerveSubsystem swerve, DoubleEntry power, double angle) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
-        new SpinShooter(shooter, speed)
+        new SpinShooter(shooter, power)
     );
   }
 }

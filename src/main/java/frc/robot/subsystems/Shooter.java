@@ -59,7 +59,7 @@ public class Shooter extends SubsystemBase {
     rightShooterMotor.getConfigurator().apply(talonFXSConfigs);
   }
 
-  public void setShooterPower(double shooterMotorPower) {
+  public void setVelocity(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
     targetVelocity = shooterMotorPower;
     leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));

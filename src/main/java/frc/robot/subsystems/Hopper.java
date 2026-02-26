@@ -16,8 +16,8 @@ public class Hopper extends SubsystemBase {
 
   //Positive: Feed Into Robot (EAT)
   //Negative: Feed Out of Robot (VOMIT)
-  public void setSpeed(double speed) {
-    rightMotor.set(-speed);
+  public void setPower(double power) {
+    rightMotor.set(-power);
   }
 
   @Override

@@ -65,13 +65,13 @@ private final SysIdRoutine m_sysIdRoutine =
   public Intake() {}
 
   //+: Fuel go in robot, -: Fuel go out robot
-  public void setWheelSpeed(double speed) {
-    wheelMotor.set(-speed);
+  public void setWheelPower(double power) {
+    wheelMotor.set(-power);
   }
 
   //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
-  public void setExtensionSpeed(double speed) {
-    extensionMotor.set(speed);
+  public void setExtensionPower(double power) {
+    extensionMotor.set(power);
   }
 
   public void setExtensionAngle(double angle) {
@@ -97,7 +97,7 @@ private final SysIdRoutine m_sysIdRoutine =
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.encoder.set(getEncoder());
+    IntakeTable.rawEncoder.set(getEncoder());
 
     intakeController.setPID(
       IntakeTable.kP.get(),

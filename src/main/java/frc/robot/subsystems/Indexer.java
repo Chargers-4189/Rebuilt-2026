@@ -17,7 +17,7 @@ public class Indexer extends SubsystemBase {
 
   public Indexer() {}
 
-  public void setIndexerPower(double indexerMotorPower) {
+  public void setPower(double indexerMotorPower) {
     indexerMotor.set(-indexerMotorPower);
   }
 

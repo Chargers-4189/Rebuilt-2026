@@ -47,20 +47,20 @@ public class LoadFuel extends Command {
   @Override
   public void execute() {
     if (!checkAlignment && alreadyAligned) {
-      indexer.setIndexerPower(IndexerTable.kPower.get());
-      hopper.setSpeed(HopperTable.kPower.get());
+      indexer.setPower(IndexerTable.kPower.get());
+      hopper.setPower(HopperTable.kPower.get());
     } else {
       if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterTable.kTolerance.get()){
         System.out.println("Not Enough Power");
-        indexer.setIndexerPower(IndexerConstants.kReversePower);
-        hopper.setSpeed(0);
+        indexer.setPower(IndexerConstants.kReversePower);
+        hopper.setPower(0);
       } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kTolerance.get()) {
         System.out.println("Not Rotated Enough");
-        indexer.setIndexerPower(IndexerConstants.kReversePower);
-        hopper.setSpeed(0);        
+        indexer.setPower(IndexerConstants.kReversePower);
+        hopper.setPower(0);        
       } else {
-        indexer.setIndexerPower(IndexerTable.kPower.get());
-        hopper.setSpeed(HopperTable.kPower.get());
+        indexer.setPower(IndexerTable.kPower.get());
+        hopper.setPower(HopperTable.kPower.get());
         alreadyAligned = true;
       }
   }
@@ -69,8 +69,8 @@ public class LoadFuel extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      indexer.setIndexerPower(0);
-      hopper.setSpeed(0);
+      indexer.setPower(0);
+      hopper.setPower(0);
   }
 
   // Returns true when the command should end.

@@ -43,15 +43,15 @@ public class AlignHoodAndFlywheel extends Command {
     //System.out.println(distance + " " + angle + " " + power);
 
     hood.setHoodAngle(angle);
-    shooter.setShooterPower(power);
+    shooter.setVelocity(power);
     
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterPower(0);
-    hood.setHoodPower(0);
+    shooter.setVelocity(0);
+    hood.setPower(0);
   }
 
   // Returns true when the command should end.

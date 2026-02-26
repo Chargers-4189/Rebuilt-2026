@@ -48,7 +48,7 @@ public class NetworkTables {
     public static final class IntakeTable {
         static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
-        public static DoublePublisher encoder = intakeTable.getDoubleTopic("Intake Encoder").publish();
+        public static DoublePublisher rawEncoder = intakeTable.getDoubleTopic("Intake Raw Encoder").publish();
         public static DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Goal").publish();
 
         public static DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);

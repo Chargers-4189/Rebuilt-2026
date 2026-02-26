@@ -36,7 +36,7 @@ public class Hood extends SubsystemBase {
     hoodEncoder.setInverted(true);
   }
 
-  public void setHoodPower(double hoodMotorPower) {
+  public void setPower(double hoodMotorPower) {
     hoodMotor.set(-hoodMotorPower);
   }
 

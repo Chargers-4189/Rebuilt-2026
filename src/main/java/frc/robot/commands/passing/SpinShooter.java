@@ -12,12 +12,12 @@ import frc.robot.subsystems.Shooter;
 public class SpinShooter extends Command {
 
   private Shooter shooter;
-  private DoubleEntry speed;
+  private DoubleEntry power;
 
   /** Creates a new Shoot. */
-  public SpinShooter(Shooter shooter, DoubleEntry speed) {
+  public SpinShooter(Shooter shooter, DoubleEntry power) {
     this.shooter = shooter;
-    this.speed = speed;
+    this.power = power;
     addRequirements(shooter);
   }
 
@@ -28,13 +28,13 @@ public class SpinShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      shooter.setShooterPower(speed.get());
+      shooter.setVelocity(power.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterPower(0);
+    shooter.setVelocity(0);
   }
 
   // Returns true when the command should end.

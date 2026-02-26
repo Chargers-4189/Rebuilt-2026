@@ -25,15 +25,18 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.StopAll;
 import frc.robot.commands.autos.ExampleAutoScore;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
+import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.SpinShooter;
 import frc.robot.commands.scoring.ScoreManual;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables.HoodTable;
+import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.util.NetworkTables.SwerveTable;
@@ -78,10 +81,13 @@ public class RobotContainer {
 
     private void configureBindings() {
 
+        //Stop All
+        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
+
         //Deploy Intake
         primaryController.rightTrigger().or(primaryController.leftTrigger()).whileTrue(
             Commands.run(() -> {            
-                intake.setExtensionSpeed(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
+                intake.setExtensionPower(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
             }, intake)
         );
 
@@ -90,6 +96,8 @@ public class RobotContainer {
 
         //Intake Fuel
         primaryController.rightBumper().toggleOnTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
+
+        primaryController.x().whileTrue(new OuttakeFuel(intake, hopper));
 
         //Manual Hood
         primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
@@ -191,7 +199,7 @@ public class RobotContainer {
 
         //Deploy Intake
         intake.setDefaultCommand(Commands.run(() -> {            
-            intake.setExtensionSpeed(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
+            intake.setExtensionPower(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
         }, intake));
     }
 }
