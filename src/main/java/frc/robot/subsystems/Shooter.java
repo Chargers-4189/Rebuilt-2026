@@ -40,6 +40,7 @@ public class Shooter extends SubsystemBase {
   public void ConfigureMotor() {
     talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+
     // set slot 0 gainss
     slot0Configs = talonFXSConfigs.Slot0;
     slot0Configs.kS = ShooterTable.kS.get(); // Add 0.25 V output to overcome static friction
@@ -48,10 +49,12 @@ public class Shooter extends SubsystemBase {
     slot0Configs.kP = ShooterTable.kP.get(); // An error of 1 rps results in 0.11 V output
     slot0Configs.kI = ShooterTable.kI.get(); // no output for integrated error
     slot0Configs.kD = ShooterTable.kD.get(); // no output for error derivative
+
     // set Motion Magic settings
     motionMagicConfigs = talonFXSConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicAcceleration = ShooterTable.kMotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
     motionMagicConfigs.MotionMagicJerk = ShooterTable.kMotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
+
     leftShooterMotor.getConfigurator().apply(talonFXSConfigs);
     rightShooterMotor.getConfigurator().apply(talonFXSConfigs);
   }
@@ -64,9 +67,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getVelocity() {
-    //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    return (leftShooterMotor.getVelocity().getValueAsDouble());
-    //rightShooterMotor.setControl(m_request.withVelocity(-shooterMotorPower));
+    return leftShooterMotor.getVelocity().getValueAsDouble();
   }
 
   public double getTargetVelocity() {
@@ -81,7 +82,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    ShooterTable.velocity.set(leftShooterMotor.getVelocity().getValueAsDouble());
+    ShooterTable.velocity.set(getVelocity());
     ShooterTable.powerGoal.set(targetVelocity);
   }
 }

@@ -23,16 +23,14 @@ public class Hood extends SubsystemBase {
     HoodConstants.kMotorCanID
   );
 
-  private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675);
+  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);
+  private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675, hoodEncoder::get);
 
-  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
   private final PIDController hoodController = new PIDController(
     HoodTable.kP.get(),
     HoodTable.kI.get(),
     HoodTable.kD.get()
   );
-
-
 
   public Hood() {
     hoodEncoder.setInverted(true);
@@ -54,14 +52,14 @@ public class Hood extends SubsystemBase {
     return Commands.run(
         () -> {
           setHoodAngle(angle.getAsDouble());
-        }, this).withName("HoodAlign"); // PID math max clamp at 0.4
+        }, this).withName("HoodAlign");
   }
 
   public void setHoodAngle(double angle) {
     HoodTable.hoodGoal.set(angle);
     hoodMotor.set(
       -MathUtil.clamp(hoodController.calculate(
-        offsetEncoder.convertCurrent(getHoodPosition()),
+        offsetEncoder.getForPid(),
         offsetEncoder.convertGoal(angle)
       ),
       -HoodConstants.kAutoPower,
@@ -78,10 +76,12 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    //System.out.print("Connected: " + hoodEncoder.isConnected() + " ");
-    //System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
-    //System.out.print("Encoder: " + getHoodPosition() + " ");
-    //System.out.println();
+    /*
+    System.out.print("Connected: " + hoodEncoder.isConnected() + " ");
+    System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
+    System.out.print("Encoder: " + getHoodPosition() + " ");
+    System.out.println();
+    */
 
     HoodTable.hoodEncoder.set(getHoodPosition());
     

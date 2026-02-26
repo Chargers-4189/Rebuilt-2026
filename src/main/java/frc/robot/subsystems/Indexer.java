@@ -12,13 +12,13 @@ public class Indexer extends SubsystemBase {
 
   //Indexer motor gets ball from hopper and ready to shoot
   private final TalonFXS indexerMotor = new TalonFXS(
-    IndexerConstants.kMotorCanID //CHANGE ID HERE, cement ID then add to constants file
+    IndexerConstants.kMotorCanID
   );  
 
   public Indexer() {}
 
   public void setIndexerPower(double indexerMotorPower) {
-    indexerMotor.set(-indexerMotorPower);   //Direction is now tested
+    indexerMotor.set(-indexerMotorPower);
   }
 
 

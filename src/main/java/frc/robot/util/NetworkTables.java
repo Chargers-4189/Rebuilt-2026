@@ -1,7 +1,6 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerEntry;
@@ -17,8 +16,7 @@ public class NetworkTables {
         static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
 
         public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
-        //public static StructPublisher<Rotation3d> gyroRotation = swerveTable.getStructTopic("Gyro Rotation", Rotation3d.struct).publish();
-        //public static StructPublisher<Pose2d> aprilTagPose = swerveTable.getStructTopic("April Tag Pose", Pose2d.struct).publish();
+
         public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
         public static DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
         public static DoublePublisher robotRotation = swerveTable.getDoubleTopic("Robot Rotation").publish();
@@ -56,8 +54,6 @@ public class NetworkTables {
         public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
-        //public static DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
-        //public static DoubleEntry kGravityAngle = intakeTable.getDoubleTopic("Gravity Angle (Intake)").getEntry(Constants.IntakeConstants.kGravityAngle);
 
         public static IntegerEntry kTauntAmount = intakeTable.getIntegerTopic("Taunt Number").getEntry(Constants.IntakeConstants.kTauntAmount);
         public static IntegerEntry kTauntFraction = intakeTable.getIntegerTopic("Taunt Fraction").getEntry(Constants.IntakeConstants.kTauntFraction);
@@ -76,8 +72,6 @@ public class NetworkTables {
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
-            //kG.set(kG.get());
-            //kGravityAngle.set(kGravityAngle.get());
 
             kTauntAmount.set(kTauntAmount.get());
             kTauntFraction.set(kTauntFraction.get());

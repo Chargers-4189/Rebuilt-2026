@@ -10,14 +10,11 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.proto.Photon;
-import org.photonvision.targeting.PhotonPipelineMetadata;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -29,13 +26,9 @@ public class Vision extends SubsystemBase {
 
   private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  //Pose2d hubPosBlue = new Pose2d(Units.inchesToMeters(179.56),Units.inchesToMeters(158.32),new Rotation2d(0,0));
-  //Pose2d hubPosRed = new Pose2d(Units.inchesToMeters(466.56),Units.inchesToMeters(158.32),new Rotation2d(0,0));
-
   Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
   Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
 
-  // todo: name the camera 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
 
@@ -43,8 +36,7 @@ public class Vision extends SubsystemBase {
   Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(-7.5),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-50),0));
   
   SwerveSubsystem swerve;
-  //42in
-  //return 0.0;
+
   public Vision(SwerveSubsystem swerve) {
     this.swerve = swerve;
   }

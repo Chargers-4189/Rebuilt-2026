@@ -9,20 +9,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Hopper extends SubsystemBase {
-  /** Creates a new Hopper. */
-  //Hopper has 2 motors and 0 sensors
-  //private TalonFXS LEFT_MOTOR = new TalonFXS(Constants.HopperConstants.kHopperMotorLeft); //Leader
-  private TalonFXS RIGHT_MOTOR = new TalonFXS(Constants.HopperConstants.kMotorRight); //Follower (Set inverted)
+  private TalonFXS rightMotor = new TalonFXS(Constants.HopperConstants.kMotorRight);
 
-  public Hopper() {
-    
-  }
+  /** Creates a new Hopper. */
+  public Hopper() {}
 
   //Positive: Feed Into Robot (EAT)
   //Negative: Feed Out of Robot (VOMIT)
   public void setSpeed(double speed) {
-    //LEFT_MOTOR.set(speed);
-    RIGHT_MOTOR.set(-speed);
+    rightMotor.set(-speed);
   }
 
   @Override

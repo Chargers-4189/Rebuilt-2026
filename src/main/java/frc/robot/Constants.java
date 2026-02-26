@@ -46,21 +46,18 @@ public final class Constants {
     public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
-    //public static final double kG = 0;
-    //public static final double kGravityAngle = .1;
 
     public static final int kTauntAmount = 3; //This is how many times it goes up and down
     public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
 
     public static final double kTolerance = 0.03;
-    public static final double kOuterExtensionLimit = 0.03; //Change Later
-    public static final double kInnerExtensionLimit = 0.4; //Change Later
+    public static final double kOuterExtensionLimit = 0.03;
+    public static final double kInnerExtensionLimit = 0.4;
   }
   
   public static class HopperConstants {
     //IDs
     public static final int kMotorRight = 26; 
-    public static final int kMotorLeft = -1; //Filler ID
 
     //Modifiables
     public static final int kPower = 1;
@@ -86,7 +83,7 @@ public final class Constants {
 
     //Modifiables
     public static final double kManualPower = .1;
-    public static final double kAutoPower = .4;
+    public static final double kAutoPower = .3;
     public static final double kDefaultAngle = 0.05;
 
     public static final double kP = 3;
@@ -117,6 +114,5 @@ public final class Constants {
     public static final double kMotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
     public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    public static final int kMotorCanID = 28;
   }
 }
