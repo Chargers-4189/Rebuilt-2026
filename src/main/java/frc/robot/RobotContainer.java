@@ -85,15 +85,11 @@ public class RobotContainer {
             }, intake)
         );
 
-        primaryController.a().whileTrue(Commands.run(() -> {
-            intake.setExtensionAngle(IntakeTable.kDefaultAngle.get());
-        }));
-
         primaryController.b().onTrue(new IntakeRotate(intake, true));
         primaryController.y().onTrue(new IntakeRotate(intake, false));
 
         //Intake Fuel
-        primaryController.rightBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().toggleOnTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
 
         //Manual Hood
         primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
