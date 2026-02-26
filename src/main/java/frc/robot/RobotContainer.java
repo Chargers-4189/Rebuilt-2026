@@ -93,7 +93,7 @@ public class RobotContainer {
         primaryController.y().onTrue(new IntakeRotate(intake, false));
 
         //Intake Fuel
-        primaryController.leftBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
 
         //Manual Hood
         primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
@@ -107,7 +107,7 @@ public class RobotContainer {
         primaryController.x().whileTrue(new SpinShooter(shooter, ShooterTable.kTestPower));
         
         //Score
-        primaryController.rightBumper().whileTrue(
+        primaryController.leftBumper().whileTrue(
             new ScoreManual(shooter, hood, indexer, swerve, vision, hopper, primaryController)
         );
     }
