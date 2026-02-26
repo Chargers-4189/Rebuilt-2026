@@ -10,6 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +36,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
+import frc.robot.util.NetworkTables.SwerveTable;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hopper;
 
@@ -101,7 +104,7 @@ public class RobotContainer {
         }, hood));
 
         //Calibration Shoot
-        primaryController.x().whileTrue(new SpinShooter(shooter, ShooterTable.kPower));
+        primaryController.x().whileTrue(new SpinShooter(shooter, ShooterTable.kTestPower));
         
         //Score
         primaryController.rightBumper().whileTrue(
@@ -115,9 +118,9 @@ public class RobotContainer {
         swerve.setDefaultCommand(
             // Drivetrain will execute this command periodically
             swerve.applyRequest(() ->
-                drive.withVelocityX(-primaryController.getLeftY() * swerve.MaxSpeed)
-                    .withVelocityY(-primaryController.getLeftX() * swerve.MaxSpeed)
-                    .withRotationalRate(-primaryController.getRightX() * swerve.MaxAngularRate)
+                drive.withVelocityX(MathUtil.copyDirectionPow(-primaryController.getLeftY(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
+                    .withVelocityY(MathUtil.copyDirectionPow(-primaryController.getLeftX(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
+                    .withRotationalRate(MathUtil.copyDirectionPow(-primaryController.getRightX(), SwerveTable.kRotationalExponent.get()) * swerve.MaxAngularRate)
             )
         );
 

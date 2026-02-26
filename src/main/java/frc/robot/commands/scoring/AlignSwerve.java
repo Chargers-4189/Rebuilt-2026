@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -43,8 +44,8 @@ public class AlignSwerve extends Command {
   @Override
   public void execute() {
     swerve.setControl(
-      driveWithAngle.withVelocityX(powerX.getAsDouble() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
-          .withVelocityY(powerY.getAsDouble() * swerve.MaxSpeed) // Drive left with negative X (left)
+      driveWithAngle.withVelocityX(MathUtil.copyDirectionPow(powerX.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
+          .withVelocityY(MathUtil.copyDirectionPow(powerY.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
           .withTargetDirection(vision.getRotationFromHub())
           .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
           .withMaxAbsRotationalRate(swerve.MaxAngularRate * SwerveTable.kMaxPower.get())

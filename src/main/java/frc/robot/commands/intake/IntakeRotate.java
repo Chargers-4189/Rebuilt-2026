@@ -63,9 +63,9 @@ public class IntakeRotate extends Command {
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
     if (rotateOut) {
-      return Math.abs(offsetEncoder.compare(intake.getEncoder(), IntakeTable.kOuterExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(IntakeTable.kOuterExtensionLimit.get())) <= IntakeTable.kTolerance.get();
     } else {
-      return Math.abs(offsetEncoder.compare(intake.getEncoder(), IntakeTable.kInnerExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(IntakeTable.kInnerExtensionLimit.get())) <= IntakeTable.kTolerance.get();
     }
   }
 }

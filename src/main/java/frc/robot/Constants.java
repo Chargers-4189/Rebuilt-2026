@@ -26,8 +26,11 @@ public final class Constants {
     public static final double kD = 0.2;
     public static final double kS = 0.3;
     public static final double kMaxPower = 0.3;
-
     public static final double kTolerance = 0.01;
+
+    //Constants for Manual Driving
+    public static final double kDriveExponent = 2;
+    public static final double kRotationalExponent = 2;
   }
 
   public static class IntakeConstants {
@@ -42,7 +45,9 @@ public final class Constants {
 
     public static final double kDefaultAngle = 0;
 
-    public static final double kAutoExtensionMaxPower = .25;
+    public static final double kAutoOutPower = .2;
+    public static final double kAutoInPower = .4;
+
     public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
@@ -69,7 +74,6 @@ public final class Constants {
 
     //Modifiables
     public static final double kPower = .4;
-
     public static final double kReversePower = -.1;
   }
 

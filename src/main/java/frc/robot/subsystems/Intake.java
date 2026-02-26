@@ -78,11 +78,11 @@ private final SysIdRoutine m_sysIdRoutine =
     IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
     extensionMotor.set(
       MathUtil.clamp(intakeController.calculate(
-        offsetEncoder.getForPid(),
+        offsetEncoder.get(),
         offsetEncoder.convertGoal(angle)
       ),
-      -IntakeTable.kAutoExtensionMaxPower.get(),
-      IntakeTable.kAutoExtensionMaxPower.get())
+      -IntakeTable.kAutoOutPower.get(),
+      IntakeTable.kAutoInPower.get())
     );
   }
 

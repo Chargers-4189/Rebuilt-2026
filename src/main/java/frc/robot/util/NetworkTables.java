@@ -26,9 +26,10 @@ public class NetworkTables {
         public static DoubleEntry kD = swerveTable.getDoubleTopic("D (Swerve)").getEntry(Constants.SwerveConstants.kD);
         public static DoubleEntry kS = swerveTable.getDoubleTopic("S (Swerve)").getEntry(Constants.SwerveConstants.kS);
         public static DoubleEntry kMaxPower = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
+        public static DoubleEntry kTolerance = swerveTable.getDoubleTopic("Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kTolerance);
 
-        public static DoubleEntry kTolerance = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
-
+        public static DoubleEntry kDriveExponent = swerveTable.getDoubleTopic("Drive Exponent").getEntry(Constants.SwerveConstants.kDriveExponent);
+        public static DoubleEntry kRotationalExponent = swerveTable.getDoubleTopic("Rotational Exponent").getEntry(Constants.SwerveConstants.kRotationalExponent);
 
         public static void init() {
             kP.set(kP.get());
@@ -36,6 +37,11 @@ public class NetworkTables {
             kD.set(kD.get());
             kS.set(kS.get());
             kMaxPower.set(kMaxPower.get());
+
+            kTolerance.set(kTolerance.get());
+
+            kDriveExponent.set(kDriveExponent.get());
+            kRotationalExponent.set(kRotationalExponent.get());
         }
     }
 
@@ -50,7 +56,9 @@ public class NetworkTables {
     
         public static DoubleEntry kDefaultAngle = intakeTable.getDoubleTopic("Intake Default Angle").getEntry(Constants.IntakeConstants.kDefaultAngle);
 
-        public static DoubleEntry kAutoExtensionMaxPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoExtensionMaxPower);
+        public static DoubleEntry kAutoOutPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoOutPower);
+        public static DoubleEntry kAutoInPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoInPower);
+
         public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
@@ -68,7 +76,9 @@ public class NetworkTables {
 
             kDefaultAngle.set(kDefaultAngle.get());
 
-            kAutoExtensionMaxPower.set(kAutoExtensionMaxPower.get());
+            kAutoInPower.set(kAutoInPower.get());
+            kAutoOutPower.set(kAutoOutPower.get());
+
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
@@ -113,8 +123,8 @@ public class NetworkTables {
 
         public static DoubleEntry kManualPower = hoodTable.getDoubleTopic("Hood Manual Power").getEntry(Constants.HoodConstants.kManualPower);
         public static DoubleEntry kAutoPower = hoodTable.getDoubleTopic("Hood Auto Power").getEntry(Constants.HoodConstants.kAutoPower);
-
         public static DoubleEntry kDefaultAngle = hoodTable.getDoubleTopic("Hood Default Angle").getEntry(Constants.HoodConstants.kDefaultAngle);
+
         public static DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
         public static DoubleEntry kI = hoodTable.getDoubleTopic("I (Hood)").getEntry(Constants.HoodConstants.kI);
         public static DoubleEntry kD = hoodTable.getDoubleTopic("D (Hood)").getEntry(Constants.HoodConstants.kD);
@@ -122,7 +132,9 @@ public class NetworkTables {
 
         public static void init() {
             kManualPower.set(kManualPower.get());
+            kAutoPower.set(kAutoPower.get());
             kDefaultAngle.set(kDefaultAngle.get());
+
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
@@ -134,12 +146,10 @@ public class NetworkTables {
         static NetworkTable shooterTable = networkInstance.getTable("shooterTable");
 
         public static DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
-
-        public static DoubleEntry kPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kTestPower);
-        public static DoubleEntry kDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
-
         public static DoublePublisher powerGoal = shooterTable.getDoubleTopic("Power Goal").publish();
 
+        public static DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kTestPower);
+        public static DoubleEntry kTestDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
 
         public static DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.ShooterConstants.kTolerance);
 
@@ -159,8 +169,8 @@ public class NetworkTables {
         public static void init() {
             velocity.set(0);
 
-            kPower.set(kPower.get());
-            kDistance.set(kDistance.get());
+            kTestPower.set(kTestPower.get());
+            kTestDistance.set(kTestDistance.get());
 
             kTolerance.set(kTolerance.get());
 

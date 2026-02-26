@@ -46,7 +46,7 @@ public class IntakeTaunt extends Command {
     if(intake.getEncoder() <= Constants.IntakeConstants.kOuterExtensionLimit && inPositiion == false) {
       inPositiion = true;
     }else if(intake.getEncoder() > Constants.IntakeConstants.kOuterExtensionLimit && inPositiion == false) {
-      intake.setExtensionSpeed(Constants.IntakeConstants.kAutoExtensionMaxPower);
+      intake.setExtensionSpeed(Constants.IntakeConstants.kAutoOutPower);
     }
 
     //Make it start from the lower area and go up like a 1/4 or a 1/3 inside then back down 2-3 times

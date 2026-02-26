@@ -14,6 +14,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IndexerTable;
+import frc.robot.util.NetworkTables.ShooterTable;
+import frc.robot.util.NetworkTables.SwerveTable;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -48,11 +50,11 @@ public class LoadFuel extends Command {
       indexer.setIndexerPower(IndexerTable.kPower.get());
       hopper.setSpeed(HopperTable.kPower.get());
     } else {
-      if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterConstants.kTolerance){
+      if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterTable.kTolerance.get()){
         System.out.println("Not Enough Power");
         indexer.setIndexerPower(IndexerConstants.kReversePower);
         hopper.setSpeed(0);
-      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveConstants.kTolerance) {
+      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kTolerance.get()) {
         System.out.println("Not Rotated Enough");
         indexer.setIndexerPower(IndexerConstants.kReversePower);
         hopper.setSpeed(0);        
