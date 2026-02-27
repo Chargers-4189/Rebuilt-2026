@@ -4,7 +4,8 @@
 
 package frc.robot.commands.passing;
 
-import edu.wpi.first.networktables.DoubleEntry;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
@@ -12,10 +13,10 @@ import frc.robot.subsystems.Shooter;
 public class SpinShooter extends Command {
 
   private Shooter shooter;
-  private DoubleEntry power;
+  private DoubleSupplier power;
 
   /** Creates a new Shoot. */
-  public SpinShooter(Shooter shooter, DoubleEntry power) {
+  public SpinShooter(Shooter shooter, DoubleSupplier power) {
     this.shooter = shooter;
     this.power = power;
     addRequirements(shooter);
@@ -28,7 +29,7 @@ public class SpinShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      shooter.setVelocity(power.get());
+      shooter.setVelocity(power.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

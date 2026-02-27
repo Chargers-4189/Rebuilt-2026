@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,7 +33,7 @@ import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.SpinShooter;
-import frc.robot.commands.scoring.ScoreManual;
+import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables.HoodTable;
@@ -84,6 +85,9 @@ public class RobotContainer {
         //Stop All
         primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
 
+        //Reset Gyro
+        primaryController.back().onTrue(Commands.runOnce(() -> swerve.resetRotation(new Rotation2d())));
+
         //Deploy Intake
         primaryController.rightTrigger().or(primaryController.leftTrigger()).whileTrue(
             Commands.run(() -> {            
@@ -112,7 +116,7 @@ public class RobotContainer {
         
         //Score
         primaryController.leftBumper().whileTrue(
-            new ScoreManual(shooter, hood, indexer, swerve, vision, hopper, primaryController)
+            new Score(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController)
         );
     }
 
@@ -162,7 +166,7 @@ public class RobotContainer {
         // }
         // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
-        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper, intake);
     }
 
     private void swerveSystemId() {

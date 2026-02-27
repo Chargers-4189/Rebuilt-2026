@@ -6,8 +6,6 @@ package frc.robot.commands.scoring;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
@@ -34,7 +32,7 @@ public class LoadFuel extends Command {
     this.swerve = swerve;
     this.checkAlignment = checkAlignment;
     this.hopper = hopper;
-    addRequirements(indexer);
+    addRequirements(indexer, hopper);
   }
 
   // Called when the command is initially scheduled.

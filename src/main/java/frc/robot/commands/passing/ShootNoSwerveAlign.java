@@ -4,7 +4,7 @@
 
 package frc.robot.commands.passing;
 
-import edu.wpi.first.networktables.DoubleEntry;
+import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -22,7 +22,7 @@ import frc.robot.subsystems.Hopper;
 public class ShootNoSwerveAlign extends ParallelCommandGroup {
   
   /** Creates a new ShootNoSwerveAlign. */
-  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, SwerveSubsystem swerve, DoubleEntry power, double angle) {
+  public ShootNoSwerveAlign(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, SwerveSubsystem swerve, DoubleSupplier power, double angle) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
         new SpinShooter(shooter, power)

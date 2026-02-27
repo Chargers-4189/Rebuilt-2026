@@ -4,6 +4,8 @@
 
 package frc.robot.commands.intake;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
@@ -25,15 +27,21 @@ public class IntakeRotate extends Command {
 
   private Intake intake;
   private boolean rotateOut;
+  private DoubleSupplier angle;
 
   private OffsetEncoder offsetEncoder;
 
   /** Creates a new IntakeRotate. */
-  public IntakeRotate(Intake intake, boolean rotateOut) {
+  public IntakeRotate(Intake intake, DoubleSupplier angle) {
     this.intake = intake;
-    this.rotateOut = rotateOut;
     this.offsetEncoder = intake.getOffsetEncoder();
+    this.angle = angle;
     addRequirements(intake);
+  }
+
+  /** Creates a new IntakeRotate. */
+  public IntakeRotate(Intake intake, boolean rotateOut) {
+    this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
   }
 
   // Called when the command is initially scheduled.
@@ -43,13 +51,7 @@ public class IntakeRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //Moves out of bot
-    if(rotateOut) {
-      intake.setExtensionAngle(IntakeTable.kOuterExtensionLimit.get());
-    //Moves into Bot
-    }else {
-      intake.setExtensionAngle(IntakeTable.kInnerExtensionLimit.get());
-    }
+    intake.setExtensionAngle(angle.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
@@ -63,9 +65,9 @@ public class IntakeRotate extends Command {
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
     if (rotateOut) {
-      return Math.abs(offsetEncoder.compare(IntakeTable.kOuterExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
     } else {
-      return Math.abs(offsetEncoder.compare(IntakeTable.kInnerExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
     }
   }
 }

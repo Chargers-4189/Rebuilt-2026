@@ -19,20 +19,23 @@ import frc.robot.util.NetworkTables.SwerveTable;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignSwerve extends Command {
 
-  SwerveSubsystem swerve;
-  Vision vision;
-  DoubleSupplier powerX;
-  DoubleSupplier powerY;
+  private SwerveSubsystem swerve;
+  private Vision vision;
+  private DoubleSupplier powerX;
+  private DoubleSupplier powerY;
 
-  private final SwerveRequest.FieldCentricFacingAngle driveWithAngle = new SwerveRequest.FieldCentricFacingAngle()
-            .withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-            .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+  private SwerveRequest.FieldCentricFacingAngle driveWithAngle;
   
   /** Creates a new AlignSwerve. */
   public AlignSwerve(SwerveSubsystem swerve, Vision vision, DoubleSupplier powerX, DoubleSupplier powerY) {
     this.swerve = swerve;
     this.vision = vision;
+    this.powerX = powerX;
+    this.powerY = powerY;
+    this.driveWithAngle = new SwerveRequest.FieldCentricFacingAngle()
+      .withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+      .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     addRequirements(swerve);
   }
 

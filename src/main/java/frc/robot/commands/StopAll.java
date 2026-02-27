@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,12 +16,12 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class StopAll extends Command {
-  Hood hood;
-  Hopper hopper;
-  Indexer indexer;
-  Intake intake;
-  Shooter shooter;
-  SwerveSubsystem swerve;
+  private Hood hood;
+  private Hopper hopper;
+  private Indexer indexer;
+  private Intake intake;
+  private Shooter shooter;
+  private SwerveSubsystem swerve;
 
   SwerveRequest brake = new SwerveRequest.SwerveDriveBrake();
   /** Creates a new CancelAll. */

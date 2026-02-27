@@ -66,6 +66,7 @@ public final class Constants {
 
     //Modifiables
     public static final int kPower = 1;
+    public static final double kReversePower = -1;
   }
 
   public static class IndexerConstants {
@@ -101,7 +102,7 @@ public final class Constants {
     public static final int kRightMotorCanID = 28;
 
     //Modifiables
-    public static final double kTestPower = .5;
+    public static final double kFixedPower = .5;
     public static final double kTestDistance = 0;
     
     public static final double kTolerance = 1.5;

@@ -6,16 +6,20 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructEntry;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class NetworkTables {
     static NetworkTableInstance networkInstance = NetworkTableInstance.getDefault();
+    static Field2d field2d = new Field2d();
 
     public static final class SwerveTable {
         static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
 
-        public static StructPublisher<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).publish();
+        public static StructEntry<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).getEntry(new Pose2d());
 
         public static DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
         public static DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
@@ -49,7 +53,7 @@ public class NetworkTables {
         static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
         public static DoublePublisher rawEncoder = intakeTable.getDoubleTopic("Intake Raw Encoder").publish();
-        public static DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Goal").publish();
+        public static DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Extension Goal").publish();
 
         public static DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);
         public static DoubleEntry kManualExtensionPower = intakeTable.getDoubleTopic("Intake Manual Extension Power").getEntry(Constants.IntakeConstants.kManualExtensionPower);
@@ -96,9 +100,11 @@ public class NetworkTables {
         static NetworkTable hopperTable = networkInstance.getTable("hopperTable");
 
         public static DoubleEntry kPower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kPower);
+        public static DoubleEntry kReversePower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kReversePower);
 
         public static void init() {
             kPower.set(kPower.get());
+            kReversePower.set(kReversePower.get());
         }
     }
     
@@ -146,9 +152,9 @@ public class NetworkTables {
         static NetworkTable shooterTable = networkInstance.getTable("shooterTable");
 
         public static DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
-        public static DoublePublisher powerGoal = shooterTable.getDoubleTopic("Power Goal").publish();
+        public static DoublePublisher powerGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
 
-        public static DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kTestPower);
+        public static DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kFixedPower);
         public static DoubleEntry kTestDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
 
         public static DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.ShooterConstants.kTolerance);
@@ -194,5 +200,10 @@ public class NetworkTables {
         IndexerTable.init();
         HoodTable.init();
         ShooterTable.init();
+    }
+
+    public static void smartDashboard() {
+        field2d.setRobotPose(SwerveTable.robotPose.get());
+        SmartDashboard.putData(field2d);
     }
 }
