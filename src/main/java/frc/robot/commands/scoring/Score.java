@@ -25,7 +25,7 @@ import frc.robot.commands.intake.IntakeRotate;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Score extends ParallelCommandGroup {
 
-  /** Creates a new ScoreManual. */
+  /** Creates a new Score. */
   public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
@@ -35,14 +35,15 @@ public class Score extends ParallelCommandGroup {
     );
   }
 
-  /** Creates a new ScoreManual. */
+  /** Creates a new Score. */
   public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController) {
     this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX());
   }
 
-  /** Creates a new ScoreManual. */
+  /** Creates a new Score. */
   public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
     this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> 0, () -> 0);
   }
+
 }
 

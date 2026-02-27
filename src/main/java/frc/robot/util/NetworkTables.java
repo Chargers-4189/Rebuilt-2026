@@ -60,8 +60,8 @@ public class NetworkTables {
     
         public static DoubleEntry kDefaultAngle = intakeTable.getDoubleTopic("Intake Default Angle").getEntry(Constants.IntakeConstants.kDefaultAngle);
 
-        public static DoubleEntry kAutoOutPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoOutPower);
-        public static DoubleEntry kAutoInPower = intakeTable.getDoubleTopic("Intake Auto Extension Power").getEntry(Constants.IntakeConstants.kAutoInPower);
+        public static DoubleEntry kAutoOutPower = intakeTable.getDoubleTopic("Intake Auto Out Power").getEntry(Constants.IntakeConstants.kAutoOutPower);
+        public static DoubleEntry kAutoInPower = intakeTable.getDoubleTopic("Intake Auto In Power").getEntry(Constants.IntakeConstants.kAutoInPower);
 
         public static DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);

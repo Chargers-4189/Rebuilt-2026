@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
@@ -33,6 +34,7 @@ import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.SpinShooter;
+import frc.robot.commands.scoring.FixedDistanceScore;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -89,7 +91,7 @@ public class RobotContainer {
         primaryController.back().onTrue(Commands.runOnce(() -> swerve.resetRotation(new Rotation2d())));
 
         //Deploy Intake
-        primaryController.rightTrigger().or(primaryController.leftTrigger()).whileTrue(
+        primaryController.rightTrigger(.2).or(primaryController.leftTrigger(.2)).whileTrue(
             Commands.run(() -> {            
                 intake.setExtensionPower(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
             }, intake)
@@ -111,8 +113,8 @@ public class RobotContainer {
             hood.setHoodAngle(HoodTable.kDefaultAngle);
         }, hood));
 
-        //Calibration Shoot
-        primaryController.x().whileTrue(new SpinShooter(shooter, ShooterTable.kTestPower));
+        //Fixed-Distance Shoot
+        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kTestDistance, false));
         
         //Score
         primaryController.leftBumper().whileTrue(
