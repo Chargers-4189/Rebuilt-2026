@@ -36,6 +36,7 @@ import frc.robot.commands.scoring.FixedDistanceScore;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables;
 import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
@@ -72,11 +73,12 @@ public class RobotContainer {
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
+    
     public RobotContainer() {
         //intakeSystemId();
         configureBindings();
         configureSwerveBindings();
+        NetworkTables.initialize(primaryController);
     }
 
     private void configureBindings() {

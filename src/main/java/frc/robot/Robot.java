@@ -6,9 +6,13 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+
 //import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.NetworkTables;
@@ -29,15 +33,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        NetworkTables.initialize();
         PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
     public void robotPeriodic() {
         //m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
-        NetworkTables.smartDashboard();
+        CommandScheduler.getInstance().run();
+        NetworkTables.periodic();
     }
 
     @Override
