@@ -26,7 +26,7 @@ public final class Constants {
     public static final double kD = 0.2;
     public static final double kS = 0.3;
     public static final double kMaxPower = 0.3;
-    public static final double kTolerance = 0.01;
+    public static final double kTolerance = 0.015;
 
     //Constants for Manual Driving
     public static final double kDriveExponent = 2;

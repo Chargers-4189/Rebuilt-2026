@@ -81,8 +81,8 @@ private final SysIdRoutine m_sysIdRoutine =
         offsetEncoder.get(),
         offsetEncoder.convertGoal(angle)
       ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
+      -IntakeTable.kAutoOutPower.get(),
+      IntakeTable.kAutoInPower.get())
     );
   }
 

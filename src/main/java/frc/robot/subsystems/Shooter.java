@@ -83,6 +83,6 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     ShooterTable.velocity.set(getVelocity());
-    ShooterTable.powerGoal.set(targetVelocity);
+    ShooterTable.velocityGoal.set(getTargetVelocity());
   }
 }

@@ -160,7 +160,7 @@ public class NetworkTables {
         static NetworkTable shooterTable = networkInstance.getTable("shooterTable");
 
         public static final DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
-        public static final DoublePublisher powerGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
+        public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
 
         public static final DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kFixedPower);
         public static final DoubleEntry kTestDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
@@ -181,8 +181,6 @@ public class NetworkTables {
         public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicJerk);; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         public static final void init() {
-            velocity.set(0);
-
             kTestPower.set(kTestPower.get());
             kTestDistance.set(kTestDistance.get());
 
@@ -219,5 +217,7 @@ public class NetworkTables {
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(primaryController.getHID());
+        SmartDashboard.putBoolean("Auto Winner", DriverStation.getGameSpecificMessage() == "R");
+        SmartDashboard.putBoolean("Hub Active", HelpfulFunctions.isHubActive());
     }
 }

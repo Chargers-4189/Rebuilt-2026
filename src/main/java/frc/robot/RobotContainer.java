@@ -87,13 +87,13 @@ public class RobotContainer {
         primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
 
         //Reset Gyro
-        primaryController.back().onTrue(Commands.runOnce(() -> swerve.resetRotation(new Rotation2d())));
+        primaryController.back().onTrue(Commands.runOnce(() -> swerve.resetRotation(new Rotation2d())).withName("Reset Gyro"));
 
         //Deploy Intake
         primaryController.rightTrigger(.2).or(primaryController.leftTrigger(.2)).whileTrue(
             Commands.run(() -> {            
                 intake.setExtensionPower(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
-            }, intake)
+            }, intake).withName("Manual Intake")
         );
 
         primaryController.b().onTrue(new IntakeRotate(intake, true));
