@@ -29,8 +29,8 @@ public final class Constants {
     public static final double kTolerance = 0.015;
 
     //Constants for Manual Driving
-    public static final double kDriveExponent = 2;
-    public static final double kRotationalExponent = 2;
+    public static final double kDriveExponent = 1.4;
+    public static final double kRotationalExponent = 1.4;
   }
 
   public static class IntakeConstants {
