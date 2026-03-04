@@ -22,6 +22,14 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.MoveIndexer;
 import frc.robot.commands.Score;
+<<<<<<< Updated upstream
+=======
+import frc.robot.commands.AlignShooter;
+import frc.robot.commands.AutoCenterCollectAndShoot;
+import frc.robot.commands.AutoShootOnlyOurSide;
+import frc.robot.commands.ExampleAutoScore;
+import frc.robot.commands.AlignShooter;
+>>>>>>> Stashed changes
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootNoSwerveAlign;
 import frc.robot.subsystems.Shooter;
@@ -181,6 +189,7 @@ public class RobotContainer {
 
     }
 
+<<<<<<< Updated upstream
     public Command getAutonomousCommand() {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
@@ -198,5 +207,36 @@ public class RobotContainer {
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
         );
+=======
+    public Command getAutonomousCommand() { /*
+    try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
+  }*/
+
+  Pose2d currentRobotPose = swerve.getState().Pose;
+    Pose2d twoFeetForward = currentRobotPose.plus(new Transform2d(1,0,currentRobotPose.getRotation())); 
+
+    PathConstraints constraints = PathConstraints.unlimitedConstraints(12);
+    // try {
+    //         return AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test.path"),constraints);
+    // } catch (Exception e) {
+    //     return Commands.none();
+    // }
+    // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
+
+        //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+
+        //LYNN'S NEW IMPLENTABLE PATHS ARE RIGHT HERE. PICK HERE:
+        //return new AutoCenterCollectAndShoot();
+        //return new AutoShootOnlyOurSide();
+>>>>>>> Stashed changes
     }
 }
