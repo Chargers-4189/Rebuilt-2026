@@ -39,6 +39,7 @@ import frc.robot.commands.LoadFuel;
 import frc.robot.commands.RunIntakeWheels;
 import frc.robot.commands.Score;
 import frc.robot.commands.AlignShooter;
+import frc.robot.commands.AutoShootOnlyOurSide;
 import frc.robot.commands.ExampleAutoScore;
 import frc.robot.commands.AlignShooter;
 import frc.robot.commands.Shoot;
@@ -258,6 +259,7 @@ public class RobotContainer {
     // }
     // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
-        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+    //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+    return new AutoShootOnlyOurSide();
     }
 }
