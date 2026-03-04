@@ -26,8 +26,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
+import frc.robot.commands.AutoShootOnlyOurSide;
 import frc.robot.commands.StopAll;
-import frc.robot.commands.autos.ExampleAutoScore;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
@@ -167,7 +167,8 @@ public class RobotContainer {
         // }
         // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
-        return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper, intake);
+    //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+    return new AutoShootOnlyOurSide();
     }
 
     private void swerveSystemId() {
