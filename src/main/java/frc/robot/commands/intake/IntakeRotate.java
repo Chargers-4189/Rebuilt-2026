@@ -2,18 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.intake;
+
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.OffsetEncoder;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRotate extends Command {
-  /** Creates a new IntakeRotate. */
-
   /**
   * @author Jack Koster
   * 
@@ -28,15 +27,21 @@ public class IntakeRotate extends Command {
 
   private Intake intake;
   private boolean rotateOut;
+  private DoubleSupplier angle;
 
   private OffsetEncoder offsetEncoder;
 
-  public IntakeRotate(Intake intake, boolean rotateOut) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  /** Creates a new IntakeRotate. */
+  public IntakeRotate(Intake intake, DoubleSupplier angle) {
     this.intake = intake;
-    this.rotateOut = rotateOut;
     this.offsetEncoder = intake.getOffsetEncoder();
+    this.angle = angle;
     addRequirements(intake);
+  }
+
+  /** Creates a new IntakeRotate. */
+  public IntakeRotate(Intake intake, boolean rotateOut) {
+    this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
   }
 
   // Called when the command is initially scheduled.
@@ -46,21 +51,13 @@ public class IntakeRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("workinnnng");
-    //Moves out of bot
-    if(rotateOut) {
-      intake.setExtensionAngle(IntakeTable.kOuterExtensionLimit.get());
-    //Moves into Bot
-    }else {
-      intake.setExtensionAngle(IntakeTable.kInnerExtensionLimit.get());
-    }
+    intake.setExtensionAngle(angle.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("stop!!!");
-    intake.setExtensionSpeed(0);
+    intake.setExtensionPower(0);
   }
 
   // Returns true when the command should end.
@@ -68,9 +65,9 @@ public class IntakeRotate extends Command {
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
     if (rotateOut) {
-      return Math.abs(offsetEncoder.compare(intake.getEncoder(), IntakeTable.kOuterExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
     } else {
-      return Math.abs(offsetEncoder.compare(intake.getEncoder(), IntakeTable.kInnerExtensionLimit.get())) <= IntakeTable.kTolerance.get();
+      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
     }
   }
 }

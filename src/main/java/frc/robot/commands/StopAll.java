@@ -4,29 +4,30 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Vision;
-import frc.robot.util.ScoringCalculator;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlignShooter extends Command {
-
+public class StopAll extends Command {
   private Hood hood;
+  private Hopper hopper;
+  private Indexer indexer;
+  private Intake intake;
   private Shooter shooter;
-  private Vision vision;
+  private SwerveSubsystem swerve;
 
-  private double angle;
-  private double power;
-  
-  /** Creates a new Score. */
-  public AlignShooter(Hood hood, Shooter shooter, Vision vision) {
-    this.hood = hood;
-    this.shooter = shooter;
-    this.vision = vision;
-    addRequirements(hood, shooter);
+  SwerveRequest brake = new SwerveRequest.SwerveDriveBrake();
+  /** Creates a new CancelAll. */
+  public StopAll(Hood hood, Hopper hopper, Indexer indexer, Intake intake, Shooter shooter, SwerveSubsystem swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(hood, hopper, indexer, intake, shooter, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -36,24 +37,18 @@ public class AlignShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double distance = vision.getDistanceFromHub();
-    //double distance = ShooterTable.kDISTANCE.get();
-    angle = ScoringCalculator.calculateHoodAngle(distance);
-    power = ScoringCalculator.calculateShootingPower(distance);
-
-    //System.out.println(distance + " " + angle + " " + power);
-
-    hood.setHoodAngle(angle);
-    shooter.setShooterPower(power);
-    
+    hood.setPower(0);
+    hopper.setPower(0);
+    indexer.setPower(0);
+    intake.setExtensionPower(0);
+    intake.setWheelPower(0);
+    shooter.setVelocity(0);
+    swerve.applyRequest(() -> brake);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    shooter.setShooterPower(0);
-    hood.setHoodPower(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

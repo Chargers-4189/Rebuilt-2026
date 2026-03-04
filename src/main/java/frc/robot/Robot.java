@@ -29,14 +29,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        NetworkTables.initialize();
         PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
     public void robotPeriodic() {
         //m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
+        CommandScheduler.getInstance().run();
+        NetworkTables.periodic();
     }
 
     @Override

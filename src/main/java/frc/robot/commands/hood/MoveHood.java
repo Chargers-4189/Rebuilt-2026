@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.hood;
 
 import java.util.function.DoubleSupplier;
 
@@ -14,9 +14,9 @@ public class MoveHood extends Command {
 
   private Hood hood;
   private DoubleSupplier power;
+
   /** Creates a new MoveHood. */
   public MoveHood(Hood hood, DoubleSupplier power) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.hood = hood;
     this.power = power;
     addRequirements(hood);
@@ -29,13 +29,13 @@ public class MoveHood extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hood.setHoodPower(power.getAsDouble());
+    hood.setPower(power.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hood.setHoodPower(0);
+    hood.setPower(0);
   }
 
   // Returns true when the command should end.

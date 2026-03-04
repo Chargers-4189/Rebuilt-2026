@@ -14,7 +14,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,9 +29,7 @@ public class Intake extends SubsystemBase {
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
   private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
-  private OffsetEncoder offsetEncoder = new OffsetEncoder(.415, .849);
-
-  private ArmFeedforward armFeedforward = new ArmFeedforward(0, 0.18399, 0);
+  private OffsetEncoder offsetEncoder = new OffsetEncoder(.415, .849, encoder::get);
 
   private final PIDController intakeController = new PIDController(
     IntakeTable.kP.get(),
@@ -45,11 +42,10 @@ public class Intake extends SubsystemBase {
 private final SysIdRoutine m_sysIdRoutine =
    new SysIdRoutine(
       new SysIdRoutine.Config(
-         Volts.of(.3).per(Second),        // Use default ramp rate (1 V/s)
+         Volts.of(.3).per(Second), // Use default ramp rate (1 V/s)
          Volts.of(3), // Reduce dynamic step voltage to 4 to prevent brownout
-         Seconds.of(15),        // Use default timeout (10 s)
-                      // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("stateV2", state.toString())
+         Seconds.of(15), // Use default timeout (10 s)
+         (state) -> SignalLogger.writeString("stateV2", state.toString()) // Log state with Phoenix SignalLogger class
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> extensionMotor.setControl(m_voltReq.withOutput(volts)),
@@ -69,24 +65,24 @@ private final SysIdRoutine m_sysIdRoutine =
   public Intake() {}
 
   //+: Fuel go in robot, -: Fuel go out robot
-  public void setWheelSpeed(double speed) {
-    wheelMotor.set(-speed); //Change once inverted
+  public void setWheelPower(double power) {
+    wheelMotor.set(-power);
   }
 
   //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
-  public void setExtensionSpeed(double speed) {
-    extensionMotor.set(speed);
+  public void setExtensionPower(double power) {
+    extensionMotor.set(power);
   }
 
   public void setExtensionAngle(double angle) {
     IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
-    extensionMotor.set(
+    setExtensionPower(
       MathUtil.clamp(intakeController.calculate(
-        offsetEncoder.convertCurrent(getEncoder()),
+        offsetEncoder.get(),
         offsetEncoder.convertGoal(angle)
       ),
-      -IntakeTable.kAutoExtensionMaxPower.get(),
-      IntakeTable.kAutoExtensionMaxPower.get())
+      -IntakeTable.kAutoOutPower.get(),
+      IntakeTable.kAutoInPower.get())
     );
   }
 
@@ -101,7 +97,7 @@ private final SysIdRoutine m_sysIdRoutine =
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.encoder.set(getEncoder());
+    IntakeTable.rawEncoder.set(getEncoder());
 
     intakeController.setPID(
       IntakeTable.kP.get(),
