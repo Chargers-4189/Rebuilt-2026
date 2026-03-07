@@ -52,7 +52,7 @@ public class LoadFuel extends Command {
         System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
-      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kTolerance.get()) {
+      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kAngleTolerance.get()) {
         System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);        

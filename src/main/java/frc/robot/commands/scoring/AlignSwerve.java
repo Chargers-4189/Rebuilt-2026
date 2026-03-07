@@ -50,8 +50,8 @@ public class AlignSwerve extends Command {
       driveWithAngle.withVelocityX(MathUtil.copyDirectionPow(powerX.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
           .withVelocityY(MathUtil.copyDirectionPow(powerY.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
           .withTargetDirection(vision.getRotationFromHub())
-          .withHeadingPID(SwerveTable.kP.get(), SwerveTable.kI.get(), SwerveTable.kD.get())
-          .withMaxAbsRotationalRate(swerve.MaxAngularRate * SwerveTable.kMaxPower.get())
+          .withHeadingPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get())
+          .withMaxAbsRotationalRate(swerve.MaxAngularRate * SwerveTable.kAngleMaxPower.get())
           .withTargetRateFeedforward(swerve.calculateFeedForward(vision.getRotationFromHub()))
     );
   }
