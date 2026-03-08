@@ -26,7 +26,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.commands.AutoShootOnlyOurSide;
+import frc.robot.commands.AutoCenterCollectAndShoot;
+import frc.robot.commands.AutoShootOurSide;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
@@ -150,7 +151,7 @@ public class RobotContainer {
 
             // Create a path following command using AutoBuilder. This will also trigger event markers.
             return AutoBuilder.followPath(path);
-        } catch (Exception e) {
+        } catch (Exception e) {sdsdsjddjdd
             DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
             return Commands.none();
         }
@@ -167,8 +168,8 @@ public class RobotContainer {
         // }
         // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
-    //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
-    return new AutoShootOnlyOurSide();
+        //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
+        return new AutoShootOurSide(shooter, hood, indexer, swerve, vision, hopper, intake);
     }
 
     private void swerveSystemId() {

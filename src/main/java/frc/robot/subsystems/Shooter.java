@@ -62,8 +62,8 @@ public class Shooter extends SubsystemBase {
   public void setVelocity(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
     targetVelocity = shooterMotorPower;
-    leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
-    rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
+    //leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
+    //rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
   }
 
   public double getVelocity() {

@@ -36,7 +36,7 @@ public class ExampleAutoScore extends SequentialCommandGroup {
 
     addCommands(
       path,
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(5)
+      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(5)  
     );
   }
 }
