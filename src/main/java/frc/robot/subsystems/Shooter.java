@@ -4,12 +4,16 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
@@ -31,13 +35,14 @@ public class Shooter extends SubsystemBase {
   private MotionMagicConfigs motionMagicConfigs;
   private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
 
+  private MotionMagicVelocityVoltage power;
   private double targetVelocity;
  
   public Shooter() {
-    ConfigureMotor();
+    configureMotors();
   }
 
-  public void ConfigureMotor() {
+  public void configureMotors() {
     talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
 
@@ -62,6 +67,7 @@ public class Shooter extends SubsystemBase {
   public void setVelocity(double shooterMotorPower) {
     //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
     targetVelocity = shooterMotorPower;
+    power = m_request.withVelocity(targetVelocity);
     leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
     rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
   }
@@ -74,6 +80,10 @@ public class Shooter extends SubsystemBase {
     return targetVelocity;
   }
 
+  public double getPower() {
+    return leftShooterMotor.getMotorVoltage().getValueAsDouble();
+  }
+
   public void setShooterPowerNoPID(double shooterMotorPower) {
     leftShooterMotor.set(shooterMotorPower);
     rightShooterMotor.set(-shooterMotorPower);
@@ -82,6 +92,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    ShooterTable.currentPower.set(getPower());
     ShooterTable.velocity.set(getVelocity());
     ShooterTable.velocityGoal.set(getTargetVelocity());
   }

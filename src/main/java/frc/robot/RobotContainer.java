@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -110,7 +111,7 @@ public class RobotContainer {
 
         hood.setDefaultCommand(Commands.run(() -> {
             hood.setHoodAngle(HoodTable.kDefaultAngle);
-        }, hood));
+        }, hood).withName("Hood Default Angle"));
 
         //Fixed-Distance Shoot
         primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kTestDistance, false));
@@ -205,6 +206,6 @@ public class RobotContainer {
         //Deploy Intake
         intake.setDefaultCommand(Commands.run(() -> {            
             intake.setExtensionPower(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
-        }, intake));
+        }, intake).withName("Manual Intake"));
     }
 }
