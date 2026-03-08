@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
@@ -31,7 +32,7 @@ public class Score extends ParallelCommandGroup {
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
         new AlignHoodAndFlywheel(hood, shooter, vision),
         new AlignSwerve(swerve, vision, driveX, driveY),
-        new SequentialCommandGroup(Commands.waitSeconds(4), new IntakeRotate(intake, false))
+        new SequentialCommandGroup(Commands.waitSeconds(4), new IntakeRotate(intake, IntakeTable.kTauntRotations))
     );
   }
 

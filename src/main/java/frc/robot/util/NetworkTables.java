@@ -33,24 +33,37 @@ public class NetworkTables {
         public static final DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
         public static final DoublePublisher robotRotation = swerveTable.getDoubleTopic("Robot Rotation").publish();
 
-        public static final DoubleEntry kP = swerveTable.getDoubleTopic("P (Swerve)").getEntry(Constants.SwerveConstants.kP);
-        public static final DoubleEntry kI = swerveTable.getDoubleTopic("I (Swerve)").getEntry(Constants.SwerveConstants.kI);
-        public static final DoubleEntry kD = swerveTable.getDoubleTopic("D (Swerve)").getEntry(Constants.SwerveConstants.kD);
-        public static final DoubleEntry kS = swerveTable.getDoubleTopic("S (Swerve)").getEntry(Constants.SwerveConstants.kS);
-        public static final DoubleEntry kMaxPower = swerveTable.getDoubleTopic("Max Power (Swerve)").getEntry(Constants.SwerveConstants.kMaxPower);
-        public static final DoubleEntry kTolerance = swerveTable.getDoubleTopic("Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kTolerance);
+        public static final DoubleEntry kAngleP = swerveTable.getDoubleTopic("Angle P (Swerve)").getEntry(Constants.SwerveConstants.kAngleP);
+        public static final DoubleEntry kAngleI = swerveTable.getDoubleTopic("Angle I (Swerve)").getEntry(Constants.SwerveConstants.kAngleI);
+        public static final DoubleEntry kAngleD = swerveTable.getDoubleTopic("Angle D (Swerve)").getEntry(Constants.SwerveConstants.kAngleD);
+        public static final DoubleEntry kAngleS = swerveTable.getDoubleTopic("Angle S (Swerve)").getEntry(Constants.SwerveConstants.kAngleS);
+        public static final DoubleEntry kAngleMaxPower = swerveTable.getDoubleTopic("Angle Max Power (Swerve)").getEntry(Constants.SwerveConstants.kAngleMaxPower);
+        public static final DoubleEntry kAngleTolerance = swerveTable.getDoubleTopic("Angle Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kAngleTolerance);
 
-        public static final DoubleEntry kDriveExponent = swerveTable.getDoubleTopic("Drive Exponent").getEntry(Constants.SwerveConstants.kDriveExponent);
-        public static final DoubleEntry kRotationalExponent = swerveTable.getDoubleTopic("Rotational Exponent").getEntry(Constants.SwerveConstants.kRotationalExponent);
+        public static final DoubleEntry kPositionP = swerveTable.getDoubleTopic("Position P (Swerve)").getEntry(Constants.SwerveConstants.kPositionP);
+        public static final DoubleEntry kPositionI = swerveTable.getDoubleTopic("Position I (Swerve)").getEntry(Constants.SwerveConstants.kPositionI);
+        public static final DoubleEntry kPositionD = swerveTable.getDoubleTopic("Position D (Swerve)").getEntry(Constants.SwerveConstants.kPositionD);
+        public static final DoubleEntry kPositionS = swerveTable.getDoubleTopic("Position S (Swerve)").getEntry(Constants.SwerveConstants.kPositionS);
+        public static final DoubleEntry kPositionMaxPower = swerveTable.getDoubleTopic("Position Max Power (Swerve)").getEntry(Constants.SwerveConstants.kPositionMaxPower);
+        public static final DoubleEntry kPositionTolerance = swerveTable.getDoubleTopic("Position Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kPositionTolerance);
+
+        public static final DoubleEntry kDriveExponent = swerveTable.getDoubleTopic("Position Drive Exponent").getEntry(Constants.SwerveConstants.kDriveExponent);
+        public static final DoubleEntry kRotationalExponent = swerveTable.getDoubleTopic("Position Rotational Exponent").getEntry(Constants.SwerveConstants.kRotationalExponent);
 
         public static void init() {
-            kP.set(kP.get());
-            kI.set(kI.get());
-            kD.set(kD.get());
-            kS.set(kS.get());
-            kMaxPower.set(kMaxPower.get());
+            kAngleP.set(kAngleP.get());
+            kAngleI.set(kAngleI.get());
+            kAngleD.set(kAngleD.get());
+            kAngleS.set(kAngleS.get());
+            kAngleMaxPower.set(kAngleMaxPower.get());
+            kAngleTolerance.set(kAngleTolerance.get());
 
-            kTolerance.set(kTolerance.get());
+            kPositionP.set(kPositionP.get());
+            kPositionI.set(kPositionI.get());
+            kPositionD.set(kPositionD.get());
+            kPositionS.set(kPositionS.get());
+            kPositionMaxPower.set(kPositionMaxPower.get());
+            kPositionTolerance.set(kPositionTolerance.get());
 
             kDriveExponent.set(kDriveExponent.get());
             kRotationalExponent.set(kRotationalExponent.get());
@@ -75,8 +88,7 @@ public class NetworkTables {
         public static final DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static final DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
 
-        public static final IntegerEntry kTauntAmount = intakeTable.getIntegerTopic("Taunt Number").getEntry(Constants.IntakeConstants.kTauntAmount);
-        public static final IntegerEntry kTauntFraction = intakeTable.getIntegerTopic("Taunt Fraction").getEntry(Constants.IntakeConstants.kTauntFraction);
+        public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
 
         public static final DoubleEntry kTolerance = intakeTable.getDoubleTopic("Intake Tolerance").getEntry(Constants.IntakeConstants.kTolerance);
         public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
@@ -95,8 +107,7 @@ public class NetworkTables {
             kI.set(kI.get());
             kD.set(kD.get());
 
-            kTauntAmount.set(kTauntAmount.get());
-            kTauntFraction.set(kTauntFraction.get());
+            kTauntRotations.set(kTauntRotations.get());
 
             kTolerance.set(kTolerance.get());
             kOuterExtensionLimit.set(kOuterExtensionLimit.get());
