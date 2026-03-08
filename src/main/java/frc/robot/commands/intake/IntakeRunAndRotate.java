@@ -62,7 +62,7 @@ public class IntakeRunAndRotate extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setExtensionPower(0);
-        intake.setWheelPower(0);
+    intake.setWheelPower(0);
   }
 
   // Returns true when the command should end.

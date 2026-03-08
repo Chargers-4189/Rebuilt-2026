@@ -32,6 +32,7 @@ import frc.robot.commands.AutoShootOurSide;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
+import frc.robot.commands.intake.IntakeRunAndRotate2;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.scoring.FixedDistanceScore;
@@ -102,7 +103,7 @@ public class RobotContainer {
         primaryController.y().onTrue(new IntakeRotate(intake, false));
 
         //Intake Fuel
-        primaryController.rightBumper().toggleOnTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower));
 
         primaryController.x().whileTrue(new OuttakeFuel(intake, hopper));
 
