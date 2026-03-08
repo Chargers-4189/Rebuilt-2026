@@ -359,7 +359,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         double current = getState().Pose.getRotation().getRotations();
         rotationalGoal = hubRotation.getRotations();
 
-        double output = SwerveTable.kS.get();
+        double output = SwerveTable.kAngleS.get();
 
         if (rotationalGoal < current) {
             output *= -1;
@@ -375,6 +375,9 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return rotationalGoal;
     }
     public double getRotations() {
-        return getState().Pose.getRotation().getRotations();
+        return getPose().getRotation().getRotations();
+    }
+    public Pose2d getPose() {
+        return getState().Pose;
     }
 }

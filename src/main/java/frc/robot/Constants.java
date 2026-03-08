@@ -20,13 +20,21 @@ public final class Constants {
 
   public static class SwerveConstants {
 
-    //Constants for Angle Align
-    public static final double kP = 4.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.2;
-    public static final double kS = 0.3;
-    public static final double kMaxPower = 0.3;
-    public static final double kTolerance = 0.015;
+    //Constants for Angle Alignment
+    public static final double kAngleP = 4.0;
+    public static final double kAngleI = 0.0;
+    public static final double kAngleD = 0.2;
+    public static final double kAngleS = 0.3;
+    public static final double kAngleMaxPower = 0.3;
+    public static final double kAngleTolerance = 0.015;
+
+    //Constants for Position Alignment
+    public static final double kPositionP = 0.0;
+    public static final double kPositionI = 0.0;
+    public static final double kPositionD = 0.0;
+    public static final double kPositionS = 0.0;
+    public static final double kPositionMaxPower = 0.0;
+    public static final double kPositionTolerance = 0.0;
 
     //Constants for Manual Driving
     public static final double kDriveExponent = 1.4;
