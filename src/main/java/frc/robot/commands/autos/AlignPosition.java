@@ -4,6 +4,8 @@
 
 package frc.robot.commands.autos;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
@@ -11,8 +13,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables.SwerveTable;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -31,23 +36,28 @@ public class AlignPosition extends Command {
   private PIDController yPid = new PIDController(0, 0, 0);
   private PIDController anglePid = new PIDController(0, 0, 0);
 
-
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+  private final SwerveRequest.FieldCentric drive;
 
   /** Creates a new AutoAlignPose. */
-  public AlignPosition(SwerveSubsystem swerve, Pose2d goalPose) {
+  public AlignPosition(SwerveSubsystem swerve, Vision vision, Pose2d goalPose) {
     this.swerve = swerve;
-    this.goalPose = goalPose;
+    this.goalPose = vision.convertFieldPos(goalPose);
+    this.drive = new SwerveRequest.FieldCentric()
+            .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
+  }
+
+  public AlignPosition(SwerveSubsystem swerve, Vision vision, double x, double y, double degrees) {
+    this(swerve, vision, new Pose2d(x, y, new Rotation2d(Angle.ofBaseUnits(degrees, Degrees))));
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    anglePid.enableContinuousInput(-1, 1);
+    anglePid.enableContinuousInput(0, 1);
     xPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
     yPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
     anglePid.setPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get());
@@ -65,16 +75,19 @@ public class AlignPosition extends Command {
 
     xPower = MathUtil.clamp(-xPid.calculate(currentPose.getX(), goalPose.getX()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
     yPower = MathUtil.clamp(-yPid.calculate(currentPose.getY(), goalPose.getY()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
+
+    double anglePidCalculation = anglePid.calculate(currentPose.getRotation().getRotations(), goalPose.getRotation().getRotations());
+
     anglePower = MathUtil.clamp(
-      anglePid.calculate(currentPose.getRotation().getRotations(), goalPose.getRotation().getRotations()),
+      addKs(anglePidCalculation),
       -SwerveTable.kAngleMaxPower.get(),
       SwerveTable.kAngleMaxPower.get()
     );
 
     swerve.setControl(
-      drive.withVelocityX(xPower * swerve.MaxSpeed)
-           .withVelocityY(yPower * swerve.MaxSpeed)
-           .withRotationalRate(anglePower * swerve.MaxAngularRate)
+      drive.withVelocityX(xPower * SwerveSubsystem.MaxSpeed)
+           .withVelocityY(yPower * SwerveSubsystem.MaxSpeed)
+           .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
     );
   }
 
@@ -92,5 +105,9 @@ public class AlignPosition extends Command {
   @Override
   public boolean isFinished() {
     return anglePid.atSetpoint() && xPid.atSetpoint() && yPid.atSetpoint();
+  }
+
+  private double addKs(double pidCalculation) {
+    return pidCalculation + Math.copySign(SwerveTable.kAngleS.get(), pidCalculation) / SwerveSubsystem.MaxAngularRate;
   }
 }

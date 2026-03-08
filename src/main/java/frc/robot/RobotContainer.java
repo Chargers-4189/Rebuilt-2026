@@ -27,11 +27,10 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
-import frc.robot.commands.AutoCenterCollectAndShoot;
-import frc.robot.commands.AutoShootOurSide;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.autos.AlignPosition;
-import frc.robot.commands.autos.AutoShootOnlyOurSide;
+import frc.robot.commands.autos.AutoCenterCollectAndShoot;
+import frc.robot.commands.autos.AutoShootOurSide;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate2;
@@ -126,7 +125,7 @@ public class RobotContainer {
             new Score(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController)
         );
 
-        primaryController.povLeft().onTrue(new AlignPosition(swerve, new Pose2d(14, 4.4, new Rotation2d())));
+        primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
     }
 
     private void configureSwerveBindings() {

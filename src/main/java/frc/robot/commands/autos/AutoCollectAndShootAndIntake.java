@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.autos;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -10,7 +10,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
@@ -22,13 +21,16 @@ public class AutoCollectAndShootAndIntake extends ParallelCommandGroup {
   /** Creates a new AutoCollectAndShootAndIntake. */
   public AutoCollectAndShootAndIntake(Intake intake) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-     Command path;
+    Command centerCollectAndShoot;
     try {
-        path = AutoBuilder.followPath(PathPlannerPath.fromPathFile("centerCollectAndShoot"));
+        centerCollectAndShoot = AutoBuilder.followPath(PathPlannerPath.fromPathFile("centerCollectAndShoot"));
     } catch(Exception e){
-        path = Commands.none();
+        centerCollectAndShoot = Commands.none();
     }
-    addCommands(new IntakeRunAndRotate(intake, false, IntakeTable.kAutoInPower), path);
+
+    addCommands(
+      new IntakeRunAndRotate(intake, false, IntakeTable.kAutoInPower),
+      centerCollectAndShoot
+    );
   }
 }
