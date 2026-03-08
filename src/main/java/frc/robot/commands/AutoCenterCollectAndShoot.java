@@ -27,12 +27,12 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoCenterCollectAndShoot extends ParallelCommandGroup {
+public class AutoCenterCollectAndShoot extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
   public AutoCenterCollectAndShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    Commands.sequence(new AutoCollectAndShootAndIntake(intake),
+    addCommands(new AutoCollectAndShootAndIntake(intake),
     new Score(shooter, hood, indexer, swerve, vision, hopper, intake));
   }
 }
