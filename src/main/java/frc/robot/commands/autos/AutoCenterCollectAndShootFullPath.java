@@ -38,7 +38,7 @@ public class AutoCenterCollectAndShootFullPath extends SequentialCommandGroup {
         path = Commands.none();
     }
     addCommands(
-      new IntakeRotate(intake, true),
+      new IntakeRotate(intake, true).withTimeout(1.5),
       Commands.parallel(
         path,
         new RunIntakeWheels(intake, IntakeTable.kAutoInPower)

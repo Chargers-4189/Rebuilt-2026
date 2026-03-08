@@ -140,7 +140,7 @@ public class Vision extends SubsystemBase {
 
   
   public Pose2d convertFieldPos(Pose2d bluePerspective) {
-    if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
       return bluePerspective.rotateAround(fieldCenterPose2d.getTranslation(), Rotation2d.k180deg);
     } else {
       return bluePerspective;
