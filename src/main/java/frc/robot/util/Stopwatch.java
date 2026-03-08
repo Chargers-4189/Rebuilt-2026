@@ -22,11 +22,21 @@ public class Stopwatch {
         timeout = Timer.getFPGATimestamp() + (milliseconds / 1000.0);
     }
     
+    public void start() {
+        initTime = Timer.getFPGATimestamp();
+        timeout = Timer.getFPGATimestamp();
+    }
+    
     public boolean hasStarted() {
         return timeout != null && initTime != null;
     }
+
     public void reset() {
         initTime = null;
         timeout = null;
+    }
+
+    public double getElapsedTime() {
+        return Timer.getFPGATimestamp() - initTime;
     }
 }

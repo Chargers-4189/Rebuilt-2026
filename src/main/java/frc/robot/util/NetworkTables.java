@@ -161,6 +161,7 @@ public class NetworkTables {
 
         public static final DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
         public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
+        public static final DoublePublisher currentPower = shooterTable.getDoubleTopic("Current Power").publish();
 
         public static final DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kFixedPower);
         public static final DoubleEntry kTestDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
