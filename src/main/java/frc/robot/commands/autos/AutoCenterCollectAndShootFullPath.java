@@ -37,8 +37,13 @@ public class AutoCenterCollectAndShootFullPath extends SequentialCommandGroup {
     } catch(Exception e){
         path = Commands.none();
     }
-    addCommands(Commands.parallel(new IntakeRotate(intake, false),
-    path.withTimeout(1.5), new RunIntakeWheels(intake, IntakeTable.kAutoInPower)),
-    new Score(shooter, hood, indexer, swerve, vision, hopper, intake));;
+    addCommands(
+      new IntakeRotate(intake, true),
+      Commands.parallel(
+        path,
+        new RunIntakeWheels(intake, IntakeTable.kAutoInPower)
+      ),
+      new Score(shooter, hood, indexer, swerve, vision, hopper, intake)
+    );
   }
 }
