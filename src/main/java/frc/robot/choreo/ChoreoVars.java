@@ -1,5 +1,5 @@
 // spotless:off
-package frc.robot;
+package frc.robot.choreo;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;

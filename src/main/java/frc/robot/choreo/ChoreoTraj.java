@@ -1,5 +1,5 @@
 // spotless:off
-package frc.robot;
+package frc.robot.choreo;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,10 +24,10 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj CenterGrab1 = new ChoreoTraj(
-        "CenterGrab1",
+    public static final ChoreoTraj centerCollect1 = new ChoreoTraj(
+        "centerCollect1",
         OptionalInt.empty(),
-        7.31365,
+        7.31364,
         new Pose2d(3.99298, 7.44576, Rotation2d.fromRadians(-3.1176)),
         new Pose2d(2.41555, 6.44387, Rotation2d.fromRadians(-0.83379))
     );
@@ -37,7 +37,7 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("CenterGrab1", CenterGrab1)
+        Map.entry("centerCollect1", centerCollect1)
     );
 
     /**
