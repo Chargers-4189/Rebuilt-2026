@@ -19,7 +19,7 @@ public class OuttakeFuel extends ParallelCommandGroup {
   public OuttakeFuel(Intake intake, Hopper hopper) {
     addCommands(
       new RunIntakeWheels(intake, () -> -IntakeTable.kWheelPower.get()),
-      Commands.run(() -> hopper.setPower(-HopperTable.kPower.get()), hopper)
+      Commands.run(() -> hopper.setPower(-HopperTable.kPower.get()), hopper).finallyDo(() -> hopper.setPower(0))
     );
   }
 }

@@ -74,6 +74,7 @@ public class NetworkTables {
         static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
         public static final DoublePublisher rawEncoder = intakeTable.getDoubleTopic("Intake Raw Encoder").publish();
+        public static final DoublePublisher offsetEncoder = intakeTable.getDoubleTopic("Offset Encoder").publish();
         public static final DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Extension Goal").publish();
 
         public static final DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);
@@ -87,6 +88,7 @@ public class NetworkTables {
         public static final DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static final DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static final DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
+        public static final DoubleEntry kS = intakeTable.getDoubleTopic("S (Intake)").getEntry(Constants.IntakeConstants.kS);
 
         public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
 
@@ -106,6 +108,7 @@ public class NetworkTables {
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
+            kS.set(kS.get());
 
             kTauntRotations.set(kTauntRotations.get());
 

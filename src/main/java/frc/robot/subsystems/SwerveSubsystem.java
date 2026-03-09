@@ -17,6 +17,7 @@ import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.TrajectorySample;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -38,6 +39,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
@@ -229,7 +231,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
                 (speeds, feedforwards) -> setControl(
                     m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()).withDesaturateWheelSpeeds(true)
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
@@ -454,5 +456,28 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             .withVelocityY(yPower * SwerveSubsystem.MaxSpeed)
             .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
         );
+    }
+
+    public Command followPath(String fileName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(fileName);
+
+            return Commands.sequence(
+                Commands.runOnce(
+                    () -> this.resetPose(Vision.convertFieldPos(new Pose2d(path.getPoint(0).position, path.getIdealStartingState().rotation()))),
+                    this
+                ),
+                AutoBuilder.followPath(path)
+            ).withName("Follow Path " + path);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Commands.none().withName("Follow Path Exception");
+        }
+    }
+
+    public Command resetGyro() {
+        m_hasAppliedOperatorPerspective = false;
+        return Commands.runOnce(() -> this.resetRotation(new Rotation2d())).withName("Reset Gyro");
     }
 }
