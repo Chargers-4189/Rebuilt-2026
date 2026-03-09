@@ -12,6 +12,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import choreo.auto.AutoFactory;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -32,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.NetworkTables.SwerveTable;
@@ -68,7 +72,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -212,6 +215,21 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this // Subsystem for requirements
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
+    }
+
+    private void configureAutoFactory() {
+        try {
+            var config = RobotConfig.fromGUISettings();
+            new AutoFactory(
+                () -> getState().Pose,   // Supplier of current robot pose
+                this::resetPose,
+                (sample) -> System.out.println("code me!"),
+                true,
+                this
             );
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());

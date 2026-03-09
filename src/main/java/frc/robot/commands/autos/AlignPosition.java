@@ -4,17 +4,16 @@
 
 package frc.robot.commands.autos;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -51,7 +50,11 @@ public class AlignPosition extends Command {
   }
 
   public AlignPosition(SwerveSubsystem swerve, Vision vision, double x, double y, double degrees) {
-    this(swerve, vision, new Pose2d(x, y, new Rotation2d(Angle.ofBaseUnits(degrees, Degrees))));
+    this(swerve, vision, new Pose2d(x, y, new Rotation2d(Units.degreesToRadians(degrees))));
+  }
+
+  public void followSample(SwerveSubsystem swerve, Vision vision, SwerveSample sample) {
+    this.goalPose = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
   }
 
   // Called when the command is initially scheduled.
