@@ -33,7 +33,7 @@ public class AlignSwerve extends Command {
     this.powerX = powerX;
     this.powerY = powerY;
     this.driveWithAngle = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
       .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     addRequirements(swerve);
@@ -47,12 +47,12 @@ public class AlignSwerve extends Command {
   @Override
   public void execute() {
     swerve.setControl(
-      driveWithAngle.withVelocityX(MathUtil.copyDirectionPow(powerX.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
-          .withVelocityY(MathUtil.copyDirectionPow(powerY.getAsDouble(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
+      driveWithAngle.withVelocityX(MathUtil.copyDirectionPow(powerX.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
+          .withVelocityY(MathUtil.copyDirectionPow(powerY.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
           .withTargetDirection(vision.getRotationFromHub())
           .withHeadingPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get())
-          .withMaxAbsRotationalRate(swerve.MaxAngularRate * SwerveTable.kAngleMaxPower.get())
-          .withTargetRateFeedforward(swerve.calculateFeedForward(vision.getRotationFromHub()))
+          .withMaxAbsRotationalRate(SwerveSubsystem.MaxAngularRate * SwerveTable.kAngleMaxPower.get())
+          .withTargetRateFeedforward(SwerveSubsystem.MaxAngularRate * swerve.calculateFeedForward(vision.getRotationFromHub()))
     );
   }
 

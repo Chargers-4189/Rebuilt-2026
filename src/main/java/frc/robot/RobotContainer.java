@@ -33,6 +33,7 @@ import frc.robot.commands.autos.AutoCenterCollectAndShoot;
 import frc.robot.commands.autos.AutoCenterCollectAndShootFullPath;
 import frc.robot.commands.autos.AutoCenterCollectWOInterferance;
 import frc.robot.commands.autos.AutoShootOurSide;
+import frc.robot.commands.autos.ChoreoCenterCollect1;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate2;
@@ -177,7 +178,7 @@ public class RobotContainer {
         // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
 
         //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
-        return new AutoCenterCollectWOInterferance(shooter, hood, indexer, swerve, vision, hopper, intake);
+        return new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake);
     }
 
     private void swerveSystemId() {

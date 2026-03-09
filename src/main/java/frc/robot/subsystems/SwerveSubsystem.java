@@ -14,14 +14,20 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.TrajectorySample;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -88,6 +94,25 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         )
     );
 
+    //Path Following
+    private double xPower;
+    private double yPower;
+    private double anglePower;
+
+    private Pose2d goalPose;
+    private Pose2d currentPose;
+
+    private PIDController xPid = new PIDController(0, 0, 0);
+    private PIDController yPid = new PIDController(0, 0, 0);
+    private PIDController anglePid = new PIDController(0, 0, 0);
+
+    private SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+
+    public AutoFactory autoFactory;
+
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -153,6 +178,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             startSimThread();
         }
         configureAutoBuilder();
+        createAutoFactory();
     }
 
 
@@ -221,20 +247,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         }
     }
 
-    private void configureAutoFactory() {
-        try {
-            var config = RobotConfig.fromGUISettings();
-            new AutoFactory(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,
-                (sample) -> System.out.println("code me!"),
-                true,
-                this
-            );
-        } catch (Exception ex) {
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
-        }
-    }
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -398,5 +410,49 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     }
     public Pose2d getPose() {
         return getState().Pose;
+    }
+
+    private void createAutoFactory() {
+        initializeFollowTrajectory();
+        autoFactory = new AutoFactory(
+            () -> getState().Pose,   // Supplier of current robot pose
+            this::resetPose,
+            this::followTrajectory,
+            true,
+            this
+        );
+    }
+
+    public void initializeFollowTrajectory() {
+        anglePid.enableContinuousInput(0, 1);
+        xPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
+        yPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
+        anglePid.setPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get());
+
+        xPid.setTolerance(SwerveTable.kPositionTolerance.get());
+        yPid.setTolerance(SwerveTable.kPositionTolerance.get());
+        anglePid.setTolerance(SwerveTable.kAngleTolerance.get());
+    }
+
+    public void followTrajectory(SwerveSample sample) {
+        currentPose = getPose();
+        goalPose = sample.getPose();
+
+        xPower = MathUtil.clamp(-xPid.calculate(currentPose.getX(), goalPose.getX()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
+        yPower = MathUtil.clamp(-yPid.calculate(currentPose.getY(), goalPose.getY()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
+
+        double anglePidCalculation = anglePid.calculate(currentPose.getRotation().getRotations(), goalPose.getRotation().getRotations());
+
+        anglePower = MathUtil.clamp(
+        anglePidCalculation + Math.copySign(SwerveTable.kAngleS.get(), anglePidCalculation),
+        -SwerveTable.kAngleMaxPower.get(),
+        SwerveTable.kAngleMaxPower.get()
+        );
+
+        setControl(
+        drive.withVelocityX(xPower * SwerveSubsystem.MaxSpeed)
+            .withVelocityY(yPower * SwerveSubsystem.MaxSpeed)
+            .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
+        );
     }
 }

@@ -24,7 +24,7 @@ public final class Constants {
     public static final double kAngleP = 4.0;
     public static final double kAngleI = 0.0;
     public static final double kAngleD = 0.2;
-    public static final double kAngleS = 0.3;
+    public static final double kAngleS = 0.0637;
     public static final double kAngleMaxPower = 0.3;
     public static final double kAngleTolerance = 0.015;
 

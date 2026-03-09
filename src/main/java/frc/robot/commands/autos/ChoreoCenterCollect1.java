@@ -9,10 +9,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
@@ -31,17 +30,10 @@ public class ChoreoCenterCollect1 extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
   public ChoreoCenterCollect1(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    Command path;
-    try {
-        path = AutoBuilder.followPath(PathPlannerPath.fromPathFile("centerCollectWOInterfereance"));
-    } catch(Exception e){
-        path = Commands.none();
-    }
     addCommands(
       new IntakeRotate(intake, true).withTimeout(1.5),
       Commands.parallel(
-        path,
+        swerve.autoFactory.trajectoryCmd("centerCollect1"),
         new RunIntakeWheels(intake, IntakeTable.kAutoInPower)
       ),
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake)
