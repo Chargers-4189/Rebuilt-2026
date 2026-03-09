@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.intake.IntakeRunAndRotate2;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -28,6 +30,7 @@ public class AutoShootOurSide extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     Command depotToHub;
+    Command shootOnlyOnOurSide;
 
     try {
       depotToHub = AutoBuilder.followPath(PathPlannerPath.fromPathFile("depotToHub")).withName("Depot To Hub");
@@ -36,8 +39,18 @@ public class AutoShootOurSide extends SequentialCommandGroup {
       depotToHub = Commands.none().withName("Auto Command Not Found");
     }
 
+    try {
+      shootOnlyOnOurSide = AutoBuilder.followPath(PathPlannerPath.fromPathFile("shootOnlyOurSide")).withName("Shoot Only Our Side");
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      shootOnlyOnOurSide = Commands.none().withName("Auto Command Not Found");
+    }
+
     addCommands(
-      new AutoPathOurSideAndIntake(intake, swerve, vision),
+      Commands.race(
+        shootOnlyOnOurSide,
+        new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower)
+      ),
       Commands.parallel(
         Commands.waitSeconds(4),
         new AlignPosition(swerve, vision, .738, .7, 0)
