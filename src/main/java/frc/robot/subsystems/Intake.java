@@ -77,13 +77,18 @@ private final SysIdRoutine m_sysIdRoutine =
   public void setExtensionAngle(double angle) {
     IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
     setExtensionPower(
-      MathUtil.clamp(intakeController.calculate(
+      MathUtil.clamp(calculatePIDS(
         offsetEncoder.get(),
         offsetEncoder.convertGoal(angle)
       ),
       -IntakeTable.kAutoOutPower.get(),
       IntakeTable.kAutoInPower.get())
     );
+  }
+
+  private double calculatePIDS(double measurement, double setpoint) {
+    double pidCalculation = intakeController.calculate(measurement, setpoint);
+    return pidCalculation + Math.copySign(IntakeTable.kS.get(), pidCalculation);
   }
 
   public double getEncoder() {
@@ -94,10 +99,15 @@ private final SysIdRoutine m_sysIdRoutine =
     return offsetEncoder;
   }
 
+  public double getError() {
+    return intakeController.getError();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     IntakeTable.rawEncoder.set(getEncoder());
+    IntakeTable.offsetEncoder.set(offsetEncoder.get());
 
     intakeController.setPID(
       IntakeTable.kP.get(),

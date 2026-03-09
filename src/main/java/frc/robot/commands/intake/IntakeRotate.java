@@ -52,6 +52,7 @@ public class IntakeRotate extends Command {
   @Override
   public void execute() {
     intake.setExtensionAngle(angle.getAsDouble());
+    IntakeTable.extensionGoal.set(angle.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
@@ -65,9 +66,9 @@ public class IntakeRotate extends Command {
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
     if (rotateOut) {
-      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
+      return Math.abs(intake.getError()) <= IntakeTable.kTolerance.get();
     } else {
-      return Math.abs(offsetEncoder.compare(angle.getAsDouble())) <= IntakeTable.kTolerance.get();
+      return Math.abs(intake.getError()) <= IntakeTable.kTolerance.get();
     }
   }
 }

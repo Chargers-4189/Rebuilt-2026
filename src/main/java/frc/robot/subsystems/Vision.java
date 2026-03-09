@@ -21,7 +21,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.NetworkTables.SwerveTable;
 
@@ -29,9 +28,9 @@ public class Vision extends SubsystemBase {
 
   private static AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
-  Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
-  Pose2d fieldCenterPose2d = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
+  public static final Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
+  public static final Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
+  public static final Pose2d fieldCenterPose2d = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
@@ -115,7 +114,7 @@ public class Vision extends SubsystemBase {
     return new Rotation2d(xDiff, yDiff);
   }
 
-  private Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
+  private static Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
     double x1 = pose1.getX();
     double y1 = pose1.getY();
     
@@ -139,7 +138,7 @@ public class Vision extends SubsystemBase {
   }
 
   
-  public Pose2d convertFieldPos(Pose2d bluePerspective) {
+  public static Pose2d convertFieldPos(Pose2d bluePerspective) {
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
       return bluePerspective.rotateAround(fieldCenterPose2d.getTranslation(), Rotation2d.k180deg);
     } else {

@@ -32,15 +32,11 @@ public class AutoCenterCollectWOInterferance extends SequentialCommandGroup {
   public AutoCenterCollectWOInterferance(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    Command path;
-    try {
-        path = AutoBuilder.followPath(PathPlannerPath.fromPathFile("centerCollectWOInterfereance"));
-    } catch(Exception e){
-        path = Commands.none();
-    }
+    Command path = swerve.followPath("centerCollectWOInterfereance");
+
     addCommands(
       new IntakeRotate(intake, true).withTimeout(1.5),
-      Commands.parallel(
+      Commands.race(
         path,
         new RunIntakeWheels(intake, IntakeTable.kAutoInPower)
       ),

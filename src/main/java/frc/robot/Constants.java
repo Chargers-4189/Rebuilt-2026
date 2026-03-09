@@ -59,6 +59,7 @@ public final class Constants {
     public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kS = 0;
 
     public static final double kTauntRotations = .3; //The fraction of how far it goes into the bot
 

@@ -94,7 +94,7 @@ public class RobotContainer {
         primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
 
         //Reset Gyro
-        primaryController.back().onTrue(Commands.runOnce(() -> swerve.resetRotation(new Rotation2d())).withName("Reset Gyro"));
+        primaryController.back().onTrue(swerve.resetGyro());
 
         //Deploy Intake
         primaryController.rightTrigger(.2).or(primaryController.leftTrigger(.2)).whileTrue(
