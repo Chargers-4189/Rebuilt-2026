@@ -66,7 +66,9 @@ public final class Constants {
     public static final double kTolerance = 0.03;
     public static final double kOuterExtensionLimit = 0.03;
     public static final double kInnerExtensionLimit = 0.4;
-  }
+
+    public static final double kTauntDelay = 3;
+ }
   
   public static class HopperConstants {
     //IDs
@@ -127,5 +129,12 @@ public final class Constants {
     public static final double kMotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
     public static final double kMotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 4000; // Target jerk of 1600 rps/s/s (0.1 seconds)
+  }
+
+  public static class ShootingCalculatorConstants {
+    public static final double kHoodAngleIntercept = 0;
+    public static final double kHoodAngleSlope = 0;
+    public static final double kVelocityIntercept = 0;
+    public static final double kVelolcityIntercept = 0;
   }
 }

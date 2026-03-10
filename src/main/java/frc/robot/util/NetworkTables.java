@@ -96,6 +96,8 @@ public class NetworkTables {
         public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
         public static final DoubleEntry kInnerExtensionLimit = intakeTable.getDoubleTopic("Intake Inner Limit").getEntry(Constants.IntakeConstants.kInnerExtensionLimit);
 
+        public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Intake Extension Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
+
         public static void init() {
             kWheelPower.set(kWheelPower.get());
             kManualExtensionPower.set(kManualExtensionPower.get());
@@ -115,6 +117,8 @@ public class NetworkTables {
             kTolerance.set(kTolerance.get());
             kOuterExtensionLimit.set(kOuterExtensionLimit.get());
             kInnerExtensionLimit.set(kInnerExtensionLimit.get());
+
+            kTauntDelay.set(kTauntDelay.get());
         }
     }
 
