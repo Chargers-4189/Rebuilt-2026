@@ -24,12 +24,47 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj centerCollect1 = new ChoreoTraj(
-        "centerCollect1",
+    public static final ChoreoTraj centerCollectOurSide = new ChoreoTraj(
+        "centerCollectOurSide",
         OptionalInt.empty(),
-        7.31364,
-        new Pose2d(3.99298, 7.44576, Rotation2d.fromRadians(-3.1176)),
+        7.85624,
+        new Pose2d(3.88165, 7.4133, Rotation2d.fromRadians(-3.1176)),
         new Pose2d(2.41555, 6.44387, Rotation2d.fromRadians(-0.83379))
+    );
+    public static final ChoreoTraj centerCollectAndShootFullPath = new ChoreoTraj(
+        "centerCollectAndShootFullPath",
+        OptionalInt.empty(),
+        5.42061,
+        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
+        new Pose2d(2.11934, 5.76138, Rotation2d.fromRadians(-1.48439))
+    );
+    public static final ChoreoTraj startToDepo = new ChoreoTraj(
+        "startToDepo",
+        OptionalInt.empty(),
+        1.01727,
+        new Pose2d(1.19055, 5.93022, Rotation2d.fromRadians(0)),
+        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj shootOnlyOurSide = new ChoreoTraj(
+        "shootOnlyOurSide",
+        OptionalInt.empty(),
+        2.82126,
+        new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
+        new Pose2d(0.69204, 0.69593, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj depoToHub = new ChoreoTraj(
+        "depoToHub",
+        OptionalInt.empty(),
+        0.88621,
+        new Pose2d(0.63429, 0.75171, Rotation2d.fromRadians(0)),
+        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj CenterCollectAndShoot = new ChoreoTraj(
+        "CenterCollectAndShoot",
+        OptionalInt.empty(),
+        4.53691,
+        new Pose2d(3.55509, 7.39727, Rotation2d.fromRadians(0)),
+        new Pose2d(1.88186, 7.30431, Rotation2d.fromRadians(-1.0637))
     );
 
     /**
@@ -37,7 +72,12 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("centerCollect1", centerCollect1)
+        Map.entry("centerCollectOurSide", centerCollectOurSide),
+        Map.entry("centerCollectAndShootFullPath", centerCollectAndShootFullPath),
+        Map.entry("startToDepo", startToDepo),
+        Map.entry("shootOnlyOurSide", shootOnlyOurSide),
+        Map.entry("depoToHub", depoToHub),
+        Map.entry("CenterCollectAndShoot", CenterCollectAndShoot)
     );
 
     /**
