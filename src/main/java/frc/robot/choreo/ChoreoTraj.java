@@ -41,7 +41,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
         OptionalInt.empty(),
-        3.72025,
+        3.7991,
         new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00508)),
         new Pose2d(3.07261, 7.01629, Rotation2d.fromRadians(-0.83379))
     );
