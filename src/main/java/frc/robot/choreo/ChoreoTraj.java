@@ -24,33 +24,12 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj secondPass = new ChoreoTraj(
-        "secondPass",
+    public static final ChoreoTraj depotOnly = new ChoreoTraj(
+        "depotOnly",
         OptionalInt.empty(),
-        4.02979,
-        new Pose2d(2.92272, 6.87738, Rotation2d.fromRadians(-1.10946)),
-        new Pose2d(2.93107, 6.87738, Rotation2d.fromRadians(-1.106))
-    );
-    public static final ChoreoTraj stealCenter = new ChoreoTraj(
-        "stealCenter",
-        OptionalInt.empty(),
-        4.17551,
-        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
-        new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
-    );
-    public static final ChoreoTraj quarterCenter = new ChoreoTraj(
-        "quarterCenter",
-        OptionalInt.empty(),
-        3.7991,
-        new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00508)),
-        new Pose2d(3.07261, 7.01629, Rotation2d.fromRadians(-0.83379))
-    );
-    public static final ChoreoTraj leaveOutpost = new ChoreoTraj(
-        "leaveOutpost",
-        OptionalInt.empty(),
-        0.63028,
-        new Pose2d(0.72059, 0.66885, Rotation2d.fromRadians(0)),
-        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0))
+        0.77385,
+        new Pose2d(1.19055, 5.93022, Rotation2d.fromRadians(0)),
+        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(0))
     );
     public static final ChoreoTraj depotOutpost = new ChoreoTraj(
         "depotOutpost",
@@ -75,12 +54,33 @@ public record ChoreoTraj(
         new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268)),
         new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
     );
-    public static final ChoreoTraj depotOnly = new ChoreoTraj(
-        "depotOnly",
+    public static final ChoreoTraj leaveOutpost = new ChoreoTraj(
+        "leaveOutpost",
         OptionalInt.empty(),
-        0.77385,
-        new Pose2d(1.19055, 5.93022, Rotation2d.fromRadians(0)),
-        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(0))
+        0.63028,
+        new Pose2d(0.72059, 0.66885, Rotation2d.fromRadians(0)),
+        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj quarterCenter = new ChoreoTraj(
+        "quarterCenter",
+        OptionalInt.empty(),
+        4.88872,
+        new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00992)),
+        new Pose2d(3.07261, 7.01629, Rotation2d.fromRadians(-0.83379))
+    );
+    public static final ChoreoTraj secondPass = new ChoreoTraj(
+        "secondPass",
+        OptionalInt.empty(),
+        4.02979,
+        new Pose2d(2.92272, 6.87738, Rotation2d.fromRadians(-1.10946)),
+        new Pose2d(2.93107, 6.87738, Rotation2d.fromRadians(-1.106))
+    );
+    public static final ChoreoTraj stealCenter = new ChoreoTraj(
+        "stealCenter",
+        OptionalInt.empty(),
+        4.17551,
+        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
+        new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
 
     /**
@@ -88,14 +88,14 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("secondPass", secondPass),
-        Map.entry("stealCenter", stealCenter),
-        Map.entry("quarterCenter", quarterCenter),
-        Map.entry("leaveOutpost", leaveOutpost),
+        Map.entry("depotOnly", depotOnly),
         Map.entry("depotOutpost", depotOutpost),
         Map.entry("depotOutpost$0", depotOutpost$0),
         Map.entry("depotOutpost$1", depotOutpost$1),
-        Map.entry("depotOnly", depotOnly)
+        Map.entry("leaveOutpost", leaveOutpost),
+        Map.entry("quarterCenter", quarterCenter),
+        Map.entry("secondPass", secondPass),
+        Map.entry("stealCenter", stealCenter)
     );
 
     /**
