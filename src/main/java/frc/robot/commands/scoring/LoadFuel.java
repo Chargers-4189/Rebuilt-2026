@@ -21,17 +21,17 @@ public class LoadFuel extends Command {
   private Indexer indexer;
   private Shooter shooter;
   private SwerveSubsystem swerve;
-  private boolean checkAlignment;
+  private boolean scoring;
   private Hopper hopper;
   private boolean alreadyAligned;
 
   /** Creates a new LoadFuel. */
-  public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean checkAlignment) {
+  public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean scoring) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.swerve = swerve;
-    this.checkAlignment = checkAlignment;
     this.hopper = hopper;
+    this.scoring = scoring;
     addRequirements(indexer, hopper);
   }
 
@@ -44,15 +44,19 @@ public class LoadFuel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!checkAlignment && alreadyAligned) {
+    if (alreadyAligned) {
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
     } else {
-      if (Math.abs((shooter.getVelocity() - shooter.getTargetVelocity())) >= ShooterTable.kTolerance.get()){
+      if (shooter.getVelocity() < shooter.getTargetVelocity() - ShooterTable.kTolerance.get()){
         System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
-      } else if (Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kAngleTolerance.get()) {
+      } else if (scoring && shooter.getVelocity() < shooter.getTargetVelocity()) {
+        System.out.println("Too Much Power");
+        indexer.setPower(IndexerConstants.kReversePower);
+        hopper.setPower(0);
+      } else if (scoring && Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kAngleTolerance.get()) {
         System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);        

@@ -29,7 +29,7 @@ public class Score extends ParallelCommandGroup {
   /** Creates a new Score. */
   public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
         new AlignHoodAndFlywheel(hood, shooter, vision),
         new AlignSwerve(swerve, vision, driveX, driveY),
         new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))

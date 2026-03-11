@@ -64,9 +64,9 @@ public record ChoreoTraj(
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
         OptionalInt.empty(),
-        4.88872,
+        6.34377,
         new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00992)),
-        new Pose2d(3.07261, 7.01629, Rotation2d.fromRadians(-0.83379))
+        new Pose2d(3.03989, 7.0424, Rotation2d.fromRadians(-1.08746))
     );
     public static final ChoreoTraj secondPass = new ChoreoTraj(
         "secondPass",

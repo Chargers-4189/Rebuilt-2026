@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -96,7 +98,7 @@ public class NetworkTables {
         public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
         public static final DoubleEntry kInnerExtensionLimit = intakeTable.getDoubleTopic("Intake Inner Limit").getEntry(Constants.IntakeConstants.kInnerExtensionLimit);
 
-        public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Intake Extension Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
+        public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Taunt Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
 
         public static void init() {
             kWheelPower.set(kWheelPower.get());
@@ -149,6 +151,8 @@ public class NetworkTables {
 
     public static class HoodTable {
         static NetworkTable hoodTable = networkInstance.getTable("hoodTable");
+
+        public static DoubleSupplier kPassAngle;
 
         public static final DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
         public static final DoublePublisher hoodGoal = hoodTable.getDoubleTopic("Hood Goal").publish();
@@ -217,6 +221,24 @@ public class NetworkTables {
             kMotionMagicJerk.set(kMotionMagicJerk.get());
         }
     }
+
+    public static class ShootingCalculatorTable {
+        static NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
+
+        public static final DoubleEntry kHoodIntercept = shootingCalcTable.getDoubleTopic("Intercept (Hood Calc)").getEntry(Constants.ShootingCalculatorConstants.kHoodIntercept);
+        public static final DoubleEntry kHoodSlope = shootingCalcTable.getDoubleTopic("Slope (Hood Calc)").getEntry(Constants.ShootingCalculatorConstants.kHoodSlope);
+        public static final DoubleEntry kVelocitySlope = shootingCalcTable.getDoubleTopic("Slope (Velocity Calc)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySlope);
+        public static final DoubleEntry kVelocityIntercept = shootingCalcTable.getDoubleTopic("Intercept (Velocity Calc)").getEntry(Constants.ShootingCalculatorConstants.kVelocityIntercept);
+        public static final DoubleEntry kVelocitySquared = shootingCalcTable.getDoubleTopic("Squared (Velocity Calc)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySquared);
+
+        public static final void init() {
+            kHoodIntercept.set(kHoodIntercept.get());
+            kHoodSlope.set(kHoodSlope.get());
+            kVelocitySlope.set(kVelocitySlope.get());
+            kVelocityIntercept.set(kVelocityIntercept.get());
+            kVelocitySquared.set(kVelocitySquared.get());
+        }
+    }
     
     public static void initialize(CommandXboxController primaryController) {
         NetworkTables.primaryController = primaryController;
@@ -226,6 +248,7 @@ public class NetworkTables {
         IndexerTable.init();
         HoodTable.init();
         ShooterTable.init();
+        ShootingCalculatorTable.init();
         autoChooser.setDefaultOption("None", Commands.none());
         autoChooser.getSelected();
     }

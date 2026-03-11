@@ -61,7 +61,7 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kS = 0;
 
-    public static final double kTauntRotations = .3;
+    public static final double kTauntRotations = .35;
 
     public static final double kTolerance = 0.03;
     public static final double kOuterExtensionLimit = 0.03;
@@ -84,7 +84,7 @@ public final class Constants {
     public static final int kMotorCanID = 25;
 
     //Modifiables
-    public static final double kPower = .4;
+    public static final double kPower = 1;
     public static final double kReversePower = -.1;
   }
 
@@ -119,7 +119,7 @@ public final class Constants {
 
     //slot 0 configs
     public static final double kS = 0.45; // Add 0.25 V output to overcome static friction
-    public static final double kV = 0.128; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
     public static final double kP = 0.2; // A position error of 2.5 rotations results in 12 V output 
     public static final double kI = 0.0; // no output for integrated error
@@ -132,9 +132,10 @@ public final class Constants {
   }
 
   public static class ShootingCalculatorConstants {
-    public static final double kHoodAngleIntercept = 0;
-    public static final double kHoodAngleSlope = 0;
-    public static final double kVelocityIntercept = 0;
-    public static final double kVelolcityIntercept = 0;
+    public static final double kHoodIntercept = -.05;
+    public static final double kHoodSlope = .05;
+    public static final double kVelocityIntercept = 39.732;
+    public static final double kVelocitySlope = -.228;
+    public static final double kVelocitySquared = 1;
   }
 }

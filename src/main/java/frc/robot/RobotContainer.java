@@ -74,7 +74,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
+            //.withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
 
@@ -84,18 +84,13 @@ public class RobotContainer {
     public RobotContainer() {
         //intakeSystemId();
         configureBindings();
+        //swerveSystemId();
         configureSwerveBindings();
         //swerveSystemId();
         NetworkTables.initialize(primaryController);
     }
 
     private void configureBindings() {
-
-        //Stop All
-        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
-
-        //Reset Gyro
-        primaryController.back().onTrue(swerve.resetGyro());
 
         //Deploy Intake
         primaryController.rightTrigger(.2).or(primaryController.leftTrigger(.2)).whileTrue(
@@ -121,7 +116,7 @@ public class RobotContainer {
         }, hood).withName("Hood Default Angle"));
 
         //Fixed-Distance Shoot
-        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kTestDistance, false));
+        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kTestDistance));
         
         //Score
         primaryController.leftBumper().whileTrue(
@@ -132,6 +127,13 @@ public class RobotContainer {
     }
 
     private void configureSwerveBindings() {
+        
+        //Stop All
+        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
+
+        //Reset Gyro
+        primaryController.back().onTrue(swerve.resetGyro());
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         swerve.setDefaultCommand(
@@ -185,10 +187,10 @@ public class RobotContainer {
         // Run SysId routines when holding back/start and X/Y.
 
         // Note that each routine should be run exactly once in a single log.
-        primaryController.back().and(primaryController.y()).whileTrue(swerve.sysIdDynamic(Direction.kForward));
-        primaryController.back().and(primaryController.x()).whileTrue(swerve.sysIdDynamic(Direction.kReverse));
-        primaryController.start().and(primaryController.y()).whileTrue(swerve.sysIdQuasistatic(Direction.kForward));
-        primaryController.start().and(primaryController.x()).whileTrue(swerve.sysIdQuasistatic(Direction.kReverse));
+        primaryController.y().whileTrue(swerve.sysIdDynamic(Direction.kForward));
+        primaryController.x().whileTrue(swerve.sysIdDynamic(Direction.kReverse));
+        primaryController.a().whileTrue(swerve.sysIdQuasistatic(Direction.kForward));
+        primaryController.b().whileTrue(swerve.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
         primaryController.leftBumper().onTrue(swerve.runOnce(swerve::seedFieldCentric));

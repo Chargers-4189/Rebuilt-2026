@@ -159,7 +159,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     );
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -478,6 +478,18 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
 
     public Command resetGyro() {
         m_hasAppliedOperatorPerspective = false;
-        return Commands.runOnce(() -> this.resetRotation(new Rotation2d())).withName("Reset Gyro");
+        return Commands.runOnce(() -> this.resetRotation(Rotation2d.k180deg)).withName("Reset Gyro");
+    }
+
+    public Command choreoAuto(String trajectoryName, boolean resetOdometry) {
+        if (resetOdometry) {
+            return Commands.sequence(
+                autoFactory.resetOdometry(trajectoryName),
+                autoFactory.trajectoryCmd(trajectoryName)
+            );
+        } else {
+            return autoFactory.trajectoryCmd(trajectoryName);
+        }
+
     }
 }
