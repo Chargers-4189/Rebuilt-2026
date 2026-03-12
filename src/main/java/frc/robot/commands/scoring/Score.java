@@ -31,7 +31,7 @@ public class Score extends ParallelCommandGroup {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
         new AlignHoodAndFlywheel(hood, shooter, vision),
-        new AlignSwerve(swerve, vision, driveX, driveY),
+        new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
         new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
     );
   }

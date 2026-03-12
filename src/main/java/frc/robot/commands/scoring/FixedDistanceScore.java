@@ -31,8 +31,8 @@ public class FixedDistanceScore extends ParallelCommandGroup {
     addCommands(
       new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
       new AlignHoodAndFlywheel(hood, shooter, distance),
-      new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, () -> .2)),
-      new AlignSwerve(swerve, vision, driveX, driveY)
+      new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
+      new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
     );
   }
 

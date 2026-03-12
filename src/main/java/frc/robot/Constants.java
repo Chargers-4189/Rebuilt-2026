@@ -23,9 +23,9 @@ public final class Constants {
     //Constants for Angle Alignment
     public static final double kAngleP = 4.0;
     public static final double kAngleI = 0.0;
-    public static final double kAngleD = 0.2;
+    public static final double kAngleD = 0.0;
     public static final double kAngleS = 0.0637;
-    public static final double kAngleMaxPower = 0.3;
+    public static final double kAngleMaxPower = 0.8;
     public static final double kAngleTolerance = 0.015;
 
     //Constants for Position Alignment
@@ -54,7 +54,7 @@ public final class Constants {
     public static final double kDefaultAngle = 0;
 
     public static final double kAutoOutPower = .2;
-    public static final double kAutoInPower = .4;
+    public static final double kAutoInPower = .6;
 
     public static final double kP = 2;
     public static final double kI = 0;
@@ -100,6 +100,7 @@ public final class Constants {
     public static final double kManualPower = .1;
     public static final double kAutoPower = .3;
     public static final double kDefaultAngle = 0.05;
+    public static final double kPassAngle = 0.05;
 
     public static final double kP = 3;
     public static final double kI = 0;
@@ -113,8 +114,9 @@ public final class Constants {
 
     //Modifiables
     public static final double kFixedPower = .5;
-    public static final double kTestDistance = 0;
-    
+    public static final double kFixedShootDistance = 5;
+    public static final double kPassVelocity = 70;
+
     public static final double kTolerance = 1.5;
 
     //slot 0 configs
@@ -134,8 +136,12 @@ public final class Constants {
   public static class ShootingCalculatorConstants {
     public static final double kHoodIntercept = -.05;
     public static final double kHoodSlope = .05;
-    public static final double kVelocityIntercept = 39.732;
-    public static final double kVelocitySlope = -.228;
-    public static final double kVelocitySquared = 1;
+    public static final double kVelocityIntercept = 24;
+    public static final double kVelocitySlope = 7.8;
+    public static final double kVelocitySquared = 0;
+  }
+
+  public static class AutoConstants {
+    public static final boolean kRightSide = true;
   }
 }

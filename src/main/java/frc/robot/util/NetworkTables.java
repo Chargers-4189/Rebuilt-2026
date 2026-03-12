@@ -3,12 +3,15 @@ package frc.robot.util;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructEntry;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,7 +30,7 @@ public class NetworkTables {
     private static CommandXboxController primaryController;
 
     public static class SwerveTable {
-        static NetworkTable swerveTable = networkInstance.getTable("swerveTable");
+        private static final NetworkTable swerveTable = networkInstance.getTable("swerveTable");
 
         public static final StructEntry<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).getEntry(new Pose2d());
 
@@ -52,6 +55,8 @@ public class NetworkTables {
         public static final DoubleEntry kDriveExponent = swerveTable.getDoubleTopic("Position Drive Exponent").getEntry(Constants.SwerveConstants.kDriveExponent);
         public static final DoubleEntry kRotationalExponent = swerveTable.getDoubleTopic("Position Rotational Exponent").getEntry(Constants.SwerveConstants.kRotationalExponent);
 
+        public static final StringPublisher encoderOffsets = swerveTable.getStringTopic("Encoder Offsets").publish();
+
         public static void init() {
             kAngleP.set(kAngleP.get());
             kAngleI.set(kAngleI.get());
@@ -73,7 +78,7 @@ public class NetworkTables {
     }
 
     public static class IntakeTable {
-        static NetworkTable intakeTable = networkInstance.getTable("intakeTable");
+        private static final NetworkTable intakeTable = networkInstance.getTable("intakeTable");
 
         public static final DoublePublisher rawEncoder = intakeTable.getDoubleTopic("Intake Raw Encoder").publish();
         public static final DoublePublisher offsetEncoder = intakeTable.getDoubleTopic("Offset Encoder").publish();
@@ -125,7 +130,7 @@ public class NetworkTables {
     }
 
     public static class HopperTable {
-        static NetworkTable hopperTable = networkInstance.getTable("hopperTable");
+        private static final NetworkTable hopperTable = networkInstance.getTable("hopperTable");
 
         public static final DoubleEntry kPower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kPower);
         public static final DoubleEntry kReversePower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kReversePower);
@@ -138,7 +143,7 @@ public class NetworkTables {
     
     
     public static class IndexerTable {
-        static NetworkTable indexerTable = networkInstance.getTable("indexerTable");
+        private static final NetworkTable indexerTable = networkInstance.getTable("indexerTable");
 
         public static final DoubleEntry kPower = indexerTable.getDoubleTopic("Indexer Power").getEntry(Constants.IndexerConstants.kPower);
         public static final DoubleEntry kReversePower = indexerTable.getDoubleTopic("Indexer Reverse Power").getEntry(Constants.IndexerConstants.kReversePower);
@@ -150,9 +155,7 @@ public class NetworkTables {
     }
 
     public static class HoodTable {
-        static NetworkTable hoodTable = networkInstance.getTable("hoodTable");
-
-        public static DoubleSupplier kPassAngle;
+        private static final NetworkTable hoodTable = networkInstance.getTable("hoodTable");
 
         public static final DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
         public static final DoublePublisher hoodGoal = hoodTable.getDoubleTopic("Hood Goal").publish();
@@ -160,6 +163,8 @@ public class NetworkTables {
         public static final DoubleEntry kManualPower = hoodTable.getDoubleTopic("Hood Manual Power").getEntry(Constants.HoodConstants.kManualPower);
         public static final DoubleEntry kAutoPower = hoodTable.getDoubleTopic("Hood Auto Power").getEntry(Constants.HoodConstants.kAutoPower);
         public static final DoubleEntry kDefaultAngle = hoodTable.getDoubleTopic("Hood Default Angle").getEntry(Constants.HoodConstants.kDefaultAngle);
+        
+        public static final DoubleEntry kPassAngle = hoodTable.getDoubleTopic("Pass Angle").getEntry(Constants.HoodConstants.kPassAngle);
 
         public static final DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
         public static final DoubleEntry kI = hoodTable.getDoubleTopic("I (Hood)").getEntry(Constants.HoodConstants.kI);
@@ -171,6 +176,8 @@ public class NetworkTables {
             kAutoPower.set(kAutoPower.get());
             kDefaultAngle.set(kDefaultAngle.get());
 
+            kPassAngle.set(kPassAngle.get());
+
             kP.set(kP.get());
             kI.set(kI.get());
             kD.set(kD.get());
@@ -179,14 +186,15 @@ public class NetworkTables {
 
     
     public static class ShooterTable {
-        static NetworkTable shooterTable = networkInstance.getTable("shooterTable");
+        private static final NetworkTable shooterTable = networkInstance.getTable("shooterTable");
 
         public static final DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
         public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
         public static final DoublePublisher currentPower = shooterTable.getDoubleTopic("Current Power").publish();
 
         public static final DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kFixedPower);
-        public static final DoubleEntry kTestDistance = shooterTable.getDoubleTopic("Shooter Distance").getEntry(Constants.ShooterConstants.kTestDistance);
+        public static final DoubleEntry kFixedShootDistance = shooterTable.getDoubleTopic("Fixed Shoot Distance").getEntry(Constants.ShooterConstants.kFixedShootDistance);
+        public static final DoubleEntry kPassVelocity = shooterTable.getDoubleTopic("Pass Velocity").getEntry(Constants.ShooterConstants.kPassVelocity);
 
         public static final DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.ShooterConstants.kTolerance);
 
@@ -205,7 +213,8 @@ public class NetworkTables {
 
         public static final void init() {
             kTestPower.set(kTestPower.get());
-            kTestDistance.set(kTestDistance.get());
+            kFixedShootDistance.set(kFixedShootDistance.get());
+            kPassVelocity.set(kPassVelocity.get());
 
             kTolerance.set(kTolerance.get());
 
@@ -223,7 +232,7 @@ public class NetworkTables {
     }
 
     public static class ShootingCalculatorTable {
-        static NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
+        private static final NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
 
         public static final DoubleEntry kHoodIntercept = shootingCalcTable.getDoubleTopic("Intercept (Hood Calc)").getEntry(Constants.ShootingCalculatorConstants.kHoodIntercept);
         public static final DoubleEntry kHoodSlope = shootingCalcTable.getDoubleTopic("Slope (Hood Calc)").getEntry(Constants.ShootingCalculatorConstants.kHoodSlope);
@@ -239,6 +248,18 @@ public class NetworkTables {
             kVelocitySquared.set(kVelocitySquared.get());
         }
     }
+
+    public static class AutoTable {
+        private static final NetworkTable autoTable = networkInstance.getTable("autoTable");
+
+
+        public static final BooleanEntry kRightSide = autoTable.getBooleanTopic("Intercept (Hood Calc)").getEntry(Constants.AutoConstants.kRightSide);
+
+        public static final void init() {
+            kRightSide.set(kRightSide.get());
+        }
+    }
+    
     
     public static void initialize(CommandXboxController primaryController) {
         NetworkTables.primaryController = primaryController;
@@ -249,8 +270,7 @@ public class NetworkTables {
         HoodTable.init();
         ShooterTable.init();
         ShootingCalculatorTable.init();
-        autoChooser.setDefaultOption("None", Commands.none());
-        autoChooser.getSelected();
+        AutoTable.init();
     }
 
     public static void periodic() {

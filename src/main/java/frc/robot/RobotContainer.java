@@ -11,10 +11,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,6 +41,8 @@ import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate2;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
+import frc.robot.commands.passing.Pass;
+import frc.robot.commands.scoring.AlignAngle;
 import frc.robot.commands.scoring.FixedDistanceScore;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Shooter;
@@ -64,6 +68,7 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer();
     private final Intake intake = new Intake();
 
+    private static AutoChooser autoChooser = new AutoChooser();
     //Disabled Telemetry:
 
     public final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
@@ -82,21 +87,23 @@ public class RobotContainer {
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     
     public RobotContainer() {
-        //intakeSystemId();
         configureBindings();
-        //swerveSystemId();
         configureSwerveBindings();
+        //intakeSystemId();
         //swerveSystemId();
+        configureAutoChooser();
         NetworkTables.initialize(primaryController);
     }
 
     private void configureBindings() {
 
         //Deploy Intake
-        primaryController.rightTrigger(.2).or(primaryController.leftTrigger(.2)).whileTrue(
+        primaryController.rightTrigger(.1).or(primaryController.leftTrigger(.1)).whileTrue(
             Commands.run(() -> {            
                 intake.setExtensionPower(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
-            }, intake).withName("Manual Intake")
+            }, intake)
+            .finallyDo(() -> intake.setExtensionPower(0))
+            .withName("Manual Intake")
         );
 
         primaryController.b().onTrue(new IntakeRotate(intake, true));
@@ -116,14 +123,16 @@ public class RobotContainer {
         }, hood).withName("Hood Default Angle"));
 
         //Fixed-Distance Shoot
-        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kTestDistance));
+        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kFixedShootDistance));
         
         //Score
         primaryController.leftBumper().whileTrue(
             new Score(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController)
         );
 
-        primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
+        //primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
+        primaryController.povRight().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
+        primaryController.povLeft().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, swerve));
     }
 
     private void configureSwerveBindings() {
@@ -139,9 +148,9 @@ public class RobotContainer {
         swerve.setDefaultCommand(
             // Drivetrain will execute this command periodically
             swerve.applyRequest(() ->
-                drive.withVelocityX(MathUtil.copyDirectionPow(-primaryController.getLeftY(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
-                    .withVelocityY(MathUtil.copyDirectionPow(-primaryController.getLeftX(), SwerveTable.kDriveExponent.get()) * swerve.MaxSpeed)
-                    .withRotationalRate(MathUtil.copyDirectionPow(-primaryController.getRightX(), SwerveTable.kRotationalExponent.get()) * swerve.MaxAngularRate)
+                drive.withVelocityX(MathUtil.copyDirectionPow(-primaryController.getLeftY(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
+                    .withVelocityY(MathUtil.copyDirectionPow(-primaryController.getLeftX(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
+                    .withRotationalRate(MathUtil.copyDirectionPow(-primaryController.getRightX(), SwerveTable.kRotationalExponent.get()) * SwerveSubsystem.MaxAngularRate)
             )
         );
 
@@ -153,34 +162,14 @@ public class RobotContainer {
         );
     }
 
+    public void configureAutoChooser() {
+        autoChooser.addCmd("quarterCenter", () -> new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake));
+        SmartDashboard.putData(autoChooser);
+    }
+
     
     public Command getAutonomousCommand() {
-        /*
-        try{
-            // Load the path you want to follow using its name in the GUI
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
-
-            // Create a path following command using AutoBuilder. This will also trigger event markers.
-            return AutoBuilder.followPath(path);
-        } catch (Exception e) {sdsdsjddjdd
-            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-        }
-        */
-
-        Pose2d currentRobotPose = swerve.getState().Pose;
-        Pose2d twoFeetForward = currentRobotPose.plus(new Transform2d(1,0,currentRobotPose.getRotation())); 
-
-        PathConstraints constraints = PathConstraints.unlimitedConstraints(12);
-        // try {
-        //         return AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test.path"),constraints);
-        // } catch (Exception e) {
-        //     return Commands.none();
-        // }
-        // return AutoBuilder.pathfindToPose(twoFeetForward, constraints);
-
-        //return new ExampleAutoScore(shooter, hood, indexer, swerve, vision, hopper);
-        return new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake);
+        return autoChooser.selectedCommand();
     }
 
     private void swerveSystemId() {

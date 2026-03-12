@@ -45,6 +45,7 @@ public class LoadFuel extends Command {
   @Override
   public void execute() {
     if (alreadyAligned) {
+      System.out.println("Loading Fuel!");
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
     } else {
@@ -56,11 +57,12 @@ public class LoadFuel extends Command {
         System.out.println("Too Much Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
-      } else if (scoring && Math.abs((swerve.getRotations() - swerve.getRotationalGoal())) >= SwerveTable.kAngleTolerance.get()) {
+      } else if (scoring && Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get()) {
         System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);        
       } else {
+        System.out.println("Loading Fuel!");
         indexer.setPower(IndexerTable.kPower.get());
         hopper.setPower(HopperTable.kPower.get());
         alreadyAligned = true;

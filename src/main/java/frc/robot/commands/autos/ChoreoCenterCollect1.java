@@ -27,7 +27,7 @@ public class ChoreoCenterCollect1 extends SequentialCommandGroup {
     addCommands(
       Commands.race(
         new IntakeRunAndRotate2(intake, IntakeTable.kAutoInPower),
-        swerve.choreoAuto("quarterCenter", true)
+        swerve.choreoAuto("quarterCenter", false)
       ),
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake)
     );

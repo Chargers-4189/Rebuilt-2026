@@ -46,6 +46,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.NetworkTables.AutoTable;
 import frc.robot.util.NetworkTables.SwerveTable;
 
 /**
@@ -61,7 +62,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private double rotationalGoal;
+    private double rotationalError;
 
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -79,6 +80,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+    public static final SwerveRequest idle = new SwerveRequest.Idle();
+
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -95,25 +98,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             this
         )
     );
-
-    //Path Following
-    private double xPower;
-    private double yPower;
-    private double anglePower;
-
-    private Pose2d goalPose;
-    private Pose2d currentPose;
-
-    private PIDController xPid = new PIDController(0, 0, 0);
-    private PIDController yPid = new PIDController(0, 0, 0);
-    private PIDController anglePid = new PIDController(0, 0, 0);
-
-    private SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-        .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-        .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
-
-    public AutoFactory autoFactory;
 
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
@@ -160,6 +144,26 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
+
+
+    //Path Following
+    private double xPower;
+    private double yPower;
+    private double anglePower;
+
+    private Pose2d goalPose;
+    private Pose2d currentPose;
+
+    private PIDController xPid = new PIDController(0, 0, 0);
+    private PIDController yPid = new PIDController(0, 0, 0);
+    private PIDController anglePid = new PIDController(0, 0, 0);
+
+    private SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+
+    public AutoFactory autoFactory;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -297,6 +301,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
         //this.updateSimState(m_drivetrainId, );
+
+        SwerveTable.encoderOffsets.set(getEncoderValues());
             
             
          
@@ -383,29 +389,12 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    /**
-     * Calculates feed forward for angle align
-     * @param hubRotation Rotation to align to
-     * @return feedforward (kS only)
-     */
-    public double calculateFeedForward(Rotation2d hubRotation) {
-        double current = getState().Pose.getRotation().getRotations();
-        rotationalGoal = hubRotation.getRotations();
-
-        double output = SwerveTable.kAngleS.get();
-
-        if (rotationalGoal < current) {
-            output *= -1;
-        }
-        if (Math.abs(rotationalGoal - current) > .5) {
-            output *= -1;
-        }
-        
-        return output;
+    public double setRotationalError() {
+        return rotationalError;
     }
 
-    public double getRotationalGoal() {
-        return rotationalGoal;
+    public double getRotationalError() {
+        return rotationalError;
     }
     public double getRotations() {
         return getPose().getRotation().getRotations();
@@ -438,7 +427,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
 
     public void followTrajectory(SwerveSample sample) {
         currentPose = getPose();
-        goalPose = sample.getPose();
+        goalPose = Vision.flipFieldPose(sample.getPose(), AutoTable.kRightSide.get());
 
         xPower = MathUtil.clamp(-xPid.calculate(currentPose.getX(), goalPose.getX()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
         yPower = MathUtil.clamp(-yPid.calculate(currentPose.getY(), goalPose.getY()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
@@ -491,5 +480,27 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             return autoFactory.trajectoryCmd(trajectoryName);
         }
 
+    }
+
+    public String getEncoderValues() {
+
+        //FrontLeft, FrontRight, BackLeft, BackRight
+
+        double frontLeftEncoderOffset = MathUtil.inputModulus(TunerConstants.FrontLeft.EncoderOffset - this.getModules()[0].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double frontRightEncoderOffset = MathUtil.inputModulus(TunerConstants.FrontRight.EncoderOffset - this.getModules()[1].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double backLeftEncoderOffset = MathUtil.inputModulus(TunerConstants.BackLeft.EncoderOffset - this.getModules()[2].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double backRightEncoderOffset = MathUtil.inputModulus(TunerConstants.BackRight.EncoderOffset - this.getModules()[3].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+
+        String output = String.format(
+            "private static final Angle kFrontLeftEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kFrontRightEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kBackLeftEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kBackRightEncoderOffset = Rotations.of(%.6f);",
+            frontLeftEncoderOffset,
+            frontRightEncoderOffset,
+            backLeftEncoderOffset,
+            backRightEncoderOffset
+        );
+        return output;
     }
 }
