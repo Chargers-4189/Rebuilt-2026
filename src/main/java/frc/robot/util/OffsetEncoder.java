@@ -86,7 +86,7 @@ public class OffsetEncoder {
 
     private void updateDiscontinuityPoint() {
         discontinuityPoint = (max + min) / 2;
-        if (min > max) {
+        if (min < max) {
             discontinuityPoint += 0.5;
         }
     }

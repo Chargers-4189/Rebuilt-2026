@@ -54,7 +54,9 @@ public class IntakeRotate extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    stopwatch.start(1500);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -78,7 +80,11 @@ public class IntakeRotate extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
+
+    //if (stopwatch.hasTriggered()) {
+    //  return true;
+    //}
+
     if (rotateOut) {
       return Math.abs(intake.getError()) <= IntakeTable.kTolerance.get();
     } else {

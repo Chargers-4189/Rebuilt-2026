@@ -68,6 +68,14 @@ public class Vision extends SubsystemBase {
     return getDistanceFromLocation(getHubPose());
   }
 
+  public double getDistanceToOurZone() {
+    if (isRedAlliance()) {
+      return Math.abs(swerve.getPose().getX() - redTrenchX);
+    } else {
+      return Math.abs(swerve.getPose().getX() - blueTrenchX);
+    }
+  }
+
   private Pose2d getHubPose() {
     if(swerve.m_isBlueAlliance){
       return hubPoseBlue;

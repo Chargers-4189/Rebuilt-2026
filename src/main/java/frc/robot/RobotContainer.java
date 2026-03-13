@@ -32,7 +32,9 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.autos.AlignPosition;
-import frc.robot.commands.autos.DepotAndOutpost;
+import frc.robot.commands.autos.DepotThenOutpost;
+import frc.robot.commands.autos.OutpostOnly;
+import frc.robot.commands.autos.OutpostThenDepot;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
@@ -173,11 +175,12 @@ public class RobotContainer {
         autoChooser.addCmd("Steal Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, false));
         autoChooser.addCmd("Steal Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, true));
         
-        autoChooser.addCmd("Depot Then Outpost", () -> new DepotAndOutpost(shooter, hood, indexer, swerve, vision, hopper, intake));
-        autoChooser.addCmd("Outpost Then Depot", () -> new DepotAndOutpost(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Depot Then Outpost", () -> new DepotThenOutpost(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Outpost Then Depot", () -> new OutpostThenDepot(shooter, hood, indexer, swerve, vision, hopper, intake));
         autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.depotOnly, false));
-        autoChooser.addCmd("Outpost Only", () -> Commands.none());
+        autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intake));
 
+        autoChooser.addCmd("Shoot Preload", () -> new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 

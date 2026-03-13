@@ -30,7 +30,7 @@ public class SinglePass extends SequentialCommandGroup {
         new IntakeRunAndRotate(intake, IntakeTable.kWheelPower),
         swerve.choreoAuto(traj, false)
       ),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake)
+      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(5)
     );
   }
 }

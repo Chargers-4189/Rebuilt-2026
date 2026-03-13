@@ -17,7 +17,7 @@ public class ScoringCalculator {
      * @return hood rotation (encoder difference from the bottom)
      */
     public static double calculateHoodAngle(double distance) {
-        return ShootingCalculatorTable.kHoodSlope.get() * distance + ShootingCalculatorTable.kHoodIntercept.get();
+        return ShootingCalculatorTable.kAngleSlope.get() * distance + ShootingCalculatorTable.kAngleIntercept.get();
     }
 
     /**
@@ -30,7 +30,7 @@ public class ScoringCalculator {
     }
 
     public static double calculatePassingPower(double distance) {
-        return PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get();
+        return ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get();
     }
 
     public static double calculatePassingAngle(double distance) {

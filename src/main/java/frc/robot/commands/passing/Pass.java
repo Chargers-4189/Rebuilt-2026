@@ -36,8 +36,8 @@ public class Pass extends ParallelCommandGroup {
   public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Intake intake, Vision vision, SwerveSubsystem swerve, CommandXboxController primaryController) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, false)),
-        new SpinShooter(shooter, () -> ScoringCalculator.calculatePassingPower(vision.getDistanceFromHub())),
-        hood.setHoodAngleCommand(HoodTable.kPassAngle),
+        new SpinShooter(shooter, () -> ScoringCalculator.calculatePassingPower(vision.getDistanceToOurZone())),
+        hood.setHoodAngleCommand(() -> ScoringCalculator.calculateHoodAngle(vision.getDistanceToOurZone())),
         new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations)),
         new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.kZero).getRotations(), false)
     );
