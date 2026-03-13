@@ -4,7 +4,10 @@
 
 package frc.robot.commands.autos;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.choreo.ChoreoTraj;
+import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -13,16 +16,14 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoCenterCollectAndShoot extends SequentialCommandGroup {
-  /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public AutoCenterCollectAndShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoCollectAndShootAndIntake(intake),
-    new Score(shooter, hood, indexer, swerve, vision, hopper, intake));
+public class StealCenter extends CollectCenterThenShoot {
+  /** Creates a new SecondPass. */
+  public StealCenter(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+    super(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter);
   }
 }

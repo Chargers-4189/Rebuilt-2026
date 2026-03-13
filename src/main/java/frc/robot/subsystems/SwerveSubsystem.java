@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -472,14 +473,14 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return Commands.runOnce(() -> this.resetRotation(Rotation2d.k180deg)).withName("Reset Gyro");
     }
 
-    public Command choreoAuto(String trajectoryName, boolean resetOdometry) {
+    public Command choreoAuto(ChoreoTraj trajectory, boolean resetOdometry) {
         if (resetOdometry) {
             return Commands.sequence(
-                autoFactory.resetOdometry(trajectoryName),
-                autoFactory.trajectoryCmd(trajectoryName)
+                autoFactory.resetOdometry(trajectory.name()),
+                autoFactory.trajectoryCmd(trajectory.name())
             );
         } else {
-            return autoFactory.trajectoryCmd(trajectoryName);
+            return autoFactory.trajectoryCmd(trajectory.name());
         }
 
     }

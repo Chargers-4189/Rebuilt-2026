@@ -31,14 +31,11 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.autos.AlignPosition;
-import frc.robot.commands.autos.AutoCenterCollectAndShoot;
-import frc.robot.commands.autos.AutoCenterCollectAndShootFullPath;
-import frc.robot.commands.autos.AutoCenterCollectWOInterferance;
-import frc.robot.commands.autos.AutoShootOurSide;
-import frc.robot.commands.autos.ChoreoCenterCollect1;
+import frc.robot.commands.autos.DepotOutpost;
+import frc.robot.commands.autos.QuarterCenter;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.IntakeRunAndRotate2;
+import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.Pass;
@@ -109,7 +106,7 @@ public class RobotContainer {
         .finallyDo(() -> intake.setExtensionPower(0)));
 
         //Intake Fuel
-        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intake, IntakeTable.kWheelPower));
 
         primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
 
@@ -165,7 +162,7 @@ public class RobotContainer {
     }
 
     public void configureAutoChooser() {
-        autoChooser.addCmd("quarterCenter", () -> new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("quarterCenter", () -> new QuarterCenter(shooter, hood, indexer, swerve, vision, hopper, intake));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 

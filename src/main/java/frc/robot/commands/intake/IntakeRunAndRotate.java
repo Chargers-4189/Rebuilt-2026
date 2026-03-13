@@ -13,9 +13,9 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeRunAndRotate2 extends SequentialCommandGroup {
+public class IntakeRunAndRotate extends SequentialCommandGroup {
   /** Creates a new IntakeRunAndRotate2. */
-  public IntakeRunAndRotate2(Intake intake, DoubleSupplier power) {
+  public IntakeRunAndRotate(Intake intake, DoubleSupplier power) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
