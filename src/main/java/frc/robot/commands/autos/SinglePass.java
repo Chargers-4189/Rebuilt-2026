@@ -21,14 +21,14 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class QuarterCenter extends SequentialCommandGroup {
+public class SinglePass extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public QuarterCenter(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+  public SinglePass(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, ChoreoTraj traj) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       Commands.race(
         new IntakeRunAndRotate(intake, IntakeTable.kWheelPower),
-        swerve.choreoAuto(ChoreoTraj.quarterCenter, false)
+        swerve.choreoAuto(traj, false)
       ),
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake)
     );

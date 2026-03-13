@@ -4,6 +4,10 @@
 
 package frc.robot.commands.autos;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
@@ -21,9 +25,19 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class StealCenter extends CollectCenterThenShoot {
-  /** Creates a new SecondPass. */
-  public StealCenter(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
-    super(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter);
+public class DepotThenOutpost extends SequentialCommandGroup {
+  /** Creates a new AutoShootOurSide. */
+  public DepotThenOutpost(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+    // Add your commands in the addCommands() call, e.g.
+
+    addCommands(
+      Commands.race(
+        swerve.choreoAuto(ChoreoTraj.depotOutpost$0, false),
+        new IntakeRunAndRotate(intake, IntakeTable.kWheelPower)
+      ),
+      Commands.waitSeconds(4),
+      swerve.choreoAuto(ChoreoTraj.depotOutpost$1, false),
+      new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
+    );
   }
 }
