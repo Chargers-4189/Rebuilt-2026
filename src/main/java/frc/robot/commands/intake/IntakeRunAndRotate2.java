@@ -4,22 +4,23 @@
 
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.Hopper;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Intake;
-import frc.robot.util.NetworkTables.HopperTable;
-import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class OuttakeFuel extends ParallelCommandGroup {
-  /** Creates a new OuttakeFuel. */
-  public OuttakeFuel(Intake intake, Hopper hopper) {
+public class IntakeRunAndRotate2 extends SequentialCommandGroup {
+  /** Creates a new IntakeRunAndRotate2. */
+  public IntakeRunAndRotate2(Intake intake, DoubleSupplier power) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunIntakeWheels(intake, () -> -IntakeTable.kWheelPower.get()),
-      Commands.run(() -> hopper.setPower(-HopperTable.kPower.get()), hopper).finallyDo(() -> hopper.setPower(0))
+      new IntakeRotate(intake, true),
+      new RunIntakeWheels(intake, power)
     );
   }
 }

@@ -19,16 +19,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.NetworkTables.SwerveTable;
 
 public class Vision extends SubsystemBase {
 
-  private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+  private static AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
-  Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
+  public static final Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
+  public static final Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
+  public static final Pose2d fieldCenterPose = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
+  public static final Pose2d redOriginPose = new Pose2d(layout.getFieldLength(), layout.getFieldWidth(), Rotation2d.k180deg);
 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
@@ -84,7 +87,7 @@ public class Vision extends SubsystemBase {
       return Math.sqrt(diff);
   }
 
-  public Rotation2d getRotationFromHub(){
+  public double getRotationFromHub(){
     if(swerve.m_isBlueAlliance){
       return getRotationToBlueHub();
     } else {
@@ -92,14 +95,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private Rotation2d getRotationToRedHub(){
+  private double getRotationToRedHub(){
     return getRotationToLocation(hubPoseRed);
   }
 
-  private Rotation2d getRotationToBlueHub(){
+  private double getRotationToBlueHub(){
     return getRotationToLocation(hubPoseBlue);
   }
-  private Rotation2d getRotationToLocation(Pose2d location){
+  private double getRotationToLocation(Pose2d location){
     double botX = swerve.getState().Pose.getX();
     double botY = swerve.getState().Pose.getY();
 
@@ -109,10 +112,10 @@ public class Vision extends SubsystemBase {
     double xDiff = hubX - botX;
     double yDiff = hubY - botY;
 
-    return new Rotation2d(xDiff, yDiff);
+    return (new Rotation2d(xDiff, yDiff)).getRotations();
   }
 
-  private Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
+  private static Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
     double x1 = pose1.getX();
     double y1 = pose1.getY();
     
@@ -131,7 +134,36 @@ public class Vision extends SubsystemBase {
     this.addVisionMeasurement(rightCamera, rightCamTransform);
 
     //System.out.println(getDistanceFromHub());
-    SwerveTable.hubRotation.set(getRotationFromHub().getRotations());
+    SwerveTable.hubRotation.set(getRotationFromHub());
     SwerveTable.hubDistance.set(getDistanceFromHub());
+  }
+
+  
+  public static Pose2d convertFieldPos(Pose2d bluePerspective) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
+      return bluePerspective.rotateAround(fieldCenterPose.getTranslation(), Rotation2d.k180deg);
+    } else {
+      return bluePerspective;
+    }
+  }
+
+  public static Pose2d flipFieldPose(Pose2d pose, boolean rightSide) {
+    if (rightSide) {
+      return flipPose(pose);
+    } else {
+      return pose;
+    }
+  }
+
+  public static Pose2d flipPose(Pose2d pose) {
+    return new Pose2d(pose.getX(), redOriginPose.getY() - pose.getY(), pose.getRotation().unaryMinus());
+  }
+
+  public static Rotation2d convertFieldRotations(Rotation2d bluePerspective) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
+      return bluePerspective.rotateBy(Rotation2d.k180deg);
+    } else {
+      return bluePerspective;
+    }
   }
 }

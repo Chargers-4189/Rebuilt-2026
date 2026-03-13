@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
@@ -26,28 +27,23 @@ import frc.robot.commands.intake.IntakeRotate;
 public class FixedDistanceScore extends ParallelCommandGroup {
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY, DoubleSupplier distance, boolean alignSwerve) {
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY, DoubleSupplier distance) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
-        new AlignHoodAndFlywheel(hood, shooter, distance),
-        new SequentialCommandGroup(Commands.waitSeconds(4), new IntakeRotate(intake, () -> .2))
+      new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, true)),
+      new AlignHoodAndFlywheel(hood, shooter, distance),
+      new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
+      new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
     );
-
-    if (alignSwerve) {
-      addCommands(
-        new AlignSwerve(swerve, vision, driveX, driveY)
-      );
-    }
   }
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController, DoubleSupplier distance, boolean alignSwerve) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX(), distance, alignSwerve);
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController, DoubleSupplier distance) {
+    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX(), distance);
   }
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier distance, boolean alignSwerve) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> 0, () -> 0, distance, alignSwerve);
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier distance) {
+    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> 0, () -> 0, distance);
   }
 
 }

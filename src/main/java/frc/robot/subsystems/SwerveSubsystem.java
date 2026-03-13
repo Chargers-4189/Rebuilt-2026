@@ -12,13 +12,23 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.TrajectorySample;
+
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,10 +39,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.NetworkTables.AutoTable;
 import frc.robot.util.NetworkTables.SwerveTable;
 
 /**
@@ -48,10 +62,10 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private double rotationalGoal;
+    private double rotationalError;
 
-    public final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    public final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -66,8 +80,9 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    public static final SwerveRequest idle = new SwerveRequest.Idle();
 
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -128,7 +143,27 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     );
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
+
+
+    //Path Following
+    private double xPower;
+    private double yPower;
+    private double anglePower;
+
+    private Pose2d goalPose;
+    private Pose2d currentPose;
+
+    private PIDController xPid = new PIDController(0, 0, 0);
+    private PIDController yPid = new PIDController(0, 0, 0);
+    private PIDController anglePid = new PIDController(0, 0, 0);
+
+    private SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+
+    public AutoFactory autoFactory;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -149,6 +184,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             startSimThread();
         }
         configureAutoBuilder();
+        createAutoFactory();
     }
 
 
@@ -199,13 +235,13 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
                 (speeds, feedforwards) -> setControl(
                     m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()).withDesaturateWheelSpeeds(true)
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(SwerveConstants.kPositionP, SwerveConstants.kPositionI, SwerveConstants.kPositionD),
                     // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
+                    new PIDConstants(SwerveConstants.kAngleP, SwerveConstants.kAngleI, SwerveConstants.kAngleD)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -216,6 +252,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -223,7 +260,9 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> request) {
-        return run(() -> this.setControl(request.get()));
+        Command swerveCommand = run(() -> this.setControl(request.get()));
+        swerveCommand.addRequirements(this);
+        return swerveCommand.withName("Swerve Request");
     }
 
     /**
@@ -234,7 +273,9 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
      * @return Command to run
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
+        Command swerveCommand = m_sysIdRoutineToApply.quasistatic(direction);
+        swerveCommand.addRequirements(this);
+        return m_sysIdRoutineToApply.quasistatic(direction).withName("Swerve SysID Quasistatic");
     }
 
     /**
@@ -245,7 +286,9 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
      * @return Command to run
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
+        Command swerveCommand = m_sysIdRoutineToApply.dynamic(direction);
+        swerveCommand.addRequirements(this);
+        return swerveCommand.withName("Swerve SysID Dynamic");
     }
 
     @Override
@@ -258,6 +301,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
         //this.updateSimState(m_drivetrainId, );
+
+        SwerveTable.encoderOffsets.set(getEncoderValues());
             
             
          
@@ -344,31 +389,120 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    /**
-     * Calculates feed forward for angle align
-     * @param hubRotation Rotation to align to
-     * @return feedforward (kS only)
-     */
-    public double calculateFeedForward(Rotation2d hubRotation) {
-        double current = getState().Pose.getRotation().getRotations();
-        rotationalGoal = hubRotation.getRotations();
-
-        double output = SwerveTable.kS.get();
-
-        if (rotationalGoal < current) {
-            output *= -1;
-        }
-        if (Math.abs(rotationalGoal - current) > .5) {
-            output *= -1;
-        }
-        
-        return output;
+    public double setRotationalError() {
+        return rotationalError;
     }
 
-    public double getRotationalGoal() {
-        return rotationalGoal;
+    public double getRotationalError() {
+        return rotationalError;
     }
     public double getRotations() {
-        return getState().Pose.getRotation().getRotations();
+        return getPose().getRotation().getRotations();
+    }
+    public Pose2d getPose() {
+        return getState().Pose;
+    }
+
+    private void createAutoFactory() {
+        initializeFollowTrajectory();
+        autoFactory = new AutoFactory(
+            () -> getState().Pose,   // Supplier of current robot pose
+            this::resetPose,
+            this::followTrajectory,
+            true,
+            this
+        );
+    }
+
+    public void initializeFollowTrajectory() {
+        anglePid.enableContinuousInput(0, 1);
+        xPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
+        yPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
+        anglePid.setPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get());
+
+        xPid.setTolerance(SwerveTable.kPositionTolerance.get());
+        yPid.setTolerance(SwerveTable.kPositionTolerance.get());
+        anglePid.setTolerance(SwerveTable.kAngleTolerance.get());
+    }
+
+    public void followTrajectory(SwerveSample sample) {
+        currentPose = getPose();
+        goalPose = Vision.flipFieldPose(sample.getPose(), AutoTable.kRightSide.get());
+
+        SwerveTable.goalPose.set(goalPose);
+
+        xPower = MathUtil.clamp(-xPid.calculate(currentPose.getX(), goalPose.getX()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
+        yPower = MathUtil.clamp(-yPid.calculate(currentPose.getY(), goalPose.getY()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
+
+        double anglePidCalculation = anglePid.calculate(currentPose.getRotation().getRotations(), goalPose.getRotation().getRotations());
+
+        anglePower = MathUtil.clamp(
+        anglePidCalculation + Math.copySign(SwerveTable.kAngleS.get(), anglePidCalculation),
+        -SwerveTable.kAngleMaxPower.get(),
+        SwerveTable.kAngleMaxPower.get()
+        );
+
+        setControl(
+        drive.withVelocityX(xPower * SwerveSubsystem.MaxSpeed)
+            .withVelocityY(yPower * SwerveSubsystem.MaxSpeed)
+            .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
+        );
+    }
+
+    public Command followPath(String fileName) {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile(fileName);
+
+            return Commands.sequence(
+                Commands.runOnce(
+                    () -> this.resetPose(Vision.convertFieldPos(new Pose2d(path.getPoint(0).position, path.getIdealStartingState().rotation()))),
+                    this
+                ),
+                AutoBuilder.followPath(path)
+            ).withName("Follow Path " + path);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Commands.none().withName("Follow Path Exception");
+        }
+    }
+
+    public Command resetGyro() {
+        m_hasAppliedOperatorPerspective = false;
+        return Commands.runOnce(() -> this.resetRotation(Rotation2d.k180deg)).withName("Reset Gyro");
+    }
+
+    public Command choreoAuto(String trajectoryName, boolean resetOdometry) {
+        if (resetOdometry) {
+            return Commands.sequence(
+                autoFactory.resetOdometry(trajectoryName),
+                autoFactory.trajectoryCmd(trajectoryName)
+            );
+        } else {
+            return autoFactory.trajectoryCmd(trajectoryName);
+        }
+
+    }
+
+    public String getEncoderValues() {
+
+        //FrontLeft, FrontRight, BackLeft, BackRight
+
+        double frontLeftEncoderOffset = MathUtil.inputModulus(TunerConstants.FrontLeft.EncoderOffset - this.getModules()[0].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double frontRightEncoderOffset = MathUtil.inputModulus(TunerConstants.FrontRight.EncoderOffset - this.getModules()[1].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double backLeftEncoderOffset = MathUtil.inputModulus(TunerConstants.BackLeft.EncoderOffset - this.getModules()[2].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+        double backRightEncoderOffset = MathUtil.inputModulus(TunerConstants.BackRight.EncoderOffset - this.getModules()[3].getEncoder().getAbsolutePosition().getValueAsDouble(), -.5, .5);
+
+        String output = String.format(
+            "private static final Angle kFrontLeftEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kFrontRightEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kBackLeftEncoderOffset = Rotations.of(%.6f);\n" +
+            "    private static final Angle kBackRightEncoderOffset = Rotations.of(%.6f);",
+            frontLeftEncoderOffset,
+            frontRightEncoderOffset,
+            backLeftEncoderOffset,
+            backRightEncoderOffset
+        );
+        return output;
     }
 }

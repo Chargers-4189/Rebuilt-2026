@@ -34,10 +34,10 @@ public class Shooter extends SubsystemBase {
   private double targetVelocity;
  
   public Shooter() {
-    ConfigureMotor();
+    configureMotors();
   }
 
-  public void ConfigureMotor() {
+  public void configureMotors() {
     talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
 

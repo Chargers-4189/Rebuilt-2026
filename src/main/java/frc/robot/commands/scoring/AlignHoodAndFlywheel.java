@@ -11,6 +11,7 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ScoringCalculator;
+import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignHoodAndFlywheel extends Command {
@@ -21,6 +22,9 @@ public class AlignHoodAndFlywheel extends Command {
   private double angle;
   private double power;
   private DoubleSupplier distance;
+  private Stopwatch stopwatch = new Stopwatch();
+
+  private boolean finished = false;
   
   /** Creates a new AlignHoodAndFlywheel. */
   public AlignHoodAndFlywheel(Hood hood, Shooter shooter, DoubleSupplier distance) {
@@ -36,7 +40,11 @@ public class AlignHoodAndFlywheel extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooter.configureMotors();
+    stopwatch.start();
+    finished = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -60,6 +68,10 @@ public class AlignHoodAndFlywheel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (finished == false && shooter.getVelocity() > shooter.getTargetVelocity()) {
+      System.out.println("ERROR: Shooter up to power " + stopwatch.getElapsedTime());
+      finished = true;
+    }
     return false;
   }
 }

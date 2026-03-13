@@ -23,9 +23,14 @@ public class StopAll extends Command {
   private Shooter shooter;
   private SwerveSubsystem swerve;
 
-  SwerveRequest brake = new SwerveRequest.SwerveDriveBrake();
   /** Creates a new CancelAll. */
   public StopAll(Hood hood, Hopper hopper, Indexer indexer, Intake intake, Shooter shooter, SwerveSubsystem swerve) {
+    this.hood = hood;
+    this.hopper = hopper;
+    this.indexer = indexer;
+    this.intake = intake;
+    this.shooter = shooter;
+    this.swerve = swerve;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(hood, hopper, indexer, intake, shooter, swerve);
   }
@@ -43,7 +48,7 @@ public class StopAll extends Command {
     intake.setExtensionPower(0);
     intake.setWheelPower(0);
     shooter.setVelocity(0);
-    swerve.applyRequest(() -> brake);
+    swerve.setControl(SwerveSubsystem.idle);
   }
 
   // Called once the command ends or is interrupted.
