@@ -27,14 +27,14 @@ public record ChoreoTraj(
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
-        0.77385,
-        new Pose2d(1.19055, 5.93022, Rotation2d.fromRadians(0)),
-        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(0))
+        1.9119,
+        new Pose2d(0.77834, 5.94578, Rotation2d.fromRadians(0)),
+        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(-0.00157))
     );
     public static final ChoreoTraj depotOutpost = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.empty(),
-        2.58712,
+        4.93092,
         new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
         new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
     );
@@ -42,7 +42,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj depotOutpost$0 = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.of(0),
-        0.73652,
+        1.71203,
         new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
         new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268))
     );
@@ -50,16 +50,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj depotOutpost$1 = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.of(1),
-        1.8506,
+        3.2188900000000005,
         new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268)),
         new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
     );
     public static final ChoreoTraj leaveOutpost = new ChoreoTraj(
         "leaveOutpost",
         OptionalInt.empty(),
-        0.63028,
+        1.5362,
         new Pose2d(0.72059, 0.66885, Rotation2d.fromRadians(0)),
-        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0))
+        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0.00012))
     );
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
@@ -71,14 +71,14 @@ public record ChoreoTraj(
     public static final ChoreoTraj secondPass = new ChoreoTraj(
         "secondPass",
         OptionalInt.empty(),
-        4.02979,
-        new Pose2d(2.92272, 6.87738, Rotation2d.fromRadians(-1.10946)),
+        6.85157,
+        new Pose2d(2.93748, 6.8562, Rotation2d.fromRadians(-1.11649)),
         new Pose2d(2.93107, 6.87738, Rotation2d.fromRadians(-1.106))
     );
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
-        4.17551,
+        7.01676,
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
