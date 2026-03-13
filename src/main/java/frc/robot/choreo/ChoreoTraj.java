@@ -75,6 +75,20 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
+    public static final ChoreoTraj bumpQuarterCenter = new ChoreoTraj(
+        "bumpQuarterCenter",
+        OptionalInt.empty(),
+        5.73289,
+        new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00992)),
+        new Pose2d(3.03989, 7.0424, Rotation2d.fromRadians(-1.08746))
+    );
+    public static final ChoreoTraj bumpStealCenter = new ChoreoTraj(
+        "bumpStealCenter",
+        OptionalInt.empty(),
+        6.0384,
+        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
+        new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
+    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -87,7 +101,9 @@ public record ChoreoTraj(
         Map.entry("depotOutpost$1", depotOutpost$1),
         Map.entry("quarterCenter", quarterCenter),
         Map.entry("secondPass", secondPass),
-        Map.entry("stealCenter", stealCenter)
+        Map.entry("stealCenter", stealCenter),
+        Map.entry("bumpQuarterCenter", bumpQuarterCenter),
+        Map.entry("bumpStealCenter", bumpStealCenter)
     );
 
     /**
