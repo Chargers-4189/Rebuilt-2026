@@ -99,6 +99,10 @@ public class NetworkTables {
         public static final DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static final DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
         public static final DoubleEntry kS = intakeTable.getDoubleTopic("S (Intake)").getEntry(Constants.IntakeConstants.kS);
+        public static final DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
+        public static final DoubleEntry kV = intakeTable.getDoubleTopic("V (Intake)").getEntry(Constants.IntakeConstants.kV);
+        public static final DoubleEntry kMaxVelocity = intakeTable.getDoubleTopic("Max Velocity (Intake)").getEntry(Constants.IntakeConstants.kMaxVelocity);
+        public static final DoubleEntry kMaxAcceleration = intakeTable.getDoubleTopic("Max Accel. (Intake)").getEntry(Constants.IntakeConstants.kMaxAcceleration);
 
         public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
 
@@ -253,6 +257,22 @@ public class NetworkTables {
         }
     }
 
+    public static class PassingCalculatorTable {
+        private static final NetworkTable passingCalcTable = networkInstance.getTable("passingCalcTable");
+
+        public static final DoubleEntry kAngleIntercept = passingCalcTable.getDoubleTopic("Intercept (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kHoodIntercept);
+        public static final DoubleEntry kAngleSlope = passingCalcTable.getDoubleTopic("Slope (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kHoodSlope);
+        public static final DoubleEntry kVelocitySlope = passingCalcTable.getDoubleTopic("Slope (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocitySlope);
+        public static final DoubleEntry kVelocityIntercept = passingCalcTable.getDoubleTopic("Intercept (Velocity Calc)").getEntry(Constants.PassingCalculatorConstants.kVelocityIntercept);
+
+        public static final void init() {
+            kAngleIntercept.set(kAngleIntercept.get());
+            kAngleSlope.set(kAngleSlope.get());
+            kVelocitySlope.set(kVelocitySlope.get());
+            kVelocityIntercept.set(kVelocityIntercept.get());
+        }
+    }
+
     public static class AutoTable {
         private static final NetworkTable autoTable = networkInstance.getTable("autoTable");
 
@@ -274,6 +294,7 @@ public class NetworkTables {
         HoodTable.init();
         ShooterTable.init();
         ShootingCalculatorTable.init();
+        PassingCalculatorTable.init();
         AutoTable.init();
     }
 

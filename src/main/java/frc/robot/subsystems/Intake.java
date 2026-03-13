@@ -15,13 +15,18 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.OffsetEncoder;
+import frc.robot.util.Stopwatch;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -69,6 +74,10 @@ private final SysIdRoutine m_sysIdRoutine =
     wheelMotor.set(-power);
   }
 
+  public State getState() {
+    return new State(offsetEncoder.getFromMin(), extensionMotor.getVelocity().getValueAsDouble() / IntakeConstants.kExtensionMotorGearRatio);
+  }
+
   //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
   public void setExtensionPower(double power) {
     extensionMotor.set(power);
@@ -78,7 +87,7 @@ private final SysIdRoutine m_sysIdRoutine =
     IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
     setExtensionPower(
       MathUtil.clamp(calculatePIDS(
-        offsetEncoder.get(),
+        offsetEncoder.getFromDiscontinuity(),
         offsetEncoder.convertGoal(angle)
       ),
       -IntakeTable.kAutoOutPower.get(),
@@ -107,7 +116,7 @@ private final SysIdRoutine m_sysIdRoutine =
   public void periodic() {
     // This method will be called once per scheduler run
     IntakeTable.rawEncoder.set(getEncoder());
-    IntakeTable.offsetEncoder.set(offsetEncoder.get());
+    IntakeTable.offsetEncoder.set(offsetEncoder.getFromMin());
 
     intakeController.setPID(
       IntakeTable.kP.get(),

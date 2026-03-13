@@ -6,6 +6,8 @@ package frc.robot.util;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
+
 /**
  * This class is intended to be used for a rotational mechanism with the following characteristics:
  * - It has an absolute encoder 
@@ -20,6 +22,7 @@ public class OffsetEncoder {
 
     private double min;
     private double max;
+    private double discontinuityPoint;
     private DoubleSupplier rawEncoder;
 
     /**
@@ -33,30 +36,30 @@ public class OffsetEncoder {
         this.min = min;
         this.max = max;
         this.rawEncoder = rawEncoder;
+        updateDiscontinuityPoint();
     }
 
     /**
-     * Returns the encoder value to plugged into a PID calculation
-     * @return the encoder value to plugged into a PID calculation
+     * Returns the encoder value to be plugged into a PID calculation
+     * @return the encoder value to be plugged into a PID calculation
      */
-    public double get() {
-        double offset = (max + min) / 2;
-        if (min > max) {
-            offset += 0.5;
-        }
-        return positiveMod((rawEncoder.getAsDouble() + offset), 1);
+    public double getFromDiscontinuity() {
+        return MathUtil.inputModulus(rawEncoder.getAsDouble() - discontinuityPoint, 0, 1);
+    }
+    /**
+     * Returns the encoder value measured from the minimum
+     * @return the encoder value measured from the minimum
+     */
+    public double getFromMin() {
+        return MathUtil.inputModulus(rawEncoder.getAsDouble() - discontinuityPoint + min, 0, 1);
     }
 
     /**
-     * Converts the goal value to plugged into a PID calculation
-     * @return the goal value to plugged into a PID calculation (rotations)
+     * Converts the goal value to be plugged into a PID calculation
+     * @return the goal value to be plugged into a PID calculation (rotations)
      */
     public double convertGoal(double value) {
-        double offset = (max + min) / 2;
-        if (min > max) {
-            offset += 0.5;
-        }
-        return positiveMod((value + offset + min), 1);
+        return MathUtil.inputModulus(value - discontinuityPoint + min, 0, 1);
     }
 
     /**
@@ -66,7 +69,7 @@ public class OffsetEncoder {
      * @return the difference between the goal and the current position (goal - get)
      */
     public double compare(double goal) {
-        return convertGoal(goal) - get();
+        return convertGoal(goal) - getFromDiscontinuity();
     }
 
     /**
@@ -78,21 +81,13 @@ public class OffsetEncoder {
     public void setBounds(double min, double max) {
         this.min = min;
         this.max = max;
+        updateDiscontinuityPoint();
     }
 
-    /**
-     * Calculates a positive modulus; always returns a positive result.
-     *
-     * @param x the input number
-     * @param m the modulus
-     * 
-     * @return x mod m
-     */
-    public double positiveMod(double x, double m) {
-        double mod = x % m;
-        if (mod < 0) {
-            mod += m;
+    private void updateDiscontinuityPoint() {
+        discontinuityPoint = (max + min) / 2;
+        if (min > max) {
+            discontinuityPoint += 0.5;
         }
-        return mod;
     }
 }

@@ -6,10 +6,15 @@ package frc.robot.commands.intake;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.OffsetEncoder;
+import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRotate extends Command {
@@ -29,12 +34,15 @@ public class IntakeRotate extends Command {
   private boolean rotateOut;
   private DoubleSupplier angle;
 
-  private OffsetEncoder offsetEncoder;
+  private Stopwatch stopwatch = new Stopwatch();
+
+  private final TrapezoidProfile trapezoidProfile = new TrapezoidProfile(
+    new Constraints(IntakeTable.kMaxVelocity.get(), IntakeTable.kMaxAcceleration.get())
+  );
 
   /** Creates a new IntakeRotate. */
   public IntakeRotate(Intake intake, DoubleSupplier angle) {
     this.intake = intake;
-    this.offsetEncoder = intake.getOffsetEncoder();
     this.angle = angle;
     addRequirements(intake);
   }
@@ -51,7 +59,13 @@ public class IntakeRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setExtensionAngle(angle.getAsDouble());
+    intake.setExtensionAngle(
+      trapezoidProfile.calculate(
+        stopwatch.getElapsedTime(), 
+        intake.getState(), 
+        new State(angle.getAsDouble(), 0)
+      ).position
+    );
     IntakeTable.extensionGoal.set(angle.getAsDouble());
   }
 

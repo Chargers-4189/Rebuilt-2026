@@ -131,7 +131,7 @@ public class RobotContainer {
 
         //primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
         primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
-        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, swerve));
+        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, vision, swerve, primaryController));
         //Auto Intake Buttons
         primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intake, false));
         primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intake, true));

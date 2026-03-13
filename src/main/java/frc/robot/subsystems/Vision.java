@@ -33,6 +33,9 @@ public class Vision extends SubsystemBase {
   public static final Pose2d fieldCenterPose = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
   public static final Pose2d redOriginPose = new Pose2d(layout.getFieldLength(), layout.getFieldWidth(), Rotation2d.k180deg);
 
+  public static final double redTrenchX = fieldCenterPose.getX() - 143.50;
+  public static final double blueTrenchX = fieldCenterPose.getX() - 143.50;
+
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
 
@@ -50,11 +53,13 @@ public class Vision extends SubsystemBase {
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
     if(!results.isEmpty()){
-       Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(results.get(0));
+      for (PhotonPipelineResult result : results) {
+        Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(result);
         
-      if(estimatedPoseOptional.isPresent()){
-        EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
-        swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
+        if(estimatedPoseOptional.isPresent()){
+          EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+          swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
+        }
       }
     }
   }
@@ -147,6 +152,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
+  public static Rotation2d convertFieldRotation(Rotation2d bluePerspective) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
+      return bluePerspective.plus(Rotation2d.k180deg);
+    } else {
+      return bluePerspective;
+    }
+  }
+
   public static Pose2d flipFieldPose(Pose2d pose, boolean rightSide) {
     if (rightSide) {
       return flipPose(pose);
@@ -160,10 +173,42 @@ public class Vision extends SubsystemBase {
   }
 
   public static Rotation2d convertFieldRotations(Rotation2d bluePerspective) {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red)) {
+    if (isRedAlliance()) {
       return bluePerspective.rotateBy(Rotation2d.k180deg);
     } else {
       return bluePerspective;
     }
   }
+  public static boolean isRedAlliance() {
+    return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get().equals(Alliance.Red);
+  }
+  
+  /*
+  public static enum FieldZone {
+    OUR_ZONE, OPPONENT_ZONE, NEUTRAL_ZONE, BLUE_ZONE,
+  }
+
+  public FieldZone getRobotFieldZone() {
+    Pose2d pose = swerve.getPose();
+
+    if (pose.getX() < blueTrenchX) {
+      // Blue Zone
+      if (isRedAlliance()) {
+        return FieldZone.OPPONENT_ZONE;
+      } else {
+        return FieldZone.OUR_ZONE;
+      }
+    } else if (pose.getX() < blueTrenchX) {
+      // Neutral Zone
+      return FieldZone.NEUTRAL_ZONE;
+    } else {
+      // Red Zone
+      if (isRedAlliance()) {
+        return FieldZone.OUR_ZONE;
+      } else {
+        return FieldZone.OPPONENT_ZONE;
+      }
+    }
+  }
+  */
 }

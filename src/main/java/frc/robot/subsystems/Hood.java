@@ -59,7 +59,7 @@ public class Hood extends SubsystemBase {
     HoodTable.hoodGoal.set(angle);
     hoodMotor.set(
       -MathUtil.clamp(hoodController.calculate(
-        offsetEncoder.get(),
+        offsetEncoder.getFromDiscontinuity(),
         offsetEncoder.convertGoal(angle)
       ),
       -HoodConstants.kAutoPower,
