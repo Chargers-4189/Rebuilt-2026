@@ -32,11 +32,11 @@ public class DepotThenOutpost extends SequentialCommandGroup {
 
     addCommands(
       Commands.race(
-        swerve.choreoAuto(ChoreoTraj.depotOutpost$0, false),
+        swerve.choreoAuto(ChoreoTraj.depotThenOutpost$0, false),
         new IntakeRunAndRotate(intake, IntakeTable.kWheelPower)
       ),
       Commands.waitSeconds(4),
-      swerve.choreoAuto(ChoreoTraj.depotOutpost$1, false),
+      swerve.choreoAuto(ChoreoTraj.depotThenOutpost$1, false),
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }
