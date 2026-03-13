@@ -27,39 +27,32 @@ public record ChoreoTraj(
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
-        1.9119,
-        new Pose2d(0.77834, 5.94578, Rotation2d.fromRadians(0)),
-        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(-0.00157))
+        2.59845,
+        new Pose2d(3.62996, 6.04556, Rotation2d.fromRadians(0)),
+        new Pose2d(1.18366, 5.46535, Rotation2d.fromRadians(-0.00016))
     );
     public static final ChoreoTraj depotOutpost = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.empty(),
-        4.93092,
-        new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
-        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
+        6.45417,
+        new Pose2d(3.61144, 6.13852, Rotation2d.fromRadians(0)),
+        new Pose2d(1.56002, 1.38819, Rotation2d.fromRadians(0.71664))
     );
     /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
     public static final ChoreoTraj depotOutpost$0 = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.of(0),
-        1.71203,
-        new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
-        new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268))
+        5.19027,
+        new Pose2d(3.61144, 6.13852, Rotation2d.fromRadians(0)),
+        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
     );
     /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
     public static final ChoreoTraj depotOutpost$1 = new ChoreoTraj(
         "depotOutpost",
         OptionalInt.of(1),
-        3.2188900000000005,
-        new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268)),
-        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
-    );
-    public static final ChoreoTraj leaveOutpost = new ChoreoTraj(
-        "leaveOutpost",
-        OptionalInt.empty(),
-        1.5362,
-        new Pose2d(0.72059, 0.66885, Rotation2d.fromRadians(0)),
-        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0.00012))
+        1.2639000000000005,
+        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875)),
+        new Pose2d(1.56002, 1.38819, Rotation2d.fromRadians(0.71664))
     );
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
@@ -78,7 +71,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
-        7.01676,
+        6.63913,
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
@@ -92,7 +85,6 @@ public record ChoreoTraj(
         Map.entry("depotOutpost", depotOutpost),
         Map.entry("depotOutpost$0", depotOutpost$0),
         Map.entry("depotOutpost$1", depotOutpost$1),
-        Map.entry("leaveOutpost", leaveOutpost),
         Map.entry("quarterCenter", quarterCenter),
         Map.entry("secondPass", secondPass),
         Map.entry("stealCenter", stealCenter)
