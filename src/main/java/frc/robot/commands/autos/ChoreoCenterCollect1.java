@@ -26,7 +26,7 @@ public class ChoreoCenterCollect1 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       Commands.race(
-        new IntakeRunAndRotate2(intake, IntakeTable.kAutoInPower),
+        new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower),
         swerve.choreoAuto("quarterCenter", false)
       ),
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake)

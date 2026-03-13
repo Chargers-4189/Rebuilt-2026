@@ -429,6 +429,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         currentPose = getPose();
         goalPose = Vision.flipFieldPose(sample.getPose(), AutoTable.kRightSide.get());
 
+        SwerveTable.goalPose.set(goalPose);
+
         xPower = MathUtil.clamp(-xPid.calculate(currentPose.getX(), goalPose.getX()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
         yPower = MathUtil.clamp(-yPid.calculate(currentPose.getY(), goalPose.getY()), -SwerveTable.kPositionMaxPower.get(), SwerveTable.kPositionMaxPower.get());
 

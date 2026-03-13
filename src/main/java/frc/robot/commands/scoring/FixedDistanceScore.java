@@ -29,7 +29,7 @@ public class FixedDistanceScore extends ParallelCommandGroup {
   /** Creates a new FixedDistanceScore. */
   public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY, DoubleSupplier distance) {
     addCommands(
-      new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
+      new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, true)),
       new AlignHoodAndFlywheel(hood, shooter, distance),
       new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
       new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))

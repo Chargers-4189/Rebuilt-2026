@@ -31,7 +31,7 @@ public class Pass extends ParallelCommandGroup {
   /** Creates a new ShootNoSwerveAlign. */
   public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Intake intake, SwerveSubsystem swerve) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, false)),
         new SpinShooter(shooter, ShooterTable.kPassVelocity),
         hood.setHoodAngleCommand(HoodTable.kPassAngle),
         new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))

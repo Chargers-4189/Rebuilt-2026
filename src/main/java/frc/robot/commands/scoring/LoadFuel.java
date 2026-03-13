@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IndexerTable;
+import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.util.NetworkTables.SwerveTable;
 
@@ -24,14 +26,16 @@ public class LoadFuel extends Command {
   private boolean scoring;
   private Hopper hopper;
   private boolean alreadyAligned;
+  private Intake intake;
 
   /** Creates a new LoadFuel. */
-  public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean scoring) {
+  public LoadFuel(Indexer indexer, Hopper hopper, Intake intake, Shooter shooter, SwerveSubsystem swerve, boolean scoring) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.swerve = swerve;
     this.hopper = hopper;
     this.scoring = scoring;
+    //this.intake = intake;
     addRequirements(indexer, hopper);
   }
 
@@ -48,23 +52,28 @@ public class LoadFuel extends Command {
       System.out.println("Loading Fuel!");
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
+      //intake.setWheelPower(IntakeTable.kLowWheelPower.get());
     } else {
       if (shooter.getVelocity() < shooter.getTargetVelocity() - ShooterTable.kTolerance.get()){
         System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
+        //intake.setWheelPower(0);       
       } else if (scoring && shooter.getVelocity() < shooter.getTargetVelocity()) {
         System.out.println("Too Much Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
+        //intake.setWheelPower(0);       
       } else if (scoring && Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get()) {
         System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
-        hopper.setPower(0);        
+        hopper.setPower(0); 
+        //intake.setWheelPower(0);       
       } else {
         System.out.println("Loading Fuel!");
         indexer.setPower(IndexerTable.kPower.get());
         hopper.setPower(HopperTable.kPower.get());
+        //intake.setWheelPower(IntakeTable.kLowWheelPower.get());
         alreadyAligned = true;
       }
   }
@@ -75,6 +84,7 @@ public class LoadFuel extends Command {
   public void end(boolean interrupted) {
       indexer.setPower(0);
       hopper.setPower(0);
+      //intake.setWheelPower(0);
   }
 
   // Returns true when the command should end.

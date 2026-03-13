@@ -57,6 +57,8 @@ public class NetworkTables {
 
         public static final StringPublisher encoderOffsets = swerveTable.getStringTopic("Encoder Offsets").publish();
 
+        public static final StructEntry<Pose2d> goalPose = swerveTable.getStructTopic("Goal Pose", Pose2d.struct).getEntry(new Pose2d());
+
         public static void init() {
             kAngleP.set(kAngleP.get());
             kAngleI.set(kAngleI.get());
@@ -85,6 +87,7 @@ public class NetworkTables {
         public static final DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Extension Goal").publish();
 
         public static final DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);
+        public static final DoubleEntry kLowWheelPower = intakeTable.getDoubleTopic("Intake Low Wheel Power").getEntry(Constants.IntakeConstants.kLowWheelPower);
         public static final DoubleEntry kManualExtensionPower = intakeTable.getDoubleTopic("Intake Manual Extension Power").getEntry(Constants.IntakeConstants.kManualExtensionPower);
     
         public static final DoubleEntry kDefaultAngle = intakeTable.getDoubleTopic("Intake Default Angle").getEntry(Constants.IntakeConstants.kDefaultAngle);
@@ -107,6 +110,7 @@ public class NetworkTables {
 
         public static void init() {
             kWheelPower.set(kWheelPower.get());
+            kLowWheelPower.set(kLowWheelPower.get());
             kManualExtensionPower.set(kManualExtensionPower.get());
 
             kDefaultAngle.set(kDefaultAngle.get());
@@ -253,7 +257,7 @@ public class NetworkTables {
         private static final NetworkTable autoTable = networkInstance.getTable("autoTable");
 
 
-        public static final BooleanEntry kRightSide = autoTable.getBooleanTopic("Intercept (Hood Calc)").getEntry(Constants.AutoConstants.kRightSide);
+        public static final BooleanEntry kRightSide = autoTable.getBooleanTopic("Right Side").getEntry(Constants.AutoConstants.kRightSide);
 
         public static final void init() {
             kRightSide.set(kRightSide.get());
@@ -275,6 +279,7 @@ public class NetworkTables {
 
     public static void periodic() {
         field2d.setRobotPose(SwerveTable.robotPose.get());
+        field2d.getObject("Goal Pose").setPose(SwerveTable.goalPose.get());
         SmartDashboard.putData(field2d);
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         SmartDashboard.putData(CommandScheduler.getInstance());

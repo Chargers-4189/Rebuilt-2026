@@ -31,7 +31,7 @@ public class Vision extends SubsystemBase {
   public static final Pose2d hubPoseRed = findMidpoint(layout.getTagPose(4).get().toPose2d(), layout.getTagPose(10).get().toPose2d());
   public static final Pose2d hubPoseBlue = findMidpoint(layout.getTagPose(20).get().toPose2d(), layout.getTagPose(26).get().toPose2d());
   public static final Pose2d fieldCenterPose = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
-  public static final Pose2d redOriginPose = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, Rotation2d.k180deg);
+  public static final Pose2d redOriginPose = new Pose2d(layout.getFieldLength(), layout.getFieldWidth(), Rotation2d.k180deg);
 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
@@ -156,7 +156,7 @@ public class Vision extends SubsystemBase {
   }
 
   public static Pose2d flipPose(Pose2d pose) {
-    return new Pose2d(pose.getX(), fieldCenterPose.getY() - pose.getY(), pose.getRotation().unaryMinus());
+    return new Pose2d(pose.getX(), redOriginPose.getY() - pose.getY(), pose.getRotation().unaryMinus());
   }
 
   public static Rotation2d convertFieldRotations(Rotation2d bluePerspective) {

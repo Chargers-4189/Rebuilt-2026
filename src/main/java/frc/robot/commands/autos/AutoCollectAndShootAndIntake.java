@@ -10,7 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.intake.IntakeRunAndRotate;
+import frc.robot.commands.intake.IntakeRunAndRotate2;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
 
@@ -29,7 +29,7 @@ public class AutoCollectAndShootAndIntake extends ParallelCommandGroup {
     }
 
     addCommands(
-      new IntakeRunAndRotate(intake, false, IntakeTable.kAutoInPower),
+      new IntakeRunAndRotate2(intake, IntakeTable.kAutoInPower),
       centerCollectAndShoot
     );
   }

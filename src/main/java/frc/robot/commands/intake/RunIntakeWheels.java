@@ -18,7 +18,7 @@ public class RunIntakeWheels extends Command {
   /** Creates a new RunIntakeWheels. */
   public RunIntakeWheels(Intake intake, DoubleSupplier power) {
     this.intake = intake;
-    addRequirements(intake);
+    //addRequirements(intake);
 
     this.power = power;
   }

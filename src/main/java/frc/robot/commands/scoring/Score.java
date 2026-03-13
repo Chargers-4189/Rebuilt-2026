@@ -19,6 +19,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.commands.intake.IntakeRotate;
+import frc.robot.commands.intake.RunIntakeWheels;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -29,10 +30,13 @@ public class Score extends ParallelCommandGroup {
   /** Creates a new Score. */
   public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, true)),
         new AlignHoodAndFlywheel(hood, shooter, vision),
         new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
-        new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
+        Commands.waitSeconds(IntakeTable.kTauntDelay.get()).andThen(Commands.parallel(
+          new IntakeRotate(intake, IntakeTable.kTauntRotations),
+          new RunIntakeWheels(intake, IntakeTable.kLowWheelPower)
+        ))
     );
   }
 

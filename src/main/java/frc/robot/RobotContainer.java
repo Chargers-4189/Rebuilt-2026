@@ -98,32 +98,31 @@ public class RobotContainer {
     private void configureBindings() {
 
         //Deploy Intake
-        primaryController.rightTrigger(.1).or(primaryController.leftTrigger(.1)).whileTrue(
-            Commands.run(() -> {            
-                intake.setExtensionPower(IntakeTable.kManualExtensionPower.get() * (primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis()));
-            }, intake)
-            .finallyDo(() -> intake.setExtensionPower(0))
-            .withName("Manual Intake")
-        );
+        primaryController.b().whileTrue(Commands.run(()->{
+            intake.setExtensionPower(-IntakeTable.kManualExtensionPower.get());
+        },intake)
+        .finallyDo(() -> intake.setExtensionPower(0)));
 
-        primaryController.b().onTrue(new IntakeRotate(intake, true));
-        primaryController.y().onTrue(new IntakeRotate(intake, false));
+        primaryController.y().whileTrue(Commands.run(()->{
+            intake.setExtensionPower(IntakeTable.kManualExtensionPower.get());
+        },intake)
+        .finallyDo(() -> intake.setExtensionPower(0)));
 
         //Intake Fuel
         primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower));
 
-        primaryController.x().whileTrue(new OuttakeFuel(intake, hopper));
+        primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
 
         //Manual Hood
-        primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
-        primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
+        //primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
+        //primaryController.povUp().whileTrue(new MoveHood(hood, () -> HoodTable.kManualPower.get()));
 
         hood.setDefaultCommand(Commands.run(() -> {
             hood.setHoodAngle(HoodTable.kDefaultAngle);
         }, hood).withName("Hood Default Angle"));
 
         //Fixed-Distance Shoot
-        primaryController.a().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kFixedShootDistance));
+        primaryController.x().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kFixedShootDistance));
         
         //Score
         primaryController.leftBumper().whileTrue(
@@ -131,8 +130,11 @@ public class RobotContainer {
         );
 
         //primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
-        primaryController.povRight().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
-        primaryController.povLeft().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, swerve));
+        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
+        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, swerve));
+        //Auto Intake Buttons
+        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intake, false));
+        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intake, true));
     }
 
     private void configureSwerveBindings() {
@@ -164,7 +166,7 @@ public class RobotContainer {
 
     public void configureAutoChooser() {
         autoChooser.addCmd("quarterCenter", () -> new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake));
-        SmartDashboard.putData(autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     

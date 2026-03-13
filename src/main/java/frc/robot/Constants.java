@@ -49,6 +49,7 @@ public final class Constants {
 
     //Modifiables
     public static final double kWheelPower = 1;
+    public static final double kLowWheelPower = .3;
     public static final double kManualExtensionPower = .25;
 
     public static final double kDefaultAngle = 0;
@@ -61,13 +62,13 @@ public final class Constants {
     public static final double kD = 0;
     public static final double kS = 0;
 
-    public static final double kTauntRotations = .35;
+    public static final double kTauntRotations = .28;
 
-    public static final double kTolerance = 0.03;
-    public static final double kOuterExtensionLimit = 0.03;
-    public static final double kInnerExtensionLimit = 0.4;
+    public static final double kTolerance = 0.06;
+    public static final double kOuterExtensionLimit = 0.05;
+    public static final double kInnerExtensionLimit = 0.38;
 
-    public static final double kTauntDelay = 3;
+    public static final double kTauntDelay = 2;
  }
   
   public static class HopperConstants {
@@ -134,10 +135,10 @@ public final class Constants {
   }
 
   public static class ShootingCalculatorConstants {
-    public static final double kHoodIntercept = -.05;
-    public static final double kHoodSlope = .05;
-    public static final double kVelocityIntercept = 24;
-    public static final double kVelocitySlope = 7.8;
+    public static final double kHoodIntercept = -.07;
+    public static final double kHoodSlope = .06;
+    public static final double kVelocityIntercept = 36.5;
+    public static final double kVelocitySlope = 4.2;
     public static final double kVelocitySquared = 0;
   }
 
