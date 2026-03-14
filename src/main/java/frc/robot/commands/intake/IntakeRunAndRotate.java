@@ -19,7 +19,7 @@ public class IntakeRunAndRotate extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeRotate(intake, false),
+      new IntakeRotate(intake, true),
       new RunIntakeWheels(intake, power)
     );
   }
