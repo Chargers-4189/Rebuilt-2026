@@ -4,6 +4,7 @@
 
 package frc.robot.util;
 
+import frc.robot.util.NetworkTables.PassingCalculatorTable;
 import frc.robot.util.NetworkTables.ShootingCalculatorTable;
 
 /** Add your docs here. */
@@ -16,7 +17,7 @@ public class ScoringCalculator {
      * @return hood rotation (encoder difference from the bottom)
      */
     public static double calculateHoodAngle(double distance) {
-        return ShootingCalculatorTable.kHoodSlope.get() * distance + ShootingCalculatorTable.kHoodIntercept.get();
+        return ShootingCalculatorTable.kAngleSlope.get() * distance + ShootingCalculatorTable.kAngleIntercept.get();
     }
 
     /**
@@ -26,5 +27,13 @@ public class ScoringCalculator {
      */
     public static double calculateShootingPower(double distance) {
         return ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + ShootingCalculatorTable.kVelocitySlope.get() * distance + ShootingCalculatorTable.kVelocityIntercept.get();
+    }
+
+    public static double calculatePassingPower(double distance) {
+        return ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get();
+    }
+
+    public static double calculatePassingAngle(double distance) {
+        return PassingCalculatorTable.kAngleSlope.get() * distance + PassingCalculatorTable.kAngleIntercept.get();
     }
 }

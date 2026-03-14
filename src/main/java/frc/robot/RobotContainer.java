@@ -25,20 +25,20 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.choreo.ChoreoTraj;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.autos.AlignPosition;
-import frc.robot.commands.autos.AutoCenterCollectAndShoot;
-import frc.robot.commands.autos.AutoCenterCollectAndShootFullPath;
-import frc.robot.commands.autos.AutoCenterCollectWOInterferance;
-import frc.robot.commands.autos.AutoShootOurSide;
-import frc.robot.commands.autos.ChoreoCenterCollect1;
+import frc.robot.commands.autos.DepotThenOutpost;
+import frc.robot.commands.autos.OutpostOnly;
+import frc.robot.commands.autos.OutpostThenDepot;
+import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.IntakeRunAndRotate2;
+import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.Pass;
@@ -109,7 +109,7 @@ public class RobotContainer {
         .finallyDo(() -> intake.setExtensionPower(0)));
 
         //Intake Fuel
-        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intake, IntakeTable.kWheelPower));
 
         primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
 
@@ -131,7 +131,7 @@ public class RobotContainer {
 
         //primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
         primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
-        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, swerve));
+        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, vision, swerve, primaryController));
         //Auto Intake Buttons
         primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intake, false));
         primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intake, true));
@@ -165,7 +165,22 @@ public class RobotContainer {
     }
 
     public void configureAutoChooser() {
-        autoChooser.addCmd("quarterCenter", () -> new ChoreoCenterCollect1(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Quarter Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.quarterCenter, false));
+        autoChooser.addCmd("Quarter Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.quarterCenter, true));
+        autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpQuarterCenter, false));
+        autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpQuarterCenter, true));
+
+        autoChooser.addCmd("Steal Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter, false));
+        autoChooser.addCmd("Steal Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter, true));
+        autoChooser.addCmd("Steal Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, false));
+        autoChooser.addCmd("Steal Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, true));
+        
+        autoChooser.addCmd("Depot Then Outpost", () -> new DepotThenOutpost(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Outpost Then Depot", () -> new OutpostThenDepot(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.depotOnly, false));
+        autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intake));
+
+        autoChooser.addCmd("Shoot Preload", () -> new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 

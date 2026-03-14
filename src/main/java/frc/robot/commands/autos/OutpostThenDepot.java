@@ -10,7 +10,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.intake.IntakeRunAndRotate2;
+import frc.robot.choreo.ChoreoTraj;
+import frc.robot.commands.intake.IntakeRotate;
+import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -24,38 +26,21 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoShootOurSide extends SequentialCommandGroup {
+public class OutpostThenDepot extends SequentialCommandGroup {
   /** Creates a new AutoShootOurSide. */
-  public AutoShootOurSide(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+  public OutpostThenDepot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    Command depotToHub;
-    Command shootOnlyOnOurSide;
-
-    try {
-      depotToHub = AutoBuilder.followPath(PathPlannerPath.fromPathFile("depotToHub")).withName("Depot To Hub");
-    } catch(Exception e){
-      System.out.println(e.getMessage());
-      depotToHub = Commands.none().withName("Auto Command Not Found");
-    }
-
-    try {
-      shootOnlyOnOurSide = AutoBuilder.followPath(PathPlannerPath.fromPathFile("shootOnlyOurSide")).withName("Shoot Only Our Side");
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      shootOnlyOnOurSide = Commands.none().withName("Auto Command Not Found");
-    }
 
     addCommands(
       Commands.race(
-        shootOnlyOnOurSide,
-        new IntakeRunAndRotate2(intake, IntakeTable.kWheelPower)
+        swerve.choreoAuto(ChoreoTraj.outpostThenDepot$0, false),
+        new IntakeRotate(intake, IntakeTable.kOuterExtensionLimit)
       ),
-      Commands.parallel(
-        Commands.waitSeconds(4),
-        new AlignPosition(swerve, vision, .738, .7, 0)
+      Commands.waitSeconds(4),
+      Commands.race(
+        swerve.choreoAuto(ChoreoTraj.outpostThenDepot$1, false),
+        new IntakeRunAndRotate(intake, IntakeTable.kWheelPower)
       ),
-      depotToHub,
       new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }

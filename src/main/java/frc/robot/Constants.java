@@ -25,7 +25,7 @@ public final class Constants {
     public static final double kAngleI = 0.0;
     public static final double kAngleD = 0.0;
     public static final double kAngleS = 0.0637;
-    public static final double kAngleMaxPower = 0.8;
+    public static final double kAngleMaxPower = 1;
     public static final double kAngleTolerance = 0.015;
 
     //Constants for Position Alignment
@@ -33,7 +33,7 @@ public final class Constants {
     public static final double kPositionI = 0.0;
     public static final double kPositionD = 0.0;
     public static final double kPositionS = 0.0;
-    public static final double kPositionMaxPower = 0.5;
+    public static final double kPositionMaxPower = 1;
     public static final double kPositionTolerance = 0.05;
 
     //Constants for Manual Driving
@@ -46,13 +46,12 @@ public final class Constants {
     public static final int kIntakeMotor = 21; 
     public static final int kIntakeAxisMotor = 22;
     public static final int kIntakeEncoder = 1; 
+    public static final int kExtensionMotorGearRatio = 15;
 
     //Modifiables
     public static final double kWheelPower = 1;
     public static final double kLowWheelPower = .3;
     public static final double kManualExtensionPower = .25;
-
-    public static final double kDefaultAngle = 0;
 
     public static final double kAutoOutPower = .2;
     public static final double kAutoInPower = .6;
@@ -61,6 +60,10 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
+    public static final double kG = 0;
+    public static final double kV = 0;
+    public static final double kMaxVelocity = 1;
+    public static final double kMaxAcceleration = 10;
 
     public static final double kTauntRotations = .28;
 
@@ -101,7 +104,6 @@ public final class Constants {
     public static final double kManualPower = .1;
     public static final double kAutoPower = .3;
     public static final double kDefaultAngle = 0.05;
-    public static final double kPassAngle = 0.05;
 
     public static final double kP = 3;
     public static final double kI = 0;
@@ -135,9 +137,17 @@ public final class Constants {
   }
 
   public static class ShootingCalculatorConstants {
-    public static final double kHoodIntercept = -.07;
-    public static final double kHoodSlope = .06;
+    public static final double kAngleIntercept = -.07;
+    public static final double kAngleSlope = .06;
     public static final double kVelocityIntercept = 36.5;
+    public static final double kVelocitySlope = 4.2;
+    public static final double kVelocitySquared = 0;
+  }
+
+  public static class PassingCalculatorConstants {
+    public static final double kAngleIntercept = -.07;
+    public static final double kAngleSlope = .06;
+    public static final double kVelocityIntercept = 40;
     public static final double kVelocitySlope = 4.2;
     public static final double kVelocitySquared = 0;
   }
