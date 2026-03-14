@@ -205,25 +205,4 @@ public class RobotContainer {
         Telemetry logger = new Telemetry(swerve.MaxSpeed);
         swerve.registerTelemetry(logger::telemeterize);
     }
-
-    private void intakeSystemId() {
-        primaryController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-        primaryController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
-        /*
-        * Joystick Y = quasistatic forward
-        * Joystick A = quasistatic reverse
-        * Joystick B = dynamic forward
-        * Joystick X = dyanmic reverse
-        */
-        primaryController.y().whileTrue(intake.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        primaryController.a().whileTrue(intake.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        primaryController.b().whileTrue(intake.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        primaryController.x().whileTrue(intake.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-        //Deploy Intake
-        intake.setDefaultCommand(Commands.run(() -> {            
-            intake.setExtensionPower(primaryController.getRightTriggerAxis() - primaryController.getLeftTriggerAxis());
-        }, intake).withName("Manual Intake"));
-    }
 }

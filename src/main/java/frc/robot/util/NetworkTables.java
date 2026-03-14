@@ -92,15 +92,18 @@ public class NetworkTables {
     
         public static final DoubleEntry kAutoOutPower = intakeTable.getDoubleTopic("Intake Auto Out Power").getEntry(Constants.IntakeConstants.kAutoOutPower);
         public static final DoubleEntry kAutoInPower = intakeTable.getDoubleTopic("Intake Auto In Power").getEntry(Constants.IntakeConstants.kAutoInPower);
+        
+        public static final DoubleEntry kEncoderOffset = intakeTable.getDoubleTopic("Intake Encoder Offset").getEntry(Constants.IntakeConstants.kEncoderOffset);
 
         public static final DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
         public static final DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
         public static final DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
         public static final DoubleEntry kS = intakeTable.getDoubleTopic("S (Intake)").getEntry(Constants.IntakeConstants.kS);
-        public static final DoubleEntry kG = intakeTable.getDoubleTopic("G (Intake)").getEntry(Constants.IntakeConstants.kG);
-        public static final DoubleEntry kV = intakeTable.getDoubleTopic("V (Intake)").getEntry(Constants.IntakeConstants.kV);
+
         public static final DoubleEntry kMaxVelocity = intakeTable.getDoubleTopic("Max Velocity (Intake)").getEntry(Constants.IntakeConstants.kMaxVelocity);
         public static final DoubleEntry kMaxAcceleration = intakeTable.getDoubleTopic("Max Accel. (Intake)").getEntry(Constants.IntakeConstants.kMaxAcceleration);
+
+        public static final BooleanEntry kReverseEncoder = intakeTable.getBooleanTopic("Reverse Intake Encoder").getEntry(Constants.IntakeConstants.reverseEncoder);
 
         public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
 
@@ -122,16 +125,15 @@ public class NetworkTables {
             kI.set(kI.get());
             kD.set(kD.get());
             kS.set(kS.get());
-            kG.set(kG.get());
-            kV.set(kV.get());
-            kMaxVelocity.set(kMaxVelocity.get());
-            kMaxAcceleration.set(kMaxAcceleration.get());
+            kEncoderOffset.set(kEncoderOffset.get());
 
             kTauntRotations.set(kTauntRotations.get());
 
             kTolerance.set(kTolerance.get());
             kOuterExtensionLimit.set(kOuterExtensionLimit.get());
             kInnerExtensionLimit.set(kInnerExtensionLimit.get());
+
+            kReverseEncoder.set(kReverseEncoder.get());
 
             kTauntDelay.set(kTauntDelay.get());
         }
