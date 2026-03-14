@@ -49,28 +49,23 @@ public class LoadFuel extends Command {
   @Override
   public void execute() {
     if (alreadyAligned) {
-      System.out.println("Loading Fuel!");
+      //System.out.println("Loading Fuel!");
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
       //intake.setWheelPower(IntakeTable.kLowWheelPower.get());
     } else {
-      if (shooter.getVelocity() < shooter.getTargetVelocity() - ShooterTable.kTolerance.get()){
-        System.out.println("Not Enough Power");
-        indexer.setPower(IndexerConstants.kReversePower);
-        hopper.setPower(0);
-        //intake.setWheelPower(0);       
-      } else if (scoring && shooter.getVelocity() < shooter.getTargetVelocity()) {
-        System.out.println("Too Much Power");
+      if (Math.abs(shooter.getVelocity() - shooter.getTargetVelocity()) > ShooterTable.kTolerance.get()){
+        //System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
         //intake.setWheelPower(0);       
       } else if (scoring && Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get()) {
-        System.out.println("Not Rotated Enough");
+        //System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0); 
         //intake.setWheelPower(0);       
       } else {
-        System.out.println("Loading Fuel!");
+        //System.out.println("Loading Fuel!");
         indexer.setPower(IndexerTable.kPower.get());
         hopper.setPower(HopperTable.kPower.get());
         //intake.setWheelPower(IntakeTable.kLowWheelPower.get());

@@ -30,31 +30,8 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder, 0, 1);
+  private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
-  /*
-   *   * @param gearbox The type of and number of motors in the arm gearbox.
-   * @param gearing The gearing of the arm (numbers greater than 1 represent reductions).
-   * @param jKgMetersSquared The moment of inertia of the arm; can be calculated from CAD software.
-   * @param armLengthMeters The length of the arm.
-   * @param minAngleRads The minimum angle that the arm is capable of.
-   * @param maxAngleRads The maximum angle that the arm is capable of.
-   * @param simulateGravity Whether gravity should be simulated or not.
-   * @param startingAngleRads The initial position of the Arm simulation in radians.
-   * @param measurementStdDevs The standard deviations of the measurements. Can be omitted if no
-   *     noise is desired. If present must have 1 element for position.
-   */
-  private SingleJointedArmSim sim = new SingleJointedArmSim(
-    DCMotor.getNEO(1),
-    15,
-    40,
-    .5,
-    0,
-    Math.PI,
-    true,
-    0,
-    1
-  );
 
   public Intake() {}
 

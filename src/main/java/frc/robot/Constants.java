@@ -52,8 +52,8 @@ public final class Constants {
     public static final double kLowWheelPower = .3;
     public static final double kManualExtensionPower = .25;
 
-    public static final double kAutoOutPower = .2;
-    public static final double kAutoInPower = .6;
+    public static final double kAutoOutPower = .3; //These two are swapped
+    public static final double kAutoInPower = .2;
 
     public static final double kP = 2;
     public static final double kI = 0;
@@ -62,12 +62,12 @@ public final class Constants {
     public static final double kMaxVelocity = 0;
     public static final double kMaxAcceleration = 0;
 
-    public static final double kTauntRotations = .28;
+    public static final double kTauntRotations = .47;
 
     public static final double kTolerance = 0.06;
-    public static final double kOuterExtensionLimit = 0.05;
-    public static final double kInnerExtensionLimit = 0.38;
-    public static final double kEncoderOffset = .1;
+    public static final double kOuterExtensionLimit = 0.25;
+    public static final double kInnerExtensionLimit = 0.65;
+    public static final double kEncoderOffset = 0.5;
 
     public static final boolean reverseEncoder = false;
 
