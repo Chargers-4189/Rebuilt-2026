@@ -53,13 +53,11 @@ public class Vision extends SubsystemBase {
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
     if(!results.isEmpty()){
-      for (PhotonPipelineResult result : results) {
-        Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(result);
+       Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(results.get(0));
         
-        if(estimatedPoseOptional.isPresent()){
-          EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
-          swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
-        }
+      if(estimatedPoseOptional.isPresent()){
+        EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+        swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
       }
     }
   }
