@@ -15,46 +15,52 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.NetworkTables.IntakeTable;
+import frc.robot.util.OffsetEncoder;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder, 0, 1);
+  private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
-  /*
-   *   * @param gearbox The type of and number of motors in the arm gearbox.
-   * @param gearing The gearing of the arm (numbers greater than 1 represent reductions).
-   * @param jKgMetersSquared The moment of inertia of the arm; can be calculated from CAD software.
-   * @param armLengthMeters The length of the arm.
-   * @param minAngleRads The minimum angle that the arm is capable of.
-   * @param maxAngleRads The maximum angle that the arm is capable of.
-   * @param simulateGravity Whether gravity should be simulated or not.
-   * @param startingAngleRads The initial position of the Arm simulation in radians.
-   * @param measurementStdDevs The standard deviations of the measurements. Can be omitted if no
-   *     noise is desired. If present must have 1 element for position.
-   */
-  private SingleJointedArmSim sim = new SingleJointedArmSim(
-    DCMotor.getNEO(1),
-    15,
-    40,
-    .5,
-    0,
-    Math.PI,
-    true,
-    0,
-    1
+  private OffsetEncoder offsetEncoder = new OffsetEncoder(.415, .849, encoder::get);
+
+  private final PIDController intakeController = new PIDController(
+    IntakeTable.kP.get(),
+    IntakeTable.kI.get(),
+    IntakeTable.kD.get()
   );
+
+  private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+private final SysIdRoutine m_sysIdRoutine =
+   new SysIdRoutine(
+      new SysIdRoutine.Config(
+         Volts.of(.3).per(Second), // Use default ramp rate (1 V/s)
+         Volts.of(3), // Reduce dynamic step voltage to 4 to prevent brownout
+         Seconds.of(15), // Use default timeout (10 s)
+         (state) -> SignalLogger.writeString("stateV2", state.toString()) // Log state with Phoenix SignalLogger class
+      ),
+      new SysIdRoutine.Mechanism(
+         (volts) -> extensionMotor.setControl(m_voltReq.withOutput(volts)),
+         null,
+         this
+      )
+   );
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
+  }
 
   public Intake() {}
 
@@ -68,14 +74,45 @@ public class Intake extends SubsystemBase {
     extensionMotor.set(power);
   }
 
+  public void setExtensionAngle(double angle) {
+    IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
+    setExtensionPower(
+      MathUtil.clamp(calculatePIDS(
+        offsetEncoder.get(),
+        offsetEncoder.convertGoal(angle)
+      ),
+      -IntakeTable.kAutoOutPower.get(),
+      IntakeTable.kAutoInPower.get())
+    );
+  }
+
+  private double calculatePIDS(double measurement, double setpoint) {
+    double pidCalculation = intakeController.calculate(measurement, setpoint);
+    return pidCalculation + Math.copySign(IntakeTable.kS.get(), pidCalculation);
+  }
+
   public double getEncoder() {
-    return MathUtil.inputModulus(encoder.get() + IntakeTable.kEncoderOffset.get(), 0, 1);
+    return encoder.get();
+  }
+
+  public OffsetEncoder getOffsetEncoder() {
+    return offsetEncoder;
+  }
+
+  public double getError() {
+    return intakeController.getError();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.rawEncoder.set(encoder.get());
-    IntakeTable.offsetEncoder.set(getEncoder());
+    IntakeTable.rawEncoder.set(getEncoder());
+    IntakeTable.offsetEncoder.set(offsetEncoder.get());
+
+    intakeController.setPID(
+      IntakeTable.kP.get(),
+      IntakeTable.kI.get(),
+      IntakeTable.kD.get()
+    );
   }
 }

@@ -46,6 +46,7 @@ public final class Constants {
     public static final int kIntakeMotor = 21; 
     public static final int kIntakeAxisMotor = 22;
     public static final int kIntakeEncoder = 1; 
+    public static final int kExtensionMotorGearRatio = 15;
 
     //Modifiables
     public static final double kWheelPower = 1;
@@ -59,17 +60,16 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kS = 0;
-    public static final double kMaxVelocity = 0;
-    public static final double kMaxAcceleration = 0;
+    public static final double kG = 0;
+    public static final double kV = 0;
+    public static final double kMaxVelocity = 1;
+    public static final double kMaxAcceleration = 10;
 
     public static final double kTauntRotations = .28;
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.05;
     public static final double kInnerExtensionLimit = 0.38;
-    public static final double kEncoderOffset = .1;
-
-    public static final boolean reverseEncoder = false;
 
     public static final double kTauntDelay = 2;
  }

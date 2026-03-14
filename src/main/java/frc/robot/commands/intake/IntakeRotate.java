@@ -6,9 +6,6 @@ package frc.robot.commands.intake;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
@@ -32,19 +29,13 @@ public class IntakeRotate extends Command {
   private boolean rotateOut;
   private DoubleSupplier angle;
 
-  private final ProfiledPIDController intakeController;
+  private OffsetEncoder offsetEncoder;
 
   /** Creates a new IntakeRotate. */
   public IntakeRotate(Intake intake, DoubleSupplier angle) {
     this.intake = intake;
+    this.offsetEncoder = intake.getOffsetEncoder();
     this.angle = angle;
-    this.intakeController = new ProfiledPIDController(
-      IntakeTable.kP.get(),
-      IntakeTable.kI.get(),
-      IntakeTable.kD.get(),
-      new TrapezoidProfile.Constraints(IntakeTable.kMaxVelocity.get(), IntakeTable.kMaxAcceleration.get())
-    );
-    intakeController.setTolerance(IntakeTable.kTolerance.get());
     addRequirements(intake);
   }
 
@@ -52,7 +43,6 @@ public class IntakeRotate extends Command {
   public IntakeRotate(Intake intake, boolean rotateOut) {
     this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
   }
-  
 
   // Called when the command is initially scheduled.
   @Override
@@ -61,21 +51,8 @@ public class IntakeRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    intake.setExtensionAngle(angle.getAsDouble());
     IntakeTable.extensionGoal.set(angle.getAsDouble());
-    intake.setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        intake.getEncoder(),
-        angle.getAsDouble()
-      ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
-    );
-  }
-
-  
-  private double calculatePIDS(double measurement, double goal) {
-    double pidCalculation = intakeController.calculate(measurement, goal);
-    return pidCalculation + Math.copySign(IntakeTable.kS.get(), pidCalculation);
   }
 
   // Called once the command ends or is interrupted.
@@ -88,6 +65,10 @@ public class IntakeRotate extends Command {
   @Override
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
-    return intakeController.atGoal();
+    if (rotateOut) {
+      return Math.abs(intake.getError()) <= IntakeTable.kTolerance.get();
+    } else {
+      return Math.abs(intake.getError()) <= IntakeTable.kTolerance.get();
+    }
   }
 }
