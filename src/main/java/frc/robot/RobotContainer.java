@@ -108,8 +108,11 @@ public class RobotContainer {
         },intake)
         .finallyDo(() -> intake.setExtensionPower(0)));
 
+
         //Intake Fuel
         primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intake, IntakeTable.kWheelPower));
+
+        secondaryController.a().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
 
         primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
 
@@ -141,6 +144,7 @@ public class RobotContainer {
         
         //Stop All
         primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
+        secondaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
 
         //Reset Gyro
         primaryController.back().onTrue(swerve.resetGyro());
