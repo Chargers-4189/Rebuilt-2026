@@ -5,12 +5,16 @@
 package frc.robot.commands.passing;
 
 import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vision;
+import frc.robot.util.ScoringCalculator;
 import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
@@ -29,12 +33,13 @@ import frc.robot.subsystems.Hopper;
 public class Pass extends ParallelCommandGroup {
   
   /** Creates a new ShootNoSwerveAlign. */
-  public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Intake intake, SwerveSubsystem swerve) {
+  public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Intake intake, Vision vision, SwerveSubsystem swerve, CommandXboxController primaryController) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, false)),
-        new SpinShooter(shooter, ShooterTable.kPassVelocity),
-        hood.setHoodAngleCommand(HoodTable.kPassAngle),
-        new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
+        new SpinShooter(shooter, () -> ScoringCalculator.calculatePassingPower(vision.getDistanceToOurZone())),
+        hood.setHoodAngleCommand(() -> ScoringCalculator.calculateHoodAngle(vision.getDistanceToOurZone())),
+        new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations)),
+        new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.kZero).getRotations(), false)
     );
   }
 }

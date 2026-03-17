@@ -5,7 +5,7 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.scoring.Score;
+import frc.robot.choreo.ChoreoTraj;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
@@ -17,12 +17,18 @@ import frc.robot.subsystems.Vision;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoCenterCollectAndShoot extends SequentialCommandGroup {
+public class SimpleCollectThenShoot extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public AutoCenterCollectAndShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutoCollectAndShootAndIntake(intake),
-    new Score(shooter, hood, indexer, swerve, vision, hopper, intake));
+  public SimpleCollectThenShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, ChoreoTraj traj, boolean doublePass) {
+    if (doublePass) {
+      addCommands(
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, traj),
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.secondPass)
+      );
+    } else {
+      addCommands(
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, traj)
+      );
+    }
   }
 }

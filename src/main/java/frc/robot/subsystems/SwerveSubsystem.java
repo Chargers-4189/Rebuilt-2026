@@ -36,6 +36,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -161,7 +163,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-        .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
+        .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
 
     public AutoFactory autoFactory;
 
@@ -245,7 +247,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                //() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                () -> false,
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {
@@ -443,8 +446,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         );
 
         setControl(
-        drive.withVelocityX(xPower * SwerveSubsystem.MaxSpeed)
-            .withVelocityY(yPower * SwerveSubsystem.MaxSpeed)
+        drive.withVelocityX(-xPower * SwerveSubsystem.MaxSpeed)
+            .withVelocityY(-yPower * SwerveSubsystem.MaxSpeed)
             .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
         );
     }
@@ -472,14 +475,14 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return Commands.runOnce(() -> this.resetRotation(Rotation2d.k180deg)).withName("Reset Gyro");
     }
 
-    public Command choreoAuto(String trajectoryName, boolean resetOdometry) {
+    public Command choreoAuto(ChoreoTraj trajectory, boolean resetOdometry) {
         if (resetOdometry) {
             return Commands.sequence(
-                autoFactory.resetOdometry(trajectoryName),
-                autoFactory.trajectoryCmd(trajectoryName)
+                autoFactory.resetOdometry(trajectory.name()),
+                autoFactory.trajectoryCmd(trajectory.name())
             );
         } else {
-            return autoFactory.trajectoryCmd(trajectoryName);
+            return autoFactory.trajectoryCmd(trajectory.name());
         }
 
     }

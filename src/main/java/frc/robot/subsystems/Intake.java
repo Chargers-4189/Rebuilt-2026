@@ -15,13 +15,16 @@ import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.util.OffsetEncoder;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -29,38 +32,6 @@ public class Intake extends SubsystemBase {
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
   private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
-  private OffsetEncoder offsetEncoder = new OffsetEncoder(.415, .849, encoder::get);
-
-  private final PIDController intakeController = new PIDController(
-    IntakeTable.kP.get(),
-    IntakeTable.kI.get(),
-    IntakeTable.kD.get()
-  );
-
-  private final VoltageOut m_voltReq = new VoltageOut(0.0);
-
-private final SysIdRoutine m_sysIdRoutine =
-   new SysIdRoutine(
-      new SysIdRoutine.Config(
-         Volts.of(.3).per(Second), // Use default ramp rate (1 V/s)
-         Volts.of(3), // Reduce dynamic step voltage to 4 to prevent brownout
-         Seconds.of(15), // Use default timeout (10 s)
-         (state) -> SignalLogger.writeString("stateV2", state.toString()) // Log state with Phoenix SignalLogger class
-      ),
-      new SysIdRoutine.Mechanism(
-         (volts) -> extensionMotor.setControl(m_voltReq.withOutput(volts)),
-         null,
-         this
-      )
-   );
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
 
   public Intake() {}
 
@@ -74,45 +45,14 @@ private final SysIdRoutine m_sysIdRoutine =
     extensionMotor.set(power);
   }
 
-  public void setExtensionAngle(double angle) {
-    IntakeTable.extensionGoal.set(offsetEncoder.convertGoal(angle));
-    setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        offsetEncoder.get(),
-        offsetEncoder.convertGoal(angle)
-      ),
-      -IntakeTable.kAutoOutPower.get(),
-      IntakeTable.kAutoInPower.get())
-    );
-  }
-
-  private double calculatePIDS(double measurement, double setpoint) {
-    double pidCalculation = intakeController.calculate(measurement, setpoint);
-    return pidCalculation + Math.copySign(IntakeTable.kS.get(), pidCalculation);
-  }
-
   public double getEncoder() {
-    return encoder.get();
-  }
-
-  public OffsetEncoder getOffsetEncoder() {
-    return offsetEncoder;
-  }
-
-  public double getError() {
-    return intakeController.getError();
+    return MathUtil.inputModulus(encoder.get() + IntakeTable.kEncoderOffset.get(), 0, 1);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.rawEncoder.set(getEncoder());
-    IntakeTable.offsetEncoder.set(offsetEncoder.get());
-
-    intakeController.setPID(
-      IntakeTable.kP.get(),
-      IntakeTable.kI.get(),
-      IntakeTable.kD.get()
-    );
+    IntakeTable.rawEncoder.set(encoder.get());
+    IntakeTable.offsetEncoder.set(getEncoder());
   }
 }

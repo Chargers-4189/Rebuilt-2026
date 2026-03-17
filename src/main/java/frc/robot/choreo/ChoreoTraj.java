@@ -24,42 +24,95 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
+    public static final ChoreoTraj bumpQuarterCenter = new ChoreoTraj(
+        "bumpQuarterCenter",
+        OptionalInt.empty(),
+        5.73289,
+        new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00992)),
+        new Pose2d(3.03989, 7.0424, Rotation2d.fromRadians(-1.08746))
+    );
+    public static final ChoreoTraj bumpStealCenter = new ChoreoTraj(
+        "bumpStealCenter",
+        OptionalInt.empty(),
+        6.57884,
+        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
+        new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
+    );
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
-        1.9119,
-        new Pose2d(0.77834, 5.94578, Rotation2d.fromRadians(0)),
-        new Pose2d(3.5169, 5.93022, Rotation2d.fromRadians(-0.00157))
+        2.59845,
+        new Pose2d(3.62996, 6.04556, Rotation2d.fromRadians(0)),
+        new Pose2d(1.18366, 5.46535, Rotation2d.fromRadians(-0.00016))
     );
-    public static final ChoreoTraj depotOutpost = new ChoreoTraj(
-        "depotOutpost",
+    public static final ChoreoTraj depotThenOutpost = new ChoreoTraj(
+        "depotThenOutpost",
         OptionalInt.empty(),
-        4.93092,
-        new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
-        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
+        6.42818,
+        new Pose2d(3.61144, 6.13852, Rotation2d.fromRadians(0)),
+        new Pose2d(1.56002, 1.38819, Rotation2d.fromRadians(0.71664))
     );
     /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj depotOutpost$0 = new ChoreoTraj(
-        "depotOutpost",
+    public static final ChoreoTraj depotThenOutpost$0 = new ChoreoTraj(
+        "depotThenOutpost",
         OptionalInt.of(0),
-        1.71203,
-        new Pose2d(2.94731, 6.09472, Rotation2d.fromRadians(0)),
-        new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268))
+        5.21011,
+        new Pose2d(3.61144, 6.13852, Rotation2d.fromRadians(0)),
+        new Pose2d(0.72059, 0.65856, Rotation2d.fromRadians(0))
     );
     /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj depotOutpost$1 = new ChoreoTraj(
-        "depotOutpost",
+    public static final ChoreoTraj depotThenOutpost$1 = new ChoreoTraj(
+        "depotThenOutpost",
         OptionalInt.of(1),
-        3.2188900000000005,
-        new Pose2d(0.77461, 5.95964, Rotation2d.fromRadians(0.0268)),
-        new Pose2d(0.48334, 0.86411, Rotation2d.fromRadians(1.55875))
+        1.21807,
+        new Pose2d(0.72059, 0.65856, Rotation2d.fromRadians(0)),
+        new Pose2d(1.56002, 1.38819, Rotation2d.fromRadians(0.71664))
     );
-    public static final ChoreoTraj leaveOutpost = new ChoreoTraj(
-        "leaveOutpost",
+    public static final ChoreoTraj outpostOnly = new ChoreoTraj(
+        "outpostOnly",
         OptionalInt.empty(),
-        1.5362,
-        new Pose2d(0.72059, 0.66885, Rotation2d.fromRadians(0)),
-        new Pose2d(1.92357, 1.96364, Rotation2d.fromRadians(0.00012))
+        3.04319,
+        new Pose2d(3.60624, 2.50035, Rotation2d.fromRadians(0)),
+        new Pose2d(1.25451, 1.93969, Rotation2d.fromRadians(0.55366))
+    );
+    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
+    public static final ChoreoTraj outpostOnly$0 = new ChoreoTraj(
+        "outpostOnly",
+        OptionalInt.of(0),
+        2.12178,
+        new Pose2d(3.60624, 2.50035, Rotation2d.fromRadians(0)),
+        new Pose2d(0.7032, 0.6692, Rotation2d.fromRadians(0))
+    );
+    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
+    public static final ChoreoTraj outpostOnly$1 = new ChoreoTraj(
+        "outpostOnly",
+        OptionalInt.of(1),
+        0.9214099999999998,
+        new Pose2d(0.7032, 0.6692, Rotation2d.fromRadians(0)),
+        new Pose2d(1.25451, 1.93969, Rotation2d.fromRadians(0.55366))
+    );
+    public static final ChoreoTraj outpostThenDepot = new ChoreoTraj(
+        "outpostThenDepot",
+        OptionalInt.empty(),
+        6.69741,
+        new Pose2d(3.60624, 2.50035, Rotation2d.fromRadians(0)),
+        new Pose2d(1.86441, 5.98399, Rotation2d.fromRadians(-0.61719))
+    );
+    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
+    public static final ChoreoTraj outpostThenDepot$0 = new ChoreoTraj(
+        "outpostThenDepot",
+        OptionalInt.of(0),
+        2.12251,
+        new Pose2d(3.60624, 2.50035, Rotation2d.fromRadians(0)),
+        new Pose2d(0.71436, 0.6692, Rotation2d.fromRadians(0))
+    );
+    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
+    public static final ChoreoTraj outpostThenDepot$1 = new ChoreoTraj(
+        "outpostThenDepot",
+        OptionalInt.of(1),
+        4.5748999999999995,
+        new Pose2d(0.71436, 0.6692, Rotation2d.fromRadians(0)),
+        new Pose2d(1.86441, 5.98399, Rotation2d.fromRadians(-0.61719))
     );
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
@@ -78,7 +131,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
-        7.01676,
+        6.63913,
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
@@ -88,11 +141,18 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
+        Map.entry("bumpQuarterCenter", bumpQuarterCenter),
+        Map.entry("bumpStealCenter", bumpStealCenter),
         Map.entry("depotOnly", depotOnly),
-        Map.entry("depotOutpost", depotOutpost),
-        Map.entry("depotOutpost$0", depotOutpost$0),
-        Map.entry("depotOutpost$1", depotOutpost$1),
-        Map.entry("leaveOutpost", leaveOutpost),
+        Map.entry("depotThenOutpost", depotThenOutpost),
+        Map.entry("depotThenOutpost$0", depotThenOutpost$0),
+        Map.entry("depotThenOutpost$1", depotThenOutpost$1),
+        Map.entry("outpostOnly", outpostOnly),
+        Map.entry("outpostOnly$0", outpostOnly$0),
+        Map.entry("outpostOnly$1", outpostOnly$1),
+        Map.entry("outpostThenDepot", outpostThenDepot),
+        Map.entry("outpostThenDepot$0", outpostThenDepot$0),
+        Map.entry("outpostThenDepot$1", outpostThenDepot$1),
         Map.entry("quarterCenter", quarterCenter),
         Map.entry("secondPass", secondPass),
         Map.entry("stealCenter", stealCenter)
