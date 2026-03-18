@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.generated.TunerConstants;
@@ -39,6 +40,7 @@ import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate;
+import frc.robot.commands.intake.ManualIntakeMove;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.Pass;
@@ -115,6 +117,11 @@ public class RobotContainer {
         secondaryController.a().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
 
         primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
+
+        //Manual Intake
+
+        secondaryController.povUp().whileTrue(new ManualIntakeMove(intake, IntakeConstants.kManualExtensionPower));
+        secondaryController.povDown().whileTrue(new ManualIntakeMove(intake, -IntakeConstants.kManualExtensionPower));
 
         //Manual Hood
         //primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
