@@ -23,18 +23,18 @@ public class LoadFuel extends Command {
   private Indexer indexer;
   private Shooter shooter;
   private SwerveSubsystem swerve;
-  private boolean scoring;
   private Hopper hopper;
   private boolean alreadyAligned;
   private Intake intake;
+  private boolean swerveRotateNeeded;
 
   /** Creates a new LoadFuel. */
-  public LoadFuel(Indexer indexer, Hopper hopper, Intake intake, Shooter shooter, SwerveSubsystem swerve, boolean scoring) {
+  public LoadFuel(Indexer indexer, Hopper hopper, Intake intake, Shooter shooter, SwerveSubsystem swerve, boolean swerveRotateNeeded) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.swerve = swerve;
     this.hopper = hopper;
-    this.scoring = scoring;
+    this.swerveRotateNeeded = swerveRotateNeeded;
     //this.intake = intake;
     addRequirements(indexer, hopper);
   }
@@ -59,7 +59,7 @@ public class LoadFuel extends Command {
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
         //intake.setWheelPower(0);       
-      } else if (scoring && Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get()) {
+      } else if (Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get() && swerveRotateNeeded) {
         //System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0); 

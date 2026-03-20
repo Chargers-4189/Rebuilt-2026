@@ -49,7 +49,7 @@ public class AlignHoodAndFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angle = ScoringCalculator.calculateHoodAngle(distance.getAsDouble());
+    angle = ScoringCalculator.calculateShootingAngle(distance.getAsDouble());
     power = ScoringCalculator.calculateShootingPower(distance.getAsDouble());
   
     hood.setHoodAngle(angle);

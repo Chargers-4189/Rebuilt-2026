@@ -16,7 +16,7 @@ public class ScoringCalculator {
      * @param distance distance to the hub (meters)
      * @return hood rotation (encoder difference from the bottom)
      */
-    public static double calculateHoodAngle(double distance) {
+    public static double calculateShootingAngle(double distance) {
         return ShootingCalculatorTable.kAngleSlope.get() * distance + ShootingCalculatorTable.kAngleIntercept.get();
     }
 
