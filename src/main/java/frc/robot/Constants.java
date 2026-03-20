@@ -154,5 +154,10 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final boolean kRightSide = true;
+    
+    public static final double kPreSpinDuration = 2; //Seconds
+    public static final double kPreSpinVelocity = 55; //Rotations per Second
+
+    public static final double kShooterTimeout = 3.5; //Seconds
   }
 }

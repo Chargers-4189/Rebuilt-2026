@@ -5,24 +5,17 @@
 package frc.robot;
 
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.path.PathConstraints;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -32,12 +25,10 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
-import frc.robot.commands.autos.AlignPosition;
 import frc.robot.commands.autos.DepotThenOutpost;
 import frc.robot.commands.autos.OutpostOnly;
 import frc.robot.commands.autos.OutpostThenDepot;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
-import frc.robot.commands.hood.MoveHood;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.intake.ManualIntakeMove;
@@ -84,9 +75,6 @@ public class RobotContainer {
             //.withDeadband(swerve.MaxSpeed * 0.1).withRotationalDeadband(swerve.MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
-
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     
     public RobotContainer() {
         configureBindings();
@@ -213,7 +201,7 @@ public class RobotContainer {
         primaryController.leftBumper().onTrue(swerve.runOnce(swerve::seedFieldCentric));
 
         //Log data
-        Telemetry logger = new Telemetry(swerve.MaxSpeed);
+        Telemetry logger = new Telemetry(SwerveSubsystem.MaxSpeed);
         swerve.registerTelemetry(logger::telemeterize);
     }
 }

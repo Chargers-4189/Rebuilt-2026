@@ -8,16 +8,9 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
-import choreo.trajectory.TrajectorySample;
-
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -31,21 +24,17 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.choreo.ChoreoTraj;
-import frc.robot.commands.autos.AlignPosition;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.NetworkTables.AutoTable;
@@ -82,9 +71,11 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    public static final SwerveRequest idle = new SwerveRequest.Idle();
+    public static final SwerveRequest.Idle idle = new SwerveRequest.Idle();
+    public static final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -185,7 +176,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder();
         createAutoFactory();
     }
 
@@ -221,38 +211,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         if (Utils.isSimulation()) {
             startSimThread();
-        }
-        configureAutoBuilder();
-    }
-
-
-    private void configureAutoBuilder() {
-        try {
-            var config = RobotConfig.fromGUISettings();
-            AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(ChassisSpeeds.discretize(speeds, 0.020))
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()).withDesaturateWheelSpeeds(true)
-                ),
-                new PPHolonomicDriveController(
-                    // PID constants for translation
-                    new PIDConstants(SwerveConstants.kPositionP, SwerveConstants.kPositionI, SwerveConstants.kPositionD),
-                    // PID constants for rotation
-                    new PIDConstants(SwerveConstants.kAngleP, SwerveConstants.kAngleI, SwerveConstants.kAngleD)
-                ),
-                config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                //() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                () -> false,
-                this // Subsystem for requirements
-            );
-        } catch (Exception ex) {
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
 
@@ -450,24 +408,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
             .withVelocityY(-yPower * SwerveSubsystem.MaxSpeed)
             .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
         );
-    }
-
-    public Command followPath(String fileName) {
-        try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile(fileName);
-
-            return Commands.sequence(
-                Commands.runOnce(
-                    () -> this.resetPose(Vision.convertFieldPos(new Pose2d(path.getPoint(0).position, path.getIdealStartingState().rotation()))),
-                    this
-                ),
-                AutoBuilder.followPath(path)
-            ).withName("Follow Path " + path);
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return Commands.none().withName("Follow Path Exception");
-        }
     }
 
     public Command resetGyro() {
