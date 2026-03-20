@@ -31,7 +31,7 @@ import frc.robot.commands.autos.OutpostThenDepot;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate;
-import frc.robot.commands.intake.ManualIntakeMove;
+import frc.robot.commands.intake.ManualIntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.Pass;
@@ -108,8 +108,8 @@ public class RobotContainer {
 
         //Manual Intake
 
-        secondaryController.povUp().whileTrue(new ManualIntakeMove(intake, IntakeConstants.kManualExtensionPower));
-        secondaryController.povDown().whileTrue(new ManualIntakeMove(intake, -IntakeConstants.kManualExtensionPower));
+        secondaryController.povUp().whileTrue(new ManualIntakeRotate(intake, IntakeConstants.kManualExtensionPower));
+        secondaryController.povDown().whileTrue(new ManualIntakeRotate(intake, -IntakeConstants.kManualExtensionPower));
 
         //Manual Hood
         //primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
