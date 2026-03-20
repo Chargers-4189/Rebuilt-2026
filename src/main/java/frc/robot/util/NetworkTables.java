@@ -37,6 +37,7 @@ public class NetworkTables {
         public static final DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
         public static final DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
         public static final DoublePublisher robotRotation = swerveTable.getDoubleTopic("Robot Rotation").publish();
+        public static final DoublePublisher trenchDistance = swerveTable.getDoubleTopic("Trench Distance").publish();
 
         public static final DoubleEntry kAngleP = swerveTable.getDoubleTopic("Angle P (Swerve)").getEntry(Constants.SwerveConstants.kAngleP);
         public static final DoubleEntry kAngleI = swerveTable.getDoubleTopic("Angle I (Swerve)").getEntry(Constants.SwerveConstants.kAngleI);

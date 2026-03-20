@@ -33,8 +33,8 @@ public class Vision extends SubsystemBase {
   public static final Pose2d fieldCenterPose = new Pose2d(layout.getFieldLength() / 2, layout.getFieldWidth() / 2, new Rotation2d());
   public static final Pose2d redOriginPose = new Pose2d(layout.getFieldLength(), layout.getFieldWidth(), Rotation2d.k180deg);
 
-  public static final double redTrenchX = fieldCenterPose.getX() - 143.50;
-  public static final double blueTrenchX = fieldCenterPose.getX() - 143.50;
+  public static final double redTrenchX = fieldCenterPose.getX() + Units.inchesToMeters(143.50);
+  public static final double blueTrenchX = fieldCenterPose.getX() - Units.inchesToMeters(143.50);
 
   PhotonCamera leftcamera = new PhotonCamera("LeftCam");
   Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
@@ -147,6 +147,7 @@ public class Vision extends SubsystemBase {
     //System.out.println(getDistanceFromHub());
     SwerveTable.hubRotation.set(getRotationFromHub());
     SwerveTable.hubDistance.set(getDistanceFromHub());
+    SwerveTable.trenchDistance.set(getDistanceToOurZone());
   }
 
   
