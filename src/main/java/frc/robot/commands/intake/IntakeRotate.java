@@ -12,7 +12,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.util.OffsetEncoder;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRotate extends Command {
@@ -62,14 +61,19 @@ public class IntakeRotate extends Command {
   @Override
   public void execute() {
     IntakeTable.extensionGoal.set(angle.getAsDouble());
-    intake.setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        intake.getEncoder(),
-        angle.getAsDouble()
-      ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
-    );
+    if (intake.encoderConnected()) {
+      intake.setExtensionPower(
+        MathUtil.clamp(calculatePIDS(
+          intake.getEncoder(),
+          angle.getAsDouble()
+        ),
+        -IntakeTable.kAutoInPower.get(),
+        IntakeTable.kAutoOutPower.get())
+      );
+    } else {
+      intake.setExtensionPower(0);
+      System.out.println("ERROR: Intake Encoder Disconnected");
+    }
   }
 
   
