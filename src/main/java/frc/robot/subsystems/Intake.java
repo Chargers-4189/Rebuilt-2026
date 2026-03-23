@@ -28,8 +28,8 @@ import frc.robot.util.NetworkTables.IntakeTable;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
-  private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
+  private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor); //Needs to be inverted
+  private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
   private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
 
 

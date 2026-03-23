@@ -43,8 +43,8 @@ public final class Constants {
 
   public static class IntakeConstants {
     //IDs
-    public static final int kIntakeMotor = 21; 
-    public static final int kIntakeAxisMotor = 22;
+    public static final int kWheelMotor = 21; 
+    public static final int kExtenderMotor = 22;
     public static final int kIntakeEncoder = 1; 
 
     //Modifiables
@@ -94,7 +94,7 @@ public final class Constants {
 
   public static class HoodConstants {
     //IDs
-    public static final int kMotorCanID = 29;
+    public static final int kMotorCanID = 27;
     public static final int kEncoderDIO = 0;
 
     //Fixed
@@ -112,7 +112,7 @@ public final class Constants {
 
   public static class ShooterConstants {
     //IDs
-    public static final int kLeftMotorCanID = 27;
+    public static final int kLeftMotorCanID = 29;
     public static final int kRightMotorCanID = 28;
 
     //Modifiables
