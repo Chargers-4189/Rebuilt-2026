@@ -123,6 +123,9 @@ public class NetworkTables {
             kS.set(kS.get());
             kEncoderOffset.set(kEncoderOffset.get());
 
+            kMaxVelocity.set(kMaxVelocity.get());
+            kMaxAcceleration.set(kMaxAcceleration.get());
+
             kTauntRotations.set(kTauntRotations.get());
 
             kTolerance.set(kTolerance.get());

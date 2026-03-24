@@ -60,14 +60,19 @@ public class IntakeRotate extends Command {
   @Override
   public void execute() {
     IntakeTable.extensionGoal.set(angle.getAsDouble());
-    intake.setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        intake.getEncoder(),
-        angle.getAsDouble()
-      ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
-    );
+    if (intake.encoderConnected()) {
+      intake.setExtensionPower(
+        MathUtil.clamp(calculatePIDS(
+          intake.getEncoder(),
+          angle.getAsDouble()
+        ),
+        -IntakeTable.kAutoInPower.get(),
+        IntakeTable.kAutoOutPower.get())
+      );
+    } else {
+      intake.setExtensionPower(0);
+      System.out.println("ERROR: Intake Encoder Disconnected");
+    }
   }
 
   

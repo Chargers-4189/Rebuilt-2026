@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFXS;
 
 import edu.wpi.first.math.MathUtil;
@@ -14,9 +15,9 @@ import frc.robot.util.NetworkTables.IntakeTable;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kIntakeMotor); //Needs to be inverted
-  private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kIntakeAxisMotor);
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(Constants.IntakeConstants.kIntakeEncoder);
+  private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor); //Needs to be inverted
+  private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
+  private CANcoder encoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
 
 
   public Intake() {}
@@ -32,13 +33,16 @@ public class Intake extends SubsystemBase {
   }
 
   public double getEncoder() {
-    return MathUtil.inputModulus(encoder.get() + IntakeTable.kEncoderOffset.get(), 0, 1);
+    return encoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  public boolean encoderConnected() {
+    return encoder.isConnected();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.rawEncoder.set(encoder.get());
-    IntakeTable.offsetEncoder.set(getEncoder());
+    IntakeTable.rawEncoder.set(getEncoder());
   }
 }
