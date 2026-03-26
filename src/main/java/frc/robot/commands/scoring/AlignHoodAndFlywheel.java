@@ -12,6 +12,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ScoringCalculator;
 import frc.robot.util.Stopwatch;
+import frc.robot.util.NetworkTables.ShooterTable;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignHoodAndFlywheel extends Command {
@@ -68,9 +69,9 @@ public class AlignHoodAndFlywheel extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (finished == false && shooter.getVelocity() > shooter.getTargetVelocity()) {
-      System.out.println("ERROR: Shooter up to power " + stopwatch.getElapsedTime());
+    if (stopwatch.getElapsedTime() > .3 && finished == false && Math.abs(shooter.getVelocity() - shooter.getTargetVelocity()) < ShooterTable.kTolerance.get()) {
       finished = true;
+      System.out.println("ERROR: Shooter up to power " + stopwatch.getElapsedTime());
     }
     return false;
   }

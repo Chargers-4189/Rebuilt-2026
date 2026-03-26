@@ -35,14 +35,14 @@ public class SpinShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      shooter.setVelocity(velocity.getAsDouble());
+      shooter.setVelocitySimple(velocity.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     if (stopMovingOnEnd) {
-      shooter.setVelocity(0);
+      shooter.setVelocitySimple(0);
     }
   }
 

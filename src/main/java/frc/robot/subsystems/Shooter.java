@@ -59,11 +59,26 @@ public class Shooter extends SubsystemBase {
     rightShooterMotor.getConfigurator().apply(talonFXSConfigs);
   }
 
-  public void setVelocity(double shooterMotorPower) {
-    //leftShooterMotor.setControl(m_request.withVelocity(shooterMotorPower));
-    targetVelocity = shooterMotorPower;
+  public void setVelocity(double shooterVelocity) {
+    targetVelocity = shooterVelocity;
+
+    if (getVelocity() < shooterVelocity - ShooterTable.kMaxPowerCutoff.get()) {
+      if (shooterVelocity > 5) { //Just in case of a wierd coding error, prevents the shooter from moving when it shouldn't.
+        setPower(ShooterTable.kSuperSpinPower.get());
+      }
+    } else {
+      setVelocitySimple(shooterVelocity);
+    }
+  }
+
+  public void setVelocitySimple(double shooterVelocity) {
     leftShooterMotor.setControl(m_request.withVelocity(targetVelocity));
     rightShooterMotor.setControl(m_request.withVelocity(-targetVelocity));
+  }
+
+  public void setPower(double shooterPower) {
+    leftShooterMotor.set(shooterPower);
+    rightShooterMotor.set(-shooterPower);
   }
 
   public double getVelocity() {
@@ -84,5 +99,6 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
     ShooterTable.velocity.set(getVelocity());
     ShooterTable.velocityGoal.set(getTargetVelocity());
+    ShooterTable.currentPower.set(leftShooterMotor.getMotorVoltage().getValueAsDouble() / 12.0);
   }
 }
