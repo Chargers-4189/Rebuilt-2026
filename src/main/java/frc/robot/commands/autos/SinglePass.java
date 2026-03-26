@@ -36,7 +36,7 @@ public class SinglePass extends SequentialCommandGroup {
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
       ),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(AutoTable.kShooterTimeout.get())
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(AutoTable.kShooterTimeout.get())
     );
   }
 }

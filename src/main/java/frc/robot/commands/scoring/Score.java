@@ -28,28 +28,21 @@ import frc.robot.commands.intake.RunIntakeWheels;
 public class Score extends ParallelCommandGroup {
 
   /** Creates a new Score. */
-  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY) {
+  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, DoubleSupplier driveX, DoubleSupplier driveY) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, true)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
         new AlignHoodAndFlywheel(hood, shooter, vision),
-        new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false),
-        new SequentialCommandGroup(
-          Commands.waitSeconds(IntakeTable.kTauntDelay.get()),
-          new ParallelCommandGroup(
-            new IntakeRotate(intake, IntakeTable.kTauntRotations),
-            new RunIntakeWheels(intake, IntakeTable.kLowWheelPower)
-          )
-        )
+        new AlignAngle(swerve, driveX, driveY, () -> vision.getRotationFromHub(), false)
     );
   }
 
   /** Creates a new Score. */
-  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX());
+  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, CommandXboxController primaryController) {
+    this(shooter, hood, indexer, swerve, vision, hopper, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX());
   }
 
   /** Creates a new Score. */
-  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> 0, () -> 0);
+  public Score(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper) {
+    this(shooter, hood, indexer, swerve, vision, hopper, () -> 0, () -> 0);
   }
 }

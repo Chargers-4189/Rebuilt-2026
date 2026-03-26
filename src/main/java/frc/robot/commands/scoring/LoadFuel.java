@@ -24,17 +24,15 @@ public class LoadFuel extends Command {
   private SwerveSubsystem swerve;
   private Hopper hopper;
   private boolean alreadyAligned;
-  private Intake intake;
   private boolean swerveRotateNeeded;
 
   /** Creates a new LoadFuel. */
-  public LoadFuel(Indexer indexer, Hopper hopper, Intake intake, Shooter shooter, SwerveSubsystem swerve, boolean swerveRotateNeeded) {
+  public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean swerveRotateNeeded) {
     this.indexer = indexer;
     this.shooter = shooter;
     this.swerve = swerve;
     this.hopper = hopper;
     this.swerveRotateNeeded = swerveRotateNeeded;
-    //this.intake = intake;
     addRequirements(indexer, hopper);
   }
 
@@ -51,23 +49,19 @@ public class LoadFuel extends Command {
       //System.out.println("Loading Fuel!");
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
-      //intake.setWheelPower(IntakeTable.kLowWheelPower.get());
     } else {
       if (Math.abs(shooter.getVelocity() - shooter.getTargetVelocity()) > ShooterTable.kTolerance.get()){
         //System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
-        //intake.setWheelPower(0);       
       } else if (Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get() && swerveRotateNeeded) {
         //System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0); 
-        //intake.setWheelPower(0);       
       } else {
         //System.out.println("Loading Fuel!");
         indexer.setPower(IndexerTable.kPower.get());
         hopper.setPower(HopperTable.kPower.get());
-        //intake.setWheelPower(IntakeTable.kLowWheelPower.get());
         alreadyAligned = true;
       }
   }
@@ -78,7 +72,6 @@ public class LoadFuel extends Command {
   public void end(boolean interrupted) {
       indexer.setPower(0);
       hopper.setPower(0);
-      //intake.setWheelPower(0);
   }
 
   // Returns true when the command should end.

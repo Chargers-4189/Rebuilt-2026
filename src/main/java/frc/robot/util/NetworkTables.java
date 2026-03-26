@@ -129,6 +129,8 @@ public class NetworkTables {
             kMaxAcceleration.set(kMaxAcceleration.get());
 
             kTauntRotations.set(kTauntRotations.get());
+            kTauntFrequency.set(kTauntFrequency.get());
+            kTauntMagnitude.set(kTauntMagnitude.get());
 
             kTolerance.set(kTolerance.get());
             kOuterExtensionLimit.set(kOuterExtensionLimit.get());

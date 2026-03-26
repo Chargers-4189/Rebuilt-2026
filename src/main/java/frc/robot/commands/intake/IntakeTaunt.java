@@ -18,7 +18,7 @@ public class IntakeTaunt extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new IntakeRotate(intake, IntakeTable.kTauntRotations, IntakeTable.kTauntMagnitude, IntakeTable.kTauntFrequency),
-      new RunIntakeWheels(intake, () -> -IntakeTable.kLowWheelPower.get())
+      new RunIntakeWheels(intake, IntakeTable.kLowWheelPower)
     );
   }
 }

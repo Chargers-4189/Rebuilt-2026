@@ -6,6 +6,7 @@ package frc.robot.commands.intake;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Intake;
 
@@ -18,7 +19,10 @@ public class IntakeRunAndRotate extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeRotate(intake, true),
+      Commands.race(
+        new IntakeRotate(intake, true),
+        Commands.waitSeconds(1)
+      ),
       new RunIntakeWheels(intake, power)
     );
   }

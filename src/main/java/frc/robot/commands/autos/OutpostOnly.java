@@ -33,7 +33,7 @@ public class OutpostOnly extends SequentialCommandGroup {
       ),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.outpostOnly$1, false),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }
 }

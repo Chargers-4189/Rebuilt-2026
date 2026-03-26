@@ -33,7 +33,7 @@ public class DepotThenOutpost extends SequentialCommandGroup {
       ),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.depotThenOutpost$1, false),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }
 }

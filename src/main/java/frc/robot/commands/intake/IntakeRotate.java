@@ -32,7 +32,7 @@ public class IntakeRotate extends Command {
   private DoubleSupplier angle;
   private DoubleSupplier TauntMagnitude;
   private DoubleSupplier TauntFrequency;
-  private Stopwatch Timer;
+  private Stopwatch stopwatch = new Stopwatch();
 
   private final ProfiledPIDController intakeController;
 
@@ -43,7 +43,6 @@ public class IntakeRotate extends Command {
     this.angle = angle;
     this.TauntMagnitude = TauntMagnitude;
     this.TauntFrequency = TauntFrequency;
-    this.Timer = Timer;
     this.intakeController = new ProfiledPIDController(
       IntakeTable.kP.get(),
       IntakeTable.kI.get(),
@@ -67,13 +66,13 @@ public class IntakeRotate extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Timer.start();
+    stopwatch.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * Timer.getElapsedTime() * TauntFrequency.getAsDouble()));
+    double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * stopwatch.getElapsedTime() * TauntFrequency.getAsDouble()));
 
     IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
     
@@ -108,6 +107,7 @@ public class IntakeRotate extends Command {
   @Override
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
-    return intakeController.atGoal();
+    //return intakeController.atGoal();
+    return false;
   }
 }

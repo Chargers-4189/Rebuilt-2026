@@ -29,12 +29,11 @@ import frc.robot.subsystems.Hopper;
 public class Pass extends ParallelCommandGroup {
   
   /** Creates a new ShootNoSwerveAlign. */
-  public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Intake intake, Vision vision, SwerveSubsystem swerve, CommandXboxController primaryController) {
+  public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Vision vision, SwerveSubsystem swerve, CommandXboxController primaryController) {
     addCommands(
-        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, true)),
+        new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
         new SpinShooter(shooter, () -> ScoringCalculator.calculatePassingPower(vision.getDistanceToOurZone())),
         hood.setHoodAngleCommand(() -> ScoringCalculator.calculatePassingAngle(vision.getDistanceToOurZone())),
-        new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations)),
         new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.kZero).getRotations(), false)
     );
   }

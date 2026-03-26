@@ -31,6 +31,7 @@ import frc.robot.commands.autos.OutpostThenDepot;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate;
+import frc.robot.commands.intake.IntakeTaunt;
 import frc.robot.commands.intake.ManualIntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
 import frc.robot.commands.intake.RunIntakeWheels;
@@ -106,6 +107,9 @@ public class RobotContainer {
 
         primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
 
+        //Taunt
+        primaryController.povLeft().whileTrue(new IntakeTaunt(intake));
+
         //Manual Intake
 
         secondaryController.povUp().whileTrue(new ManualIntakeRotate(intake, IntakeConstants.kManualExtensionPower));
@@ -124,12 +128,12 @@ public class RobotContainer {
         
         //Score
         primaryController.leftBumper().whileTrue(
-            new Score(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController)
+            new Score(shooter, hood, indexer, swerve, vision, hopper, primaryController)
         );
 
         //primaryController.povLeft().onTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4.4, new Rotation2d())));
         primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
-        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, intake, vision, swerve, primaryController));
+        primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));
         //Auto Intake Buttons
         primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intake, false));
         primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intake, true));
@@ -179,7 +183,7 @@ public class RobotContainer {
         autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.depotOnly, false));
         autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intake));
 
-        autoChooser.addCmd("Shoot Preload", () -> new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(6));
+        autoChooser.addCmd("Shoot Preload", () -> new Score(shooter, hood, indexer, swerve, vision, hopper).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
