@@ -201,7 +201,7 @@ public class NetworkTables {
         public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
         public static final DoublePublisher currentPower = shooterTable.getDoubleTopic("Current Power").publish();
 
-        public static final DoubleEntry kTestPower = shooterTable.getDoubleTopic("Shooter Test Power").getEntry(Constants.ShooterConstants.kFixedPower);
+        public static final DoubleEntry kSuperSpinPower = shooterTable.getDoubleTopic("Super Spin Power").getEntry(Constants.ShooterConstants.kSuperSpinPower);
         public static final DoubleEntry kFixedShootDistance = shooterTable.getDoubleTopic("Fixed Shoot Distance").getEntry(Constants.ShooterConstants.kFixedShootDistance);
         public static final DoubleEntry kPassVelocity = shooterTable.getDoubleTopic("Pass Velocity").getEntry(Constants.ShooterConstants.kPassVelocity);
 
@@ -220,8 +220,10 @@ public class NetworkTables {
         public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
         public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+        public static final DoubleEntry kMaxPowerCutoff = shooterTable.getDoubleTopic("Max Power Range").getEntry(Constants.ShooterConstants.KMaxPowerCutoff);
+
         public static final void init() {
-            kTestPower.set(kTestPower.get());
+            kSuperSpinPower.set(kSuperSpinPower.get());
             kFixedShootDistance.set(kFixedShootDistance.get());
             kPassVelocity.set(kPassVelocity.get());
 
@@ -237,6 +239,8 @@ public class NetworkTables {
             kMotionMagicCruiseVelocity.set(kMotionMagicCruiseVelocity.get());
             kMotionMagicAcceleration.set(kMotionMagicAcceleration.get());
             kMotionMagicJerk.set(kMotionMagicJerk.get());
+
+            kMaxPowerCutoff.set(kMaxPowerCutoff.get());
         }
     }
 

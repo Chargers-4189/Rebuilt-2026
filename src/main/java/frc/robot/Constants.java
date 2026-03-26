@@ -134,7 +134,7 @@ public final class Constants {
     public static final int kRightMotorCanID = 28;
 
     //Modifiables
-    public static final double kFixedPower = .5;
+    public static final double kSuperSpinPower = 1;
     public static final double kFixedShootDistance = 3.2;
     public static final double kPassVelocity = 70;
 
@@ -150,8 +150,10 @@ public final class Constants {
 
     // set Motion Magic settings
     public static final double kMotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
-    public static final double kMotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
+    public static final double kMotionMagicAcceleration = 100000; // Target acceleration of 160 rps/s (0.5 seconds)
     public static final double kMotionMagicJerk = 4000; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    public static final double KMaxPowerCutoff = 2;
   }
 
   public static class ShootingCalculatorConstants {
@@ -173,7 +175,7 @@ public final class Constants {
   public static class AutoConstants {
     public static final boolean kRightSide = true;
     
-    public static final double kPreSpinDuration = 2; //Seconds
+    public static final double kPreSpinDuration = .8; //Seconds
     public static final double kPreSpinVelocity = 55; //Rotations per Second
 
     public static final double kShooterTimeout = 3.5; //Seconds
