@@ -35,7 +35,7 @@ public class AlignHoodAndFlywheel extends Command {
   }
 
   public AlignHoodAndFlywheel(Hood hood, Shooter shooter, Vision vision) {
-    this(hood, shooter, vision::getDistanceFromHub);
+    this(hood, shooter, vision::getDistanceFromHubWithOffset);
   }
 
   // Called when the command is initially scheduled.

@@ -61,7 +61,7 @@ public class Vision extends SubsystemBase {
       }
     }
   }
-
+/* 
   public double getDistanceFromHub(){
     return getDistanceFromLocation(getHubPose());
   }
@@ -74,13 +74,14 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private Pose2d getHubPose() {
+ */ private Pose2d getHubPose() {
     if(swerve.m_isBlueAlliance){
       return hubPoseBlue;
     } else {
       return hubPoseRed;
     }
   }
+  /* 
 
   private double getDistanceFromLocation(Pose2d hubLocation){
       
@@ -97,7 +98,22 @@ public class Vision extends SubsystemBase {
 
       return Math.sqrt(diff);
   }
+*/
+  private double getDistancewithOffset(Pose2d hubLocation) {
+      double botX = swerve.getState().Pose.getX() + (swerve.getState().Speeds.vxMetersPerSecond * 0.8);
+      double botY = swerve.getState().Pose.getY() + (swerve.getState().Speeds.vyMetersPerSecond * 0.8);
 
+      double hubX = hubLocation.getX();
+      double hubY = hubLocation.getY();
+
+      double xDiff = botX - hubX;
+      double yDiff = botY - hubY;
+
+      double diff = (xDiff * xDiff) + (yDiff * yDiff);
+
+      return Math.sqrt(diff);
+  }
+/* 
   public double getRotationFromHub(){
     if(swerve.m_isBlueAlliance){
       return getRotationToBlueHub();
@@ -105,14 +121,38 @@ public class Vision extends SubsystemBase {
       return getRotationToRedHub();
     }
   }
+*/
+   public double getRotationFromHubWithOffset(){
+    if(swerve.m_isBlueAlliance){
+      return getRotationToBlueHubWithOffset();
+    } else {
+      return getRotationToRedHubWithOffset();
+    }
+  }
 
-  private double getRotationToRedHub(){
+
+  private double getRotationToRedHubWithOffset() {
+    return getRotationWithoffset(hubPoseRed);
+  }
+
+  private double getRotationToBlueHubWithOffset() {
+    return getRotationWithoffset(hubPoseBlue);
+  }
+
+  public double getDistanceFromHubWithOffset() {
+    return getDistancewithOffset(getHubPose());
+  }
+
+ /*  private double getRotationToRedHub() {
     return getRotationToLocation(hubPoseRed);
   }
 
-  private double getRotationToBlueHub(){
+  private double getRotationToBlueHub() {
     return getRotationToLocation(hubPoseBlue);
   }
+  
+  
+  
   private double getRotationToLocation(Pose2d location){
     double botX = swerve.getState().Pose.getX();
     double botY = swerve.getState().Pose.getY();
@@ -124,6 +164,22 @@ public class Vision extends SubsystemBase {
     double yDiff = hubY - botY;
 
     return (new Rotation2d(xDiff, yDiff)).getRotations();
+  }
+*/
+
+  private double getRotationWithoffset (Pose2d location) {
+
+    double botX = swerve.getState().Pose.getX() + (swerve.getState().Speeds.vxMetersPerSecond * 0.8);
+    double botY = swerve.getState().Pose.getY() + (swerve.getState().Speeds.vyMetersPerSecond * 0.8);
+
+    double hubX = location.getX();
+    double hubY = location.getY();
+
+    double xDiff = hubX - botX;
+    double yDiff = hubY - botY;
+
+    return (new Rotation2d(xDiff, yDiff)).getRotations();
+
   }
 
   private static Pose2d findMidpoint(Pose2d pose1, Pose2d pose2) {
@@ -145,8 +201,8 @@ public class Vision extends SubsystemBase {
     this.addVisionMeasurement(rightCamera, rightCamTransform);
 
     //System.out.println(getDistanceFromHub());
-    SwerveTable.hubRotation.set(getRotationFromHub());
-    SwerveTable.hubDistance.set(getDistanceFromHub());
+    SwerveTable.hubRotation.set(getRotationFromHubWithOffset());
+    SwerveTable.hubDistance.set(getDistanceFromHubWithOffset());
   }
 
   
