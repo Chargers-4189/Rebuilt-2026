@@ -74,7 +74,9 @@ public class IntakeRotate extends Command {
   @Override
   public void execute() {
     double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * Timer.getElapsedTime() * TauntFrequency.getAsDouble()));
+
     IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
+    
     if (intake.encoderConnected()) {
       intake.setExtensionPower(
         MathUtil.clamp(calculatePIDS(
