@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.intake.IntakeRunAndRotate;
+import frc.robot.commands.passing.SpinShooter;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -16,6 +17,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.NetworkTables.AutoTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -28,9 +30,13 @@ public class SinglePass extends SequentialCommandGroup {
     addCommands(
       Commands.race(
         new IntakeRunAndRotate(intake, IntakeTable.kWheelPower),
-        swerve.choreoAuto(traj, false)
+        swerve.choreoAuto(traj, false),
+        Commands.sequence(
+          Commands.waitSeconds(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get()),
+          new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
+        )
       ),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(5)
+      new Score(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(AutoTable.kShooterTimeout.get())
     );
   }
 }

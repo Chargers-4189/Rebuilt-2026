@@ -12,7 +12,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.util.OffsetEncoder;
 import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -30,7 +29,6 @@ public class IntakeRotate extends Command {
   */
 
   private Intake intake;
-  private boolean rotateOut;
   private DoubleSupplier angle;
   private DoubleSupplier TauntMagnitude;
   private DoubleSupplier TauntFrequency;
@@ -75,19 +73,21 @@ public class IntakeRotate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!rotateOut){
-      IntakeTable.extensionGoal.set(angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * Timer.getElapsedTime() * TauntFrequency.getAsDouble())));  // = TargetAngle + Magnitude * sin(Frequency * Theta)
-    }else{
-      IntakeTable.extensionGoal.set(angle.getAsDouble());
+    double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * Timer.getElapsedTime() * TauntFrequency.getAsDouble()));
+    IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
+    if (intake.encoderConnected()) {
+      intake.setExtensionPower(
+        MathUtil.clamp(calculatePIDS(
+          intake.getEncoder(),
+          goal
+        ),
+        -IntakeTable.kAutoInPower.get(),
+        IntakeTable.kAutoOutPower.get())
+      );
+    } else {
+      intake.setExtensionPower(0);
+      System.out.println("ERROR: Intake Encoder Disconnected");
     }
-    intake.setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        intake.getEncoder(),
-        angle.getAsDouble()
-      ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
-    );
   }
 
   

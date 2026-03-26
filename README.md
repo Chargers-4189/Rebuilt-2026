@@ -22,7 +22,7 @@ design/
 src/
 └── main/
     ├── deploy/
-    │   ├── pathplanner
+    │   ├── choreo
     │   └── swerve
     └── java/
         └── frc/
@@ -38,7 +38,7 @@ src/
 - Design and code plans for commands and subsystems
 
 `src/main/deploy`
-- Autonomous & optimized paths with PathPlanner
+- Autonomous & optimized paths with Choreo
 
 `src/main/java/frc/robot`
 - Robot code
