@@ -63,6 +63,8 @@ public final class Constants {
     public static final double kMaxAcceleration = 0;
 
     public static final double kTauntRotations = .47;
+    public static final double kTauntFrequency = 2;
+    public static final double kTauntMagnitude = Math.PI/16; 
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.25;

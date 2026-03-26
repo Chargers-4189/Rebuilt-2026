@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.OffsetEncoder;
+import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRotate extends Command {
@@ -31,13 +32,20 @@ public class IntakeRotate extends Command {
   private Intake intake;
   private boolean rotateOut;
   private DoubleSupplier angle;
+  private DoubleSupplier TauntMagnitude;
+  private DoubleSupplier TauntFrequency;
+  private Stopwatch Timer;
 
   private final ProfiledPIDController intakeController;
 
   /** Creates a new IntakeRotate. */
-  public IntakeRotate(Intake intake, DoubleSupplier angle) {
+
+  public IntakeRotate(Intake intake, DoubleSupplier angle, DoubleSupplier TauntMagnitude, DoubleSupplier TauntFrequency) {
     this.intake = intake;
     this.angle = angle;
+    this.TauntMagnitude = TauntMagnitude;
+    this.TauntFrequency = TauntFrequency;
+    this.Timer = Timer;
     this.intakeController = new ProfiledPIDController(
       IntakeTable.kP.get(),
       IntakeTable.kI.get(),
@@ -48,6 +56,10 @@ public class IntakeRotate extends Command {
     addRequirements(intake);
   }
 
+  public IntakeRotate(Intake intake, DoubleSupplier angle) {
+    this(intake, angle, () -> 0, () -> 0);
+  }
+
   /** Creates a new IntakeRotate. */
   public IntakeRotate(Intake intake, boolean rotateOut) {
     this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
@@ -56,12 +68,18 @@ public class IntakeRotate extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    IntakeTable.extensionGoal.set(angle.getAsDouble());
+    if(!rotateOut){
+      IntakeTable.extensionGoal.set(angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * Timer.getElapsedTime() * TauntFrequency.getAsDouble())));  // = TargetAngle + Magnitude * sin(Frequency * Theta)
+    }else{
+      IntakeTable.extensionGoal.set(angle.getAsDouble());
+    }
     intake.setExtensionPower(
       MathUtil.clamp(calculatePIDS(
         intake.getEncoder(),

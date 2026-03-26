@@ -107,6 +107,8 @@ public class NetworkTables {
         public static final BooleanEntry kReverseEncoder = intakeTable.getBooleanTopic("Reverse Intake Encoder").getEntry(Constants.IntakeConstants.reverseEncoder);
 
         public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
+        public static final DoubleEntry kTauntFrequency = intakeTable.getDoubleTopic("Taunt Frequency").getEntry(Constants.IntakeConstants.kTauntFrequency);
+        public static final DoubleEntry kTauntMagnitude = intakeTable.getDoubleTopic("Taunt Magnitude").getEntry(Constants.IntakeConstants.kTauntMagnitude);
 
         public static final DoubleEntry kTolerance = intakeTable.getDoubleTopic("Intake Tolerance").getEntry(Constants.IntakeConstants.kTolerance);
         public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
