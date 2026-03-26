@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
 
 //import com.ctre.phoenix6.HootAutoReplay;
 
@@ -28,9 +27,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void robotInit() {
-        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
-    }
+    public void robotInit() {}
 
     @Override
     public void robotPeriodic() {

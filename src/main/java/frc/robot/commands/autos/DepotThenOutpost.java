@@ -4,10 +4,6 @@
 
 package frc.robot.commands.autos;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
@@ -37,7 +33,7 @@ public class DepotThenOutpost extends SequentialCommandGroup {
       ),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.depotThenOutpost$1, false),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }
 }

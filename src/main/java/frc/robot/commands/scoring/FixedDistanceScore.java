@@ -27,22 +27,21 @@ import frc.robot.commands.intake.IntakeRotate;
 public class FixedDistanceScore extends ParallelCommandGroup {
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier driveX, DoubleSupplier driveY, DoubleSupplier distance) {
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, DoubleSupplier driveX, DoubleSupplier driveY, DoubleSupplier distance) {
     addCommands(
-      new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, intake, shooter, swerve, false)),
-      new AlignHoodAndFlywheel(hood, shooter, distance),
-      new SequentialCommandGroup(Commands.waitSeconds(IntakeTable.kTauntDelay.get()), new IntakeRotate(intake, IntakeTable.kTauntRotations))
+      new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, false)),
+      new AlignHoodAndFlywheel(hood, shooter, distance)
     );
   }
 
   /** Creates a new FixedDistanceScore. */
   public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController, DoubleSupplier distance) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX(), distance);
+    this(shooter, hood, indexer, swerve, vision, hopper, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX(), distance);
   }
 
   /** Creates a new FixedDistanceScore. */
   public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier distance) {
-    this(shooter, hood, indexer, swerve, vision, hopper, intake, () -> 0, () -> 0, distance);
+    this(shooter, hood, indexer, swerve, vision, hopper, () -> 0, () -> 0, distance);
   }
 
 }

@@ -4,15 +4,10 @@
 
 package frc.robot.commands.autos;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -38,7 +33,7 @@ public class OutpostOnly extends SequentialCommandGroup {
       ),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.outpostOnly$1, false),
-      new Score(shooter, hood, indexer, swerve, vision, hopper, intake) 
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake) 
     );
   }
 }

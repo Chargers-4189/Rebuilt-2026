@@ -1,23 +1,18 @@
 package frc.robot.util;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructEntry;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants;
@@ -107,6 +102,8 @@ public class NetworkTables {
         public static final BooleanEntry kReverseEncoder = intakeTable.getBooleanTopic("Reverse Intake Encoder").getEntry(Constants.IntakeConstants.reverseEncoder);
 
         public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
+        public static final DoubleEntry kTauntFrequency = intakeTable.getDoubleTopic("Taunt Frequency").getEntry(Constants.IntakeConstants.kTauntFrequency);
+        public static final DoubleEntry kTauntMagnitude = intakeTable.getDoubleTopic("Taunt Magnitude").getEntry(Constants.IntakeConstants.kTauntMagnitude);
 
         public static final DoubleEntry kTolerance = intakeTable.getDoubleTopic("Intake Tolerance").getEntry(Constants.IntakeConstants.kTolerance);
         public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
@@ -128,7 +125,12 @@ public class NetworkTables {
             kS.set(kS.get());
             kEncoderOffset.set(kEncoderOffset.get());
 
+            kMaxVelocity.set(kMaxVelocity.get());
+            kMaxAcceleration.set(kMaxAcceleration.get());
+
             kTauntRotations.set(kTauntRotations.get());
+            kTauntFrequency.set(kTauntFrequency.get());
+            kTauntMagnitude.set(kTauntMagnitude.get());
 
             kTolerance.set(kTolerance.get());
             kOuterExtensionLimit.set(kOuterExtensionLimit.get());
@@ -206,17 +208,17 @@ public class NetworkTables {
         public static final DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.ShooterConstants.kTolerance);
 
         //slot 0 configs
-        public static final DoubleEntry kS = shooterTable.getDoubleTopic("S (Shooter)").getEntry(Constants.ShooterConstants.kS);; // Add 0.25 V output to overcome static friction
-        public static final DoubleEntry kV = shooterTable.getDoubleTopic("V (Shooter)").getEntry(Constants.ShooterConstants.kV);; // A velocity target of 1 rps results in 0.12 V output
-        public static final DoubleEntry kA = shooterTable.getDoubleTopic("A (Shooter)").getEntry(Constants.ShooterConstants.kA);; // An acceleration of 1 rps/s requires 0.01 V output
+        public static final DoubleEntry kS = shooterTable.getDoubleTopic("S (Shooter)").getEntry(Constants.ShooterConstants.kS); // Add 0.25 V output to overcome static friction
+        public static final DoubleEntry kV = shooterTable.getDoubleTopic("V (Shooter)").getEntry(Constants.ShooterConstants.kV); // A velocity target of 1 rps results in 0.12 V output
+        public static final DoubleEntry kA = shooterTable.getDoubleTopic("A (Shooter)").getEntry(Constants.ShooterConstants.kA); // An acceleration of 1 rps/s requires 0.01 V output
         public static final DoubleEntry kP = shooterTable.getDoubleTopic("P (Shooter)").getEntry(Constants.ShooterConstants.kP);
         public static final DoubleEntry kI = shooterTable.getDoubleTopic("I (Shooter)").getEntry(Constants.ShooterConstants.kI);
         public static final DoubleEntry kD = shooterTable.getDoubleTopic("D (Shooter)").getEntry(Constants.ShooterConstants.kD);
 
         // set Motion Magic settings
-        public static final DoubleEntry kMotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MM Velocity (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicCruiseVelocity);; // Target cruise velocity of 80 rps
-        public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicAcceleration);; // Target acceleration of 160 rps/s (0.5 seconds)
-        public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicJerk);; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        public static final DoubleEntry kMotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MM Velocity (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicCruiseVelocity); // Target cruise velocity of 80 rps
+        public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
+        public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         public static final void init() {
             kTestPower.set(kTestPower.get());
@@ -278,8 +280,17 @@ public class NetworkTables {
 
         public static final BooleanEntry kRightSide = autoTable.getBooleanTopic("Right Side").getEntry(Constants.AutoConstants.kRightSide);
 
+        
+        public static final DoubleEntry kPreSpinDuration = autoTable.getDoubleTopic("Pre Spin Duration").getEntry(Constants.AutoConstants.kPreSpinDuration);
+        public static final DoubleEntry kPreSpinVelocity = autoTable.getDoubleTopic("Pre Spin Velocity").getEntry(Constants.AutoConstants.kPreSpinVelocity);
+        public static final DoubleEntry kShooterTimeout = autoTable.getDoubleTopic("Shooter Timeout").getEntry(Constants.AutoConstants.kShooterTimeout);
+        
         public static final void init() {
             kRightSide.set(kRightSide.get());
+
+            kPreSpinDuration.set(kPreSpinDuration.get());
+            kPreSpinVelocity.set(kPreSpinVelocity.get());
+            kShooterTimeout.set(kShooterTimeout.get());
         }
     }
     

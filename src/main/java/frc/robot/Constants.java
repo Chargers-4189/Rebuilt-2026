@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -42,10 +45,16 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
+
+    public static final MagnetSensorConfigs kHoodEncoderConfigs = new MagnetSensorConfigs()
+      .withAbsoluteSensorDiscontinuityPoint(.75)
+      .withMagnetOffset(0)
+      .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+
     //IDs
-    public static final int kIntakeMotor = 21; 
-    public static final int kIntakeAxisMotor = 22;
-    public static final int kIntakeEncoder = 1; 
+    public static final int kWheelMotor = 21; 
+    public static final int kExtenderMotor = 22;
+    public static final int kIntakeEncoder = 32; 
 
     //Modifiables
     public static final double kWheelPower = 1;
@@ -62,11 +71,13 @@ public final class Constants {
     public static final double kMaxVelocity = 0;
     public static final double kMaxAcceleration = 0;
 
-    public static final double kTauntRotations = .47;
+    public static final double kTauntRotations = .25;
+    public static final double kTauntFrequency = 2;
+    public static final double kTauntMagnitude = .1; 
 
     public static final double kTolerance = 0.06;
-    public static final double kOuterExtensionLimit = 0.25;
-    public static final double kInnerExtensionLimit = 0.65;
+    public static final double kOuterExtensionLimit = 0.0;
+    public static final double kInnerExtensionLimit = 0.35;
     public static final double kEncoderOffset = 0.5;
 
     public static final boolean reverseEncoder = false;
@@ -93,9 +104,16 @@ public final class Constants {
   }
 
   public static class HoodConstants {
+
+    //Encoder Configs
+    public static final MagnetSensorConfigs kHoodEncoderConfigs = new MagnetSensorConfigs()
+      .withAbsoluteSensorDiscontinuityPoint(.8)
+      .withMagnetOffset(-.33333333333333333)
+      .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+    
     //IDs
-    public static final int kMotorCanID = 29;
-    public static final int kEncoderDIO = 0;
+    public static final int kMotorCanID = 27;
+    public static final int kEncoderID = 31;
 
     //Fixed
     public static final double kGearRatio = 5.5;
@@ -112,12 +130,12 @@ public final class Constants {
 
   public static class ShooterConstants {
     //IDs
-    public static final int kLeftMotorCanID = 27;
+    public static final int kLeftMotorCanID = 29;
     public static final int kRightMotorCanID = 28;
 
     //Modifiables
     public static final double kFixedPower = .5;
-    public static final double kFixedShootDistance = 5;
+    public static final double kFixedShootDistance = 3.2;
     public static final double kPassVelocity = 70;
 
     public static final double kTolerance = 1.5;
@@ -154,5 +172,10 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final boolean kRightSide = true;
+    
+    public static final double kPreSpinDuration = 2; //Seconds
+    public static final double kPreSpinVelocity = 55; //Rotations per Second
+
+    public static final double kShooterTimeout = 3.5; //Seconds
   }
 }

@@ -12,7 +12,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.util.OffsetEncoder;
+import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRotate extends Command {
@@ -29,15 +29,20 @@ public class IntakeRotate extends Command {
   */
 
   private Intake intake;
-  private boolean rotateOut;
   private DoubleSupplier angle;
+  private DoubleSupplier TauntMagnitude;
+  private DoubleSupplier TauntFrequency;
+  private Stopwatch stopwatch = new Stopwatch();
 
   private final ProfiledPIDController intakeController;
 
   /** Creates a new IntakeRotate. */
-  public IntakeRotate(Intake intake, DoubleSupplier angle) {
+
+  public IntakeRotate(Intake intake, DoubleSupplier angle, DoubleSupplier TauntMagnitude, DoubleSupplier TauntFrequency) {
     this.intake = intake;
     this.angle = angle;
+    this.TauntMagnitude = TauntMagnitude;
+    this.TauntFrequency = TauntFrequency;
     this.intakeController = new ProfiledPIDController(
       IntakeTable.kP.get(),
       IntakeTable.kI.get(),
@@ -48,6 +53,10 @@ public class IntakeRotate extends Command {
     addRequirements(intake);
   }
 
+  public IntakeRotate(Intake intake, DoubleSupplier angle) {
+    this(intake, angle, () -> 0, () -> 0);
+  }
+
   /** Creates a new IntakeRotate. */
   public IntakeRotate(Intake intake, boolean rotateOut) {
     this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
@@ -56,20 +65,30 @@ public class IntakeRotate extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    stopwatch.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    IntakeTable.extensionGoal.set(angle.getAsDouble());
-    intake.setExtensionPower(
-      MathUtil.clamp(calculatePIDS(
-        intake.getEncoder(),
-        angle.getAsDouble()
-      ),
-      -IntakeTable.kAutoInPower.get(),
-      IntakeTable.kAutoOutPower.get())
-    );
+    double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * stopwatch.getElapsedTime() * TauntFrequency.getAsDouble()));
+
+    IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
+    
+    if (intake.encoderConnected()) {
+      intake.setExtensionPower(
+        MathUtil.clamp(calculatePIDS(
+          intake.getEncoder(),
+          goal
+        ),
+        -IntakeTable.kAutoInPower.get(),
+        IntakeTable.kAutoOutPower.get())
+      );
+    } else {
+      intake.setExtensionPower(0);
+      System.out.println("ERROR: Intake Encoder Disconnected");
+    }
   }
 
   
@@ -88,6 +107,7 @@ public class IntakeRotate extends Command {
   @Override
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
-    return intakeController.atGoal();
+    //return intakeController.atGoal();
+    return false;
   }
 }
