@@ -71,11 +71,11 @@ public final class Constants {
     public static final double kMaxVelocity = 0;
     public static final double kMaxAcceleration = 0;
 
-    public static final double kTauntRotations = .47;
+    public static final double kTauntRotations = .3;
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.0;
-    public static final double kInnerExtensionLimit = 0.4;
+    public static final double kInnerExtensionLimit = 0.35;
     public static final double kEncoderOffset = 0.5;
 
     public static final boolean reverseEncoder = false;
@@ -133,7 +133,7 @@ public final class Constants {
 
     //Modifiables
     public static final double kFixedPower = .5;
-    public static final double kFixedShootDistance = 5;
+    public static final double kFixedShootDistance = 3.2;
     public static final double kPassVelocity = 70;
 
     public static final double kTolerance = 1.5;
