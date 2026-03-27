@@ -13,7 +13,8 @@ import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -25,18 +26,18 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SinglePass extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public SinglePass(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, ChoreoTraj traj) {
+  public SinglePass(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       Commands.race(
-        new IntakeRunAndRotate(intake, IntakeTable.kWheelPower),
+        new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower),
         swerve.choreoAuto(traj, false),
         Commands.sequence(
           Commands.waitSeconds(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get()),
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
       ),
-      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake).withTimeout(AutoTable.kShooterTimeout.get())
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(AutoTable.kShooterTimeout.get())
     );
   }
 }

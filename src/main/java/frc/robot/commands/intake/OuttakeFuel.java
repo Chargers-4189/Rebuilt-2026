@@ -7,7 +7,7 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 
@@ -16,9 +16,9 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OuttakeFuel extends ParallelCommandGroup {
   /** Creates a new OuttakeFuel. */
-  public OuttakeFuel(Intake intake, Hopper hopper) {
+  public OuttakeFuel(IntakeWheels intakeWheels, Hopper hopper) {
     addCommands(
-      new RunIntakeWheels(intake, () -> -IntakeTable.kWheelPower.get()),
+      intakeWheels.runWheelsCommand(() -> -IntakeTable.kWheelPower.get()),
       Commands.run(() -> hopper.setPower(-HopperTable.kPower.get()), hopper).finallyDo(() -> hopper.setPower(0))
     );
   }

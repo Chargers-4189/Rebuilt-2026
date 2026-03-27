@@ -72,8 +72,8 @@ public final class Constants {
     public static final double kMaxAcceleration = 0;
 
     public static final double kTauntRotations = .25;
-    public static final double kTauntFrequency = 2;
-    public static final double kTauntMagnitude = .1; 
+    public static final double kTauntFrequency = 1;
+    public static final double kTauntMagnitude = .05; 
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.0;

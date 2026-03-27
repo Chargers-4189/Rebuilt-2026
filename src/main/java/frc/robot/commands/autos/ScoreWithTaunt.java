@@ -12,7 +12,8 @@ import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -23,14 +24,14 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ScoreWithTaunt extends ParallelCommandGroup {
   /** Creates a new ScoreWithTaunt. */
-  public ScoreWithTaunt(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+  public ScoreWithTaunt(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new Score(shooter, hood, indexer, swerve, vision, hopper),
       new SequentialCommandGroup(
         Commands.waitSeconds(IntakeTable.kTauntDelay.get()),
-        new IntakeTaunt(intake)
+        new IntakeTaunt(intakeWheels, intakeExtender)
       )
     );
   }

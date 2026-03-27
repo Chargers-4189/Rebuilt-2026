@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.intake.IntakeRunAndRotate;
-import frc.robot.commands.scoring.Score;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -23,17 +23,17 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DepotThenOutpost extends SequentialCommandGroup {
   /** Creates a new AutoShootOurSide. */
-  public DepotThenOutpost(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake) {
+  public DepotThenOutpost(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender) {
     // Add your commands in the addCommands() call, e.g.
 
     addCommands(
       Commands.race(
         swerve.choreoAuto(ChoreoTraj.depotThenOutpost$0, false),
-        new IntakeRunAndRotate(intake, IntakeTable.kWheelPower)
+        new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower)
       ),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.depotThenOutpost$1, false),
-      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intake) 
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender) 
     );
   }
 }

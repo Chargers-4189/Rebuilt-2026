@@ -15,7 +15,6 @@ import frc.robot.subsystems.Vision;
 import frc.robot.util.ScoringCalculator;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.scoring.AlignAngle;
 import frc.robot.commands.scoring.LoadFuel;
