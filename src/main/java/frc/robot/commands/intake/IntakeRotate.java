@@ -7,6 +7,7 @@ package frc.robot.commands.intake;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,13 +71,21 @@ public class IntakeRotate extends Command {
   @Override
   public void initialize() {
     stopwatch.start();
+    intakeController.setPID(
+      IntakeTable.kP.get(),
+      IntakeTable.kI.get(),
+      IntakeTable.kD.get()
+    );
+    intakeController.setConstraints(
+      new TrapezoidProfile.Constraints(IntakeTable.kMaxVelocity.get(), IntakeTable.kMaxAcceleration.get())
+    );
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double goal = angle.getAsDouble() + (TauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * stopwatch.getElapsedTime() * TauntFrequency.getAsDouble()));
-
+    System.out.println(goal);
     IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
     
     if (intakeExtender.encoderConnected()) {
@@ -113,7 +122,7 @@ public class IntakeRotate extends Command {
     if (ignoreEndCondition) {
       return false;
     } else {
-      return intakeController.atGoal();
+      return intakeController.atSetpoint();
     }
   }
 }
