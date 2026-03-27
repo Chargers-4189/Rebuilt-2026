@@ -13,13 +13,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
-import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.RunIntakeWheels;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

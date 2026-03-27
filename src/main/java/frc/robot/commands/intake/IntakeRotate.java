@@ -10,7 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.Stopwatch;
 
@@ -19,7 +19,7 @@ public class IntakeRotate extends Command {
   /**
   * @author Jack Koster
   * 
-  * @param intake Subsystem
+  * @param intakeExtender Subsystem
   * @param rotateOut True if its going out of the bot, false if going into the bot
   * 
   * @constants kIntakeAxisOuterLimit, kIntakeAxisInnerLimit, kIntakeAxisSpeed
@@ -28,21 +28,24 @@ public class IntakeRotate extends Command {
   * The signs (<, >. etc) will need to be changed based on the values of both the Inner and Outer limit.
   */
 
-  private Intake intake;
+  private IntakeExtender intakeExtender;
   private DoubleSupplier angle;
   private DoubleSupplier TauntMagnitude;
   private DoubleSupplier TauntFrequency;
   private Stopwatch stopwatch = new Stopwatch();
 
+  private boolean ignoreEndCondition;
+
   private final ProfiledPIDController intakeController;
 
   /** Creates a new IntakeRotate. */
 
-  public IntakeRotate(Intake intake, DoubleSupplier angle, DoubleSupplier TauntMagnitude, DoubleSupplier TauntFrequency) {
-    this.intake = intake;
+  public IntakeRotate(IntakeExtender intakeExtender, DoubleSupplier angle, DoubleSupplier TauntMagnitude, DoubleSupplier TauntFrequency, boolean ignoreEndCondition) {
+    this.intakeExtender = intakeExtender;
     this.angle = angle;
     this.TauntMagnitude = TauntMagnitude;
     this.TauntFrequency = TauntFrequency;
+    this.ignoreEndCondition = ignoreEndCondition;
     this.intakeController = new ProfiledPIDController(
       IntakeTable.kP.get(),
       IntakeTable.kI.get(),
@@ -50,16 +53,16 @@ public class IntakeRotate extends Command {
       new TrapezoidProfile.Constraints(IntakeTable.kMaxVelocity.get(), IntakeTable.kMaxAcceleration.get())
     );
     intakeController.setTolerance(IntakeTable.kTolerance.get());
-    addRequirements(intake);
+    addRequirements(intakeExtender);
   }
 
-  public IntakeRotate(Intake intake, DoubleSupplier angle) {
-    this(intake, angle, () -> 0, () -> 0);
+  public IntakeRotate(IntakeExtender intakeExtender, DoubleSupplier angle) {
+    this(intakeExtender, angle, () -> 0, () -> 0, false);
   }
 
   /** Creates a new IntakeRotate. */
-  public IntakeRotate(Intake intake, boolean rotateOut) {
-    this(intake, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
+  public IntakeRotate(IntakeExtender intakeExtender, boolean rotateOut) {
+    this(intakeExtender, rotateOut ? IntakeTable.kOuterExtensionLimit : IntakeTable.kInnerExtensionLimit);
   }
   
 
@@ -76,17 +79,17 @@ public class IntakeRotate extends Command {
 
     IntakeTable.extensionGoal.set(goal);  // = TargetAngle + Magnitude * sin(Frequency * Theta)
     
-    if (intake.encoderConnected()) {
-      intake.setExtensionPower(
+    if (intakeExtender.encoderConnected()) {
+      intakeExtender.setExtensionPower(
         MathUtil.clamp(calculatePIDS(
-          intake.getEncoder(),
+          intakeExtender.getEncoder(),
           goal
         ),
         -IntakeTable.kAutoInPower.get(),
         IntakeTable.kAutoOutPower.get())
       );
     } else {
-      intake.setExtensionPower(0);
+      intakeExtender.setExtensionPower(0);
       System.out.println("ERROR: Intake Encoder Disconnected");
     }
   }
@@ -100,14 +103,17 @@ public class IntakeRotate extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setExtensionPower(0);
+    intakeExtender.setExtensionPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     //Should end once the Intake hits a certain point in the Encoder which functions as its limit. - Jack
-    //return intakeController.atGoal();
-    return false;
+    if (ignoreEndCondition) {
+      return false;
+    } else {
+      return intakeController.atGoal();
+    }
   }
 }

@@ -5,7 +5,8 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -13,12 +14,12 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeTaunt extends ParallelCommandGroup {
   /** Creates a new IntakeTaunt. */
-  public IntakeTaunt(Intake intake) {
+  public IntakeTaunt(IntakeWheels intakeWheels, IntakeExtender intakeExtender) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeRotate(intake, IntakeTable.kTauntRotations, IntakeTable.kTauntMagnitude, IntakeTable.kTauntFrequency),
-      new RunIntakeWheels(intake, IntakeTable.kLowWheelPower)
+      new IntakeRotate(intakeExtender, IntakeTable.kTauntRotations, IntakeTable.kTauntMagnitude, IntakeTable.kTauntFrequency, true),
+      intakeWheels.runWheelsCommand(IntakeTable.kLowWheelPower)
     );
   }
 }

@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -17,20 +18,22 @@ public class StopAll extends Command {
   private Hood hood;
   private Hopper hopper;
   private Indexer indexer;
-  private Intake intake;
+  private IntakeWheels intakeWheels;
+  private IntakeExtender intakeExtender;
   private Shooter shooter;
   private SwerveSubsystem swerve;
 
   /** Creates a new CancelAll. */
-  public StopAll(Hood hood, Hopper hopper, Indexer indexer, Intake intake, Shooter shooter, SwerveSubsystem swerve) {
+  public StopAll(Hood hood, Hopper hopper, Indexer indexer, IntakeWheels intakeWheels, IntakeExtender intakeExtender, Shooter shooter, SwerveSubsystem swerve) {
     this.hood = hood;
     this.hopper = hopper;
     this.indexer = indexer;
-    this.intake = intake;
+    this.intakeWheels = intakeWheels;
+    this.intakeExtender = intakeExtender;
     this.shooter = shooter;
     this.swerve = swerve;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(hood, hopper, indexer, intake, shooter, swerve);
+    addRequirements(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -43,8 +46,8 @@ public class StopAll extends Command {
     hood.setPower(0);
     hopper.setPower(0);
     indexer.setPower(0);
-    intake.setExtensionPower(0);
-    intake.setWheelPower(0);
+    intakeExtender.setExtensionPower(0);
+    intakeWheels.setWheelPower(0);
     shooter.setVelocity(0);
     swerve.setControl(SwerveSubsystem.idle);
   }

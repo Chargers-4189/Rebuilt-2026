@@ -9,7 +9,8 @@ import frc.robot.choreo.ChoreoTraj;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
@@ -19,15 +20,15 @@ import frc.robot.subsystems.Vision;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleCollectThenShoot extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public SimpleCollectThenShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, ChoreoTraj traj, boolean doublePass) {
+  public SimpleCollectThenShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper,  IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj, boolean doublePass) {
     if (doublePass) {
       addCommands(
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, traj),
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.secondPass)
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj),
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.secondPass)
       );
     } else {
       addCommands(
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intake, traj)
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj)
       );
     }
   }

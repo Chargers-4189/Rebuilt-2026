@@ -13,12 +13,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
-import frc.robot.commands.intake.IntakeRotate;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -35,12 +32,12 @@ public class FixedDistanceScore extends ParallelCommandGroup {
   }
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, CommandXboxController primaryController, DoubleSupplier distance) {
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, CommandXboxController primaryController, DoubleSupplier distance) {
     this(shooter, hood, indexer, swerve, vision, hopper, () -> -primaryController.getLeftY(), () -> -primaryController.getLeftX(), distance);
   }
 
   /** Creates a new FixedDistanceScore. */
-  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, Intake intake, DoubleSupplier distance) {
+  public FixedDistanceScore(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, DoubleSupplier distance) {
     this(shooter, hood, indexer, swerve, vision, hopper, () -> 0, () -> 0, distance);
   }
 

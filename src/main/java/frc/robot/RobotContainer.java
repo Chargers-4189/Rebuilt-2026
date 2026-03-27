@@ -32,9 +32,7 @@ import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.intake.IntakeRunAndRotate;
 import frc.robot.commands.intake.IntakeTaunt;
-import frc.robot.commands.intake.ManualIntakeRotate;
 import frc.robot.commands.intake.OuttakeFuel;
-import frc.robot.commands.intake.RunIntakeWheels;
 import frc.robot.commands.passing.Pass;
 import frc.robot.commands.scoring.AlignAngle;
 import frc.robot.commands.scoring.FixedDistanceScore;
@@ -46,7 +44,8 @@ import frc.robot.util.NetworkTables.HoodTable;
 import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.util.NetworkTables.SwerveTable;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
@@ -60,7 +59,8 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter();
     private final Hood hood = new Hood();
     private final Indexer indexer = new Indexer();
-    private final Intake intake = new Intake();
+    private final IntakeWheels intakeWheels = new IntakeWheels();
+    private final IntakeExtender intakeExtender = new IntakeExtender();
 
     private static AutoChooser autoChooser = new AutoChooser();
     //Disabled Telemetry:
@@ -89,31 +89,23 @@ public class RobotContainer {
     private void configureBindings() {
 
         //Deploy Intake
-        primaryController.b().whileTrue(Commands.run(()->{
-            intake.setExtensionPower(-IntakeTable.kManualExtensionPower.get());
-        },intake)
-        .finallyDo(() -> intake.setExtensionPower(0)));
-
-        primaryController.y().whileTrue(Commands.run(()->{
-            intake.setExtensionPower(IntakeTable.kManualExtensionPower.get());
-        },intake)
-        .finallyDo(() -> intake.setExtensionPower(0)));
-
+        primaryController.b().whileTrue(intakeExtender.manualExtensionCommand(() -> -IntakeTable.kManualExtensionPower.get()));
+        primaryController.y().whileTrue(intakeExtender.manualExtensionCommand(() -> IntakeTable.kManualExtensionPower.get()));
 
         //Intake Fuel
-        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intake, IntakeTable.kWheelPower));
+        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower));
 
-        secondaryController.a().whileTrue(new RunIntakeWheels(intake, IntakeTable.kWheelPower));
+        secondaryController.a().whileTrue(intakeWheels.runWheelsCommand(IntakeTable.kWheelPower));
 
-        primaryController.povUp().whileTrue(new OuttakeFuel(intake, hopper));
+        primaryController.povUp().whileTrue(new OuttakeFuel(intakeWheels, hopper));
 
         //Taunt
-        primaryController.povLeft().whileTrue(new IntakeTaunt(intake));
+        primaryController.povLeft().whileTrue(new IntakeTaunt(intakeWheels, intakeExtender));
 
         //Manual Intake
 
-        secondaryController.povUp().whileTrue(new ManualIntakeRotate(intake, IntakeConstants.kManualExtensionPower));
-        secondaryController.povDown().whileTrue(new ManualIntakeRotate(intake, -IntakeConstants.kManualExtensionPower));
+        primaryController.povUp().whileTrue(intakeExtender.manualExtensionCommand(() -> IntakeTable.kManualExtensionPower.get()));
+        primaryController.povDown().whileTrue(intakeExtender.manualExtensionCommand(() -> -IntakeTable.kManualExtensionPower.get()));
 
         //Manual Hood
         //primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));
@@ -124,7 +116,7 @@ public class RobotContainer {
         }, hood).withName("Hood Default Angle"));
 
         //Fixed-Distance Shoot
-        primaryController.x().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, intake, primaryController, ShooterTable.kFixedShootDistance));
+        primaryController.x().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, primaryController, ShooterTable.kFixedShootDistance));
         
         //Score
         primaryController.leftBumper().whileTrue(
@@ -135,15 +127,15 @@ public class RobotContainer {
         primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
         primaryController.povDown().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));
         //Auto Intake Buttons
-        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intake, false));
-        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intake, true));
+        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
+        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
     }
 
     private void configureSwerveBindings() {
         
         //Stop All
-        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
-        secondaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intake, shooter, swerve));
+        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
+        secondaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
 
         //Reset Gyro
         primaryController.back().onTrue(swerve.resetGyro());
@@ -168,20 +160,20 @@ public class RobotContainer {
     }
 
     public void configureAutoChooser() {
-        autoChooser.addCmd("Quarter Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.quarterCenter, false));
-        autoChooser.addCmd("Quarter Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.quarterCenter, true));
-        autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpQuarterCenter, false));
-        autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpQuarterCenter, true));
+        autoChooser.addCmd("Quarter Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
+        autoChooser.addCmd("Quarter Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, true));
+        autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, false));
+        autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, true));
 
-        autoChooser.addCmd("Steal Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter, false));
-        autoChooser.addCmd("Steal Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.stealCenter, true));
-        autoChooser.addCmd("Steal Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, false));
-        autoChooser.addCmd("Steal Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.bumpStealCenter, true));
+        autoChooser.addCmd("Steal Center (Trench, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenter, false));
+        autoChooser.addCmd("Steal Center (Trench, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenter, true));
+        autoChooser.addCmd("Steal Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpStealCenter, false));
+        autoChooser.addCmd("Steal Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpStealCenter, true));
         
-        autoChooser.addCmd("Depot Then Outpost", () -> new DepotThenOutpost(shooter, hood, indexer, swerve, vision, hopper, intake));
-        autoChooser.addCmd("Outpost Then Depot", () -> new OutpostThenDepot(shooter, hood, indexer, swerve, vision, hopper, intake));
-        autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intake, ChoreoTraj.depotOnly, false));
-        autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intake));
+        autoChooser.addCmd("Depot Then Outpost", () -> new DepotThenOutpost(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
+        autoChooser.addCmd("Outpost Then Depot", () -> new OutpostThenDepot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
+        autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.depotOnly, false));
+        autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
 
         autoChooser.addCmd("Shoot Preload", () -> new Score(shooter, hood, indexer, swerve, vision, hopper).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
