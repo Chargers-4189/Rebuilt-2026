@@ -74,7 +74,7 @@ public class TunerConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.2672);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.572);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -166,10 +166,10 @@ public class TunerConstants {
     private static final Distance kBackRightYPos = Inches.of(-11);
 
     //EncoderOffsets
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.087207);
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(0.439307);
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.152442);
-    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.275585);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.094531);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(0.440284);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.154639);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(-0.271190);
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXSConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
