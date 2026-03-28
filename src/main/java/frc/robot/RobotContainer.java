@@ -7,6 +7,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+
+import java.rmi.StubNotFoundException;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.auto.AutoChooser;
@@ -22,6 +25,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Faces;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
@@ -53,6 +57,8 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
       private final CommandXboxController secondaryController =
       new CommandXboxController(OperatorConstants.kTestControllerPort);
+      private final CommandXboxController faceController =
+      new CommandXboxController(OperatorConstants.kFaceControllerPort);
 
 
     //Subsystem declaration
@@ -61,6 +67,7 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer();
     private final IntakeWheels intakeWheels = new IntakeWheels();
     private final IntakeExtender intakeExtender = new IntakeExtender();
+    private final Faces face = new Faces();
 
     private static AutoChooser autoChooser = new AutoChooser();
     //Disabled Telemetry:
@@ -84,6 +91,7 @@ public class RobotContainer {
         //swerveSystemId();
         configureAutoChooser();
         NetworkTables.initialize(primaryController);
+        configureFaces();
     }
 
     private void configureBindings() {
@@ -129,6 +137,7 @@ public class RobotContainer {
         //Auto Intake Buttons
         primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
         primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
+        
     }
 
     private void configureSwerveBindings() {
@@ -200,4 +209,57 @@ public class RobotContainer {
         Telemetry logger = new Telemetry(SwerveSubsystem.MaxSpeed);
         swerve.registerTelemetry(logger::telemeterize);
     }
+
+
+
+    //change faces
+    private void configureFaces(){
+        faceController.button(1).onTrue(Commands.runOnce(() -> {
+            face.smile();
+        },face).ignoringDisable(true));
+        faceController.button(2).onTrue(Commands.runOnce(() -> {
+            face.wink();
+        },face));
+        faceController.button(
+            3).onTrue(Commands.runOnce(() -> {
+            face.crying();
+        },face));
+        faceController.button(4).onTrue(Commands.runOnce(() -> {
+            face.pirate();
+        },face));
+        faceController.button(5).onTrue(Commands.runOnce(() -> {
+            face.sleepy();
+        },face));
+        faceController.button(6).onTrue(Commands.runOnce(() -> {
+            face.fearShock();
+
+        },face));
+        faceController.button(7).onTrue(Commands.runOnce(() -> {
+            face.angry(1);
+        },face));
+        faceController.button(8).onTrue(Commands.runOnce(() -> {
+            face.angry(2);
+        },face));
+        faceController.button(9).onTrue(Commands.runOnce(() -> {
+            face.angry(3);
+        },face));
+        faceController.button(10).onTrue(Commands.runOnce(() -> {
+            face.angry(4);
+        },face));
+        faceController.button(11).onTrue(Commands.runOnce(() -> {
+            face.smile();
+        },face));
+        faceController.button(12).onTrue(Commands.runOnce(() -> {
+            face.jeremy(0);
+        },face));
+        faceController.button(13).onTrue(Commands.runOnce(() -> {
+            face.nextDizzy(0);
+        },face));
+        faceController.button(14).onTrue(Commands.runOnce(() -> {
+            face.party(0);
+        },face));
+        faceController.button(15).onTrue(Commands.runOnce(() -> {
+            face.money(0);
+        },face));}
+
 }

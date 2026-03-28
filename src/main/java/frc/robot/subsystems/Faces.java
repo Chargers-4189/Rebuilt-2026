@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 //import edu.wpi.first.wpilibj.util.Color;
 import java.io.FileReader;
 //import java.io.IOException;
@@ -27,7 +31,10 @@ public class Faces extends SubsystemBase {
     //private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(NUM_LEDS);
     private CANdle candle = new CANdle(1);
 
-    private final double dampenFactor = 3;
+    //private final double dampenFactor = 3;
+    public String animation = "none";
+    public int mode = 0;
+    public double startTime = 0;
 
     //private static final Map<String, short[]> Face = new HashMap<String, short[]>();
 
@@ -43,6 +50,7 @@ public class Faces extends SubsystemBase {
         //led.start();
         //blue.applyTo(ledBuffer);
     }
+
     public void resetTime(){
        time.reset();
     }
@@ -56,15 +64,22 @@ public class Faces extends SubsystemBase {
     public void clear() {
         candle.setControl(new SolidColor(0, (NUM_LEDS - 2)).withColor( new RGBWColor(0, 0, 0, 0)));
     }
+
     public void makeFace(short[] pixelsArray){
         for (int i = 0, j = 8; j < NUM_LEDS && i + 2 < pixelsArray.length; i += 3, j++) {  
             candle.setControl(new SolidColor(j, j).withColor( new RGBWColor((int) (pixelsArray[i]), (int) (pixelsArray[i + 1]), (int) (pixelsArray[i + 2]), 0)));
         }
         //led.setData(ledBuffer);
     }
-    public void setFace(short[] face){
+
+    public void setFace(short[] face, String animationState){
         chosenFace = face;
+        animation = animationState;
+        if(animationState != "none"){
+            startTime = Timer.getTimestamp();
+        }
     }
+
     public short[] getFace(String name) {
         try {
             FileReader faceFile = new FileReader(Filesystem.getDeployDirectory() + "/faces.properties");
@@ -76,6 +91,7 @@ public class Faces extends SubsystemBase {
             return defaultFace;
         }
     }
+
     public short[] convertToArray(String input) {
         String[] stringArray = input.split(",");
         short[] shortArray = new short[stringArray.length];
@@ -92,22 +108,21 @@ public class Faces extends SubsystemBase {
 
 
     public void smile(){
-        setFace(getFace("smile"));
-        makeFace(chosenFace);
+        setFace(getFace("smile"), "none");
     }
     
     public void nextDizzy(int mode){
         if(mode == 0){
-            setFace(getFace("dizzyOne"));
+            setFace(getFace("dizzyOne"), "dizzy");
         }else if(mode == 1){
-            setFace(getFace("dizzyTwo"));
+            setFace(getFace("dizzyTwo"), "dizzy");
         }else if(mode == 2){
-            setFace(getFace("dizzyThree"));
+            setFace(getFace("dizzyThree"), "dizzy");
         }else if(mode == 3){
-            setFace(getFace("dizzyFour"));
+            setFace(getFace("dizzyFour"), "dizzy");
         }
-        makeFace(chosenFace);
     }
+    /** 
     public void submerge(int mode){
         if(mode == 0){
             setFace(getFace("waterOne"));
@@ -143,89 +158,79 @@ public class Faces extends SubsystemBase {
             setFace(getFace("waterSixteen"));
         }
         makeFace(chosenFace);
-    }
+    }*/
     public void jeremy(int mode){
         if(mode == 0){
-            setFace(getFace("jeremyOne"));
+            setFace(getFace("jeremyOne"), "jeremy");
         }else if(mode == 1){
-            setFace(getFace("jeremyTwo"));
+            setFace(getFace("jeremyTwo"), "jeremy");
         }else if(mode == 2){
-            setFace(getFace("jeremyThree"));
+            setFace(getFace("jeremyThree"), "jeremy");
         }else if(mode == 3){
-            setFace(getFace("jeremyTwo"));
+            setFace(getFace("jeremyTwo"), "jeremy");
         }
-        makeFace(chosenFace);
     }
+
     public void angry(int mode){
         if(mode == 0){
-            setFace(getFace("smile"));
+            setFace(getFace("smile"), "angry");
         }else if(mode == 1){
-            setFace(getFace("angryTwo"));
+            setFace(getFace("angryTwo"), "angry");
         }else if(mode == 2){
-            setFace(getFace("angryThree"));
+            setFace(getFace("angryThree"), "angry");
         }else if(mode == 3){
-            setFace(getFace("angryFour"));
+            setFace(getFace("angryFour"), "angry");
         }else if(mode == 4){
-            setFace(getFace("dead"));
+            setFace(getFace("dead"), "angry");
         }
-        makeFace(chosenFace);
     }
     public void money(int mode){
         if(mode == 0){
-            setFace(getFace("moneyOne"));
+            setFace(getFace("moneyOne"), "money");
         }else if(mode == 1){
-            setFace(getFace("moneyTwo"));
+            setFace(getFace("moneyTwo"), "money");
         }
-        makeFace(chosenFace);
     }
     public void party(int mode){
         if(mode == 0){
-            setFace(getFace("partyOne"));
+            setFace(getFace("partyOne"), "party");
         }else if(mode == 1){
-            setFace(getFace("partyTwo"));
+            setFace(getFace("partyTwo"), "party");
         }
-        makeFace(chosenFace);
     }
     public void sleepy(){
-        setFace(getFace("sleepy"));
-        makeFace(chosenFace);
+        setFace(getFace("sleepy"), "none");
     }
     public void frown(){
-        setFace(getFace("frown"));
-        makeFace(chosenFace);
+        setFace(getFace("frown"), "none");
     }
     public void crying(){
-        setFace(getFace("crying"));
-        makeFace(chosenFace);
+        setFace(getFace("crying"), "none");
     }
     public void wink(){
-        setFace(getFace("wink"));
-        makeFace(chosenFace);
-    }
+        setFace(getFace("wink"), "none");
+    }/* 
     public void speed(){
-        setFace(getFace("speed"));
+        setFace(getFace("speed"), "none");
         makeFace(chosenFace);
-    }
+    }*/
+   //I'm not gonna comment sick ans heart eyes out becuase thay seem pretty likeley to be needed
     public void sick(){
-        setFace(getFace("sick"));
-        makeFace(chosenFace);
+        setFace(getFace("sick"), "none");
     }
     public void heartEyes(){
-        setFace(getFace("heartEyes"));
-        makeFace(chosenFace);
+        setFace(getFace("heartEyes"), "none");
     }
     public void fearShock(){
-        setFace(getFace("fearShock"));
-        makeFace(chosenFace);
-    }
+        setFace(getFace("fearShock"), "none");
+    }/*
     public void eyebrowRaise(){
-        setFace(getFace("eyebrowRaise"));
+        setFace(getFace("eyebrowRaise"), "none");
         makeFace(chosenFace);
-    }
+    } */
     public void pirate(){
-        setFace(getFace("pirate"));
-        makeFace(chosenFace);
-    }
+        setFace(getFace("pirate"), "none");
+    }/* 
     public void red(){
         System.out.println("Hello");
         setFace(getFace("red"));
@@ -246,17 +251,38 @@ public class Faces extends SubsystemBase {
     public void bad(){
         setFace(getFace("exclamationPoint"));
         makeFace(chosenFace);
-    }
+    }*/
 
     @Override
     public void periodic() {
-       //led.setData(ledBuffer);
-       //led.setData(ledBuffer);
-       /*try {
+        if(animation != "none" && (Timer.getTimestamp() - startTime) >= 1){
+            mode++;
+            if(animation == "smile"){
+                //smile(mode % 11);
+            } 
+            else if(animation == "jeremy"){
+                jeremy(mode % 4);
+            }
+            else if(animation == "dizzy"){
+                nextDizzy(mode % 5);
+            }
+            else if(animation == "party"){
+                party(mode % 2);
+            }
+            else if(animation == "money"){
+                money(mode % 2);
+            }
+            startTime = Timer.getTimestamp();
+        }
+        //led.setData(ledBuffer);
+        //led.setData(ledBuffer);
+        /*try {
         getFace("smile");
-       } catch (Exception e) {
+        } catch (Exception e) {
         // TODO: handle exception
         System.err.println(e);
-       }*/
+        }*/
+        makeFace(chosenFace);
+
     }
 }
