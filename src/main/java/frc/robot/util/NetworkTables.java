@@ -272,12 +272,20 @@ public class NetworkTables {
         public static final DoubleEntry kAngleSlope = passingCalcTable.getDoubleTopic("Slope (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kAngleSlope);
         public static final DoubleEntry kVelocitySlope = passingCalcTable.getDoubleTopic("Slope (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocitySlope);
         public static final DoubleEntry kVelocityIntercept = passingCalcTable.getDoubleTopic("Intercept (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocityIntercept);
+        public static final DoubleEntry kMinVelocity = passingCalcTable.getDoubleTopic("Min (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMinVelocity);
+        public static final DoubleEntry kMaxVelocity = passingCalcTable.getDoubleTopic("Max (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMaxVelocity);
+        public static final DoubleEntry kMinHoodAngle = passingCalcTable.getDoubleTopic("Min (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMinHoodAngle);
+        public static final DoubleEntry kMaxHoodAngle = passingCalcTable.getDoubleTopic("Max (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMaxHoodAngle);
 
         public static final void init() {
             kAngleIntercept.set(kAngleIntercept.get());
             kAngleSlope.set(kAngleSlope.get());
             kVelocitySlope.set(kVelocitySlope.get());
             kVelocityIntercept.set(kVelocityIntercept.get());
+            kMinVelocity.set(kMinVelocity.get());
+            kMaxVelocity.set(kMaxVelocity.get());
+            kMinHoodAngle.set(kMinHoodAngle.get());
+            kMaxHoodAngle.set(kMaxHoodAngle.get());
         }
     }
 
