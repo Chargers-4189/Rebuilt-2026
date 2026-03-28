@@ -219,47 +219,47 @@ public class RobotContainer {
         },face).ignoringDisable(true));
         faceController.button(2).onTrue(Commands.runOnce(() -> {
             face.wink();
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(
             3).onTrue(Commands.runOnce(() -> {
             face.crying();
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(4).onTrue(Commands.runOnce(() -> {
             face.pirate();
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(5).onTrue(Commands.runOnce(() -> {
             face.sleepy();
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(6).onTrue(Commands.runOnce(() -> {
             face.fearShock();
 
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(7).onTrue(Commands.runOnce(() -> {
             face.angry(1);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(8).onTrue(Commands.runOnce(() -> {
             face.angry(2);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(9).onTrue(Commands.runOnce(() -> {
             face.angry(3);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(10).onTrue(Commands.runOnce(() -> {
             face.angry(4);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(11).onTrue(Commands.runOnce(() -> {
             face.smile();
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(12).onTrue(Commands.runOnce(() -> {
             face.jeremy(0);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(13).onTrue(Commands.runOnce(() -> {
             face.nextDizzy(0);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(14).onTrue(Commands.runOnce(() -> {
             face.party(0);
-        },face));
+        },face).ignoringDisable(true));
         faceController.button(15).onTrue(Commands.runOnce(() -> {
             face.money(0);
-        },face));}
+        },face).ignoringDisable(true));}
 
 }

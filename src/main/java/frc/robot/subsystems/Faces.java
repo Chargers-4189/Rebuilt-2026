@@ -275,6 +275,7 @@ public class Faces extends SubsystemBase {
             startTime = Timer.getTimestamp();
         }
         //led.setData(ledBuffer);
+        
         //led.setData(ledBuffer);
         /*try {
         getFace("smile");
