@@ -111,6 +111,7 @@ public class NetworkTables {
 
         public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Taunt Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
 
+        public static final DoubleEntry kPushDownPower = intakeTable.getDoubleTopic("Push Down Power").getEntry(Constants.IntakeConstants.kPushDownPower);
         public static void init() {
             kWheelPower.set(kWheelPower.get());
             kLowWheelPower.set(kLowWheelPower.get());
@@ -139,6 +140,8 @@ public class NetworkTables {
             kReverseEncoder.set(kReverseEncoder.get());
 
             kTauntDelay.set(kTauntDelay.get());
+
+            kPushDownPower.set(kPushDownPower.get());
         }
     }
 

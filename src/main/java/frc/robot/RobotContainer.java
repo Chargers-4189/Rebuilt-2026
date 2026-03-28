@@ -89,8 +89,8 @@ public class RobotContainer {
     private void configureBindings() {
 
         //Deploy Intake
-        primaryController.b().whileTrue(intakeExtender.manualExtensionCommand(() -> -IntakeTable.kManualExtensionPower.get()));
-        primaryController.y().whileTrue(intakeExtender.manualExtensionCommand(() -> IntakeTable.kManualExtensionPower.get()));
+        primaryController.b().whileTrue(intakeExtender.setPowerCommand(() -> -IntakeTable.kManualExtensionPower.get()));
+        primaryController.y().whileTrue(intakeExtender.setPowerCommand(() -> IntakeTable.kManualExtensionPower.get()));
 
         //Intake Fuel
         primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower));
@@ -104,8 +104,8 @@ public class RobotContainer {
 
         //Manual Intake
 
-        primaryController.povUp().whileTrue(intakeExtender.manualExtensionCommand(() -> IntakeTable.kManualExtensionPower.get()));
-        primaryController.povDown().whileTrue(intakeExtender.manualExtensionCommand(() -> -IntakeTable.kManualExtensionPower.get()));
+        //primaryController.povUp().whileTrue(intakeExtender.manualExtensionCommand(() -> IntakeTable.kManualExtensionPower.get()));
+        //primaryController.povDown().whileTrue(intakeExtender.manualExtensionCommand(() -> -IntakeTable.kManualExtensionPower.get()));
 
         //Manual Hood
         //primaryController.povDown().whileTrue(new MoveHood(hood, () -> -HoodTable.kManualPower.get()));

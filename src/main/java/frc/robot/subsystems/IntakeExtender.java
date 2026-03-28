@@ -36,13 +36,13 @@ public class IntakeExtender extends SubsystemBase {
     return encoder.isConnected();
   }
 
-  public Command manualExtensionCommand(DoubleSupplier power) {
+  public Command setPowerCommand(DoubleSupplier power) {
     return Commands.run(
       () -> setExtensionPower(power.getAsDouble()), this
     ).finallyDo(
       () -> setExtensionPower(0)
     ).withName(
-      "ExtendIntake"
+      "SetPowerIntakeExtension"
     );
   }
 

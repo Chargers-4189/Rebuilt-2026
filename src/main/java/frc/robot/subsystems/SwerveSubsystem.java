@@ -368,7 +368,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         initializeFollowTrajectory();
         autoFactory = new AutoFactory(
             () -> getState().Pose,   // Supplier of current robot pose
-            this::resetPose,
+            (Pose2d pose) -> resetPose(Vision.flipFieldPose(pose, AutoTable.kRightSide.get())),
             this::followTrajectory,
             true,
             this

@@ -83,6 +83,8 @@ public final class Constants {
     public static final boolean reverseEncoder = false;
 
     public static final double kTauntDelay = 2;
+
+    public static final double kPushDownPower = .1;
  }
   
   public static class HopperConstants {

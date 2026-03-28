@@ -6,8 +6,11 @@ package frc.robot.commands.intake;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.IntakeWheels;
+import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.IntakeExtender;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,7 +22,10 @@ public class IntakeRunAndRotate extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new IntakeRotate(intakeExtender, true),
+      new SequentialCommandGroup(
+        new IntakeRotate(intakeExtender, true),
+        intakeExtender.setPowerCommand(IntakeTable.kPushDownPower)
+      ),
       intakeWheels.runWheelsCommand(power)
     );
   }
