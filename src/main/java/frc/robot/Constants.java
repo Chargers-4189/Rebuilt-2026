@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -20,50 +23,77 @@ public final class Constants {
 
   public static class SwerveConstants {
 
-    //Constants for Angle Align
-    public static final double kP = 4.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.2;
-    public static final double kS = 0.3;
-    public static final double kMaxPower = 0.3;
+    //Constants for Angle Alignment
+    public static final double kAngleP = 4.0;
+    public static final double kAngleI = 0.0;
+    public static final double kAngleD = 0.0;
+    public static final double kAngleS = 0.0637;
+    public static final double kAngleMaxPower = 1;
+    public static final double kAngleTolerance = 0.015;
 
-    public static final double kTolerance = 0.01;
+    //Constants for Position Alignment
+    public static final double kPositionP = 3.0;
+    public static final double kPositionI = 0.0;
+    public static final double kPositionD = 0.0;
+    public static final double kPositionS = 0.0;
+    public static final double kPositionMaxPower = 1;
+    public static final double kPositionTolerance = 0.05;
+
+    //Constants for Manual Driving
+    public static final double kDriveExponent = 1.4;
+    public static final double kRotationalExponent = 1.4;
   }
 
   public static class IntakeConstants {
+
+    public static final MagnetSensorConfigs kHoodEncoderConfigs = new MagnetSensorConfigs()
+      .withAbsoluteSensorDiscontinuityPoint(.75)
+      .withMagnetOffset(0)
+      .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+
     //IDs
-    public static final int kIntakeMotor = 21; 
-    public static final int kIntakeAxisMotor = 22;
-    public static final int kIntakeEncoder = 1; 
+    public static final int kWheelMotor = 21; 
+    public static final int kExtenderMotor = 22;
+    public static final int kIntakeEncoder = 32; 
 
     //Modifiables
     public static final double kWheelPower = 1;
+    public static final double kLowWheelPower = .3;
     public static final double kManualExtensionPower = .25;
 
-    public static final double kDefaultAngle = 0;
+    public static final double kAutoOutPower = .3; //These two are swapped
+    public static final double kAutoInPower = .2;
 
-    public static final double kAutoExtensionMaxPower = .25;
     public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
-    //public static final double kG = 0;
-    //public static final double kGravityAngle = .1;
+    public static final double kS = 0;
+    public static final double kMaxVelocity = 0;
+    public static final double kMaxAcceleration = 0;
 
-    public static final int kTauntAmount = 3; //This is how many times it goes up and down
-    public static final int kTauntFraction = 3; //The fraction of how far it goes into the bot
+    public static final double kTauntRotations = .25;
+    public static final double kTauntFrequency = 1;
+    public static final double kTauntMagnitude = .05; 
 
-    public static final double kTolerance = 0.03;
-    public static final double kOuterExtensionLimit = 0.03; //Change Later
-    public static final double kInnerExtensionLimit = 0.4; //Change Later
-  }
+    public static final double kTolerance = 0.06;
+    public static final double kOuterExtensionLimit = 0.0;
+    public static final double kInnerExtensionLimit = 0.35;
+    public static final double kEncoderOffset = 0.5;
+
+    public static final boolean reverseEncoder = false;
+
+    public static final double kTauntDelay = 2;
+
+    public static final double kPushDownPower = .1;
+ }
   
   public static class HopperConstants {
     //IDs
     public static final int kMotorRight = 26; 
-    public static final int kMotorLeft = -1; //Filler ID
 
     //Modifiables
     public static final int kPower = 1;
+    public static final double kReversePower = -1;
   }
 
   public static class IndexerConstants {
@@ -71,22 +101,28 @@ public final class Constants {
     public static final int kMotorCanID = 25;
 
     //Modifiables
-    public static final double kPower = .4;
-
+    public static final double kPower = 1;
     public static final double kReversePower = -.1;
   }
 
   public static class HoodConstants {
+
+    //Encoder Configs
+    public static final MagnetSensorConfigs kHoodEncoderConfigs = new MagnetSensorConfigs()
+      .withAbsoluteSensorDiscontinuityPoint(.8)
+      .withMagnetOffset(-.33333333333333333)
+      .withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+    
     //IDs
-    public static final int kMotorCanID = 29;
-    public static final int kEncoderDIO = 0;
+    public static final int kMotorCanID = 27;
+    public static final int kEncoderID = 31;
 
     //Fixed
     public static final double kGearRatio = 5.5;
 
     //Modifiables
     public static final double kManualPower = .1;
-    public static final double kAutoPower = .4;
+    public static final double kAutoPower = .3;
     public static final double kDefaultAngle = 0.05;
 
     public static final double kP = 3;
@@ -96,27 +132,54 @@ public final class Constants {
 
   public static class ShooterConstants {
     //IDs
-    public static final int kLeftMotorCanID = 27;
+    public static final int kLeftMotorCanID = 29;
     public static final int kRightMotorCanID = 28;
 
     //Modifiables
-    public static final double kTestPower = .5;
-    public static final double kTestDistance = 0;
-    
+    public static final double kSuperSpinPower = 1;
+    public static final double kFixedShootDistance = 3.2;
+    public static final double kPassVelocity = 70;
+
     public static final double kTolerance = 1.5;
 
     //slot 0 configs
-    public static final double kS = 0.83; // Add 0.25 V output to overcome static friction
-    public static final double kV = 0.115; // A velocity target of 1 rps results in 0.12 V output
+    public static final double kS = 0.45; // Add 0.25 V output to overcome static friction
+    public static final double kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     public static final double kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    public static final double kP = 0.1; // A position error of 2.5 rotations results in 12 V output 
+    public static final double kP = 0.2; // A position error of 2.5 rotations results in 12 V output 
     public static final double kI = 0.0; // no output for integrated error
     public static final double kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
-    public static final double kMotionMagicCruiseVelocity = 1.0; // Target cruise velocity of 80 rps
-    public static final double kMotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    public static final double kMotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    public static final int kMotorCanID = 28;
+    public static final double kMotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
+    public static final double kMotionMagicAcceleration = 100000; // Target acceleration of 160 rps/s (0.5 seconds)
+    public static final double kMotionMagicJerk = 4000; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    public static final double KMaxPowerCutoff = 2;
+  }
+
+  public static class ShootingCalculatorConstants {
+    public static final double kAngleIntercept = -.07;
+    public static final double kAngleSlope = .06;
+    public static final double kVelocityIntercept = 36.5;
+    public static final double kVelocitySlope = 4.2;
+    public static final double kVelocitySquared = 0;
+  }
+
+  public static class PassingCalculatorConstants {
+    public static final double kAngleIntercept = -.07;
+    public static final double kAngleSlope = .06;
+    public static final double kVelocityIntercept = 40;
+    public static final double kVelocitySlope = 4.2;
+    public static final double kVelocitySquared = 0;
+  }
+
+  public static class AutoConstants {
+    public static final boolean kRightSide = true;
+    
+    public static final double kPreSpinDuration = .8; //Seconds
+    public static final double kPreSpinVelocity = 55; //Rotations per Second
+
+    public static final double kShooterTimeout = 3.5; //Seconds
   }
 }

@@ -6,15 +6,15 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFXS;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.util.NetworkTables.HoodTable;
-import frc.robot.util.OffsetEncoder;
 import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
@@ -23,50 +23,47 @@ public class Hood extends SubsystemBase {
     HoodConstants.kMotorCanID
   );
 
-  private OffsetEncoder offsetEncoder = new OffsetEncoder(0, .675);
+  private final CANcoder hoodEncoder = new CANcoder(HoodConstants.kEncoderID);
 
-  private final DutyCycleEncoder hoodEncoder = new DutyCycleEncoder(0);   //Change channel after looking at wiring later
   private final PIDController hoodController = new PIDController(
     HoodTable.kP.get(),
     HoodTable.kI.get(),
     HoodTable.kD.get()
   );
 
-
-
   public Hood() {
-    hoodEncoder.setInverted(true);
+    hoodEncoder.getConfigurator().apply(HoodConstants.kHoodEncoderConfigs);
   }
 
-  public void setHoodPower(double hoodMotorPower) {
-    hoodMotor.set(-hoodMotorPower);
+  public void setPower(double power) {
+    hoodMotor.set(-power);
   }
 
   public double getHoodPosition() {
-    return hoodEncoder.get();
-  }
-
-  public void zeroEncoder() {
-    System.out.println("ERROR: Use Rev Software to reset this.");
+    return hoodEncoder.getAbsolutePosition().getValueAsDouble();
   }
   
   public Command setHoodAngleCommand(DoubleSupplier angle) {
-    return Commands.run(
-        () -> {
-          setHoodAngle(angle.getAsDouble());
-        }, this).withName("HoodAlign"); // PID math max clamp at 0.4
+    return Commands.run(() -> setHoodAngle(angle.getAsDouble()), this)
+        .finallyDo(() -> setPower(0))
+        .withName("HoodAlign");
   }
 
   public void setHoodAngle(double angle) {
     HoodTable.hoodGoal.set(angle);
-    hoodMotor.set(
-      -MathUtil.clamp(hoodController.calculate(
-        offsetEncoder.convertCurrent(getHoodPosition()),
-        offsetEncoder.convertGoal(angle)
-      ),
-      -HoodConstants.kAutoPower,
-      HoodConstants.kAutoPower)
-    );
+    if (hoodEncoder.isConnected()) {
+      hoodMotor.set(
+        -MathUtil.clamp(hoodController.calculate(
+          getHoodPosition(),
+          angle
+        ),
+        -HoodConstants.kAutoPower,
+        HoodConstants.kAutoPower)
+      );
+    } else {
+      setPower(0);
+      System.out.println("ERROR: Hood Encoder Disconnected");
+    }
   }
 
   public void setHoodAngle(DoubleSupplier angle) {
@@ -77,11 +74,6 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    //System.out.print("Connected: " + hoodEncoder.isConnected() + " ");
-    //System.out.print("Raw Encoder: " + hoodEncoder.get() + " ");
-    //System.out.print("Encoder: " + getHoodPosition() + " ");
-    //System.out.println();
 
     HoodTable.hoodEncoder.set(getHoodPosition());
     
