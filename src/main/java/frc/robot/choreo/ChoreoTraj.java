@@ -117,14 +117,14 @@ public record ChoreoTraj(
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
         OptionalInt.empty(),
-        6.01505,
+        5.86979,
         new Pose2d(4.2291, 7.4168, Rotation2d.fromRadians(0.00992)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
     public static final ChoreoTraj secondPass = new ChoreoTraj(
         "secondPass",
         OptionalInt.empty(),
-        6.88465,
+        6.52191,
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
