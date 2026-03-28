@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,7 +21,11 @@ public class IntakeWheels extends SubsystemBase {
   private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor); //Needs to be inverted
 
 
-  public IntakeWheels() {}
+  public IntakeWheels() {
+    TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
+    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+    wheelMotor.getConfigurator().apply(talonFXSConfigs);
+  }
 
   //+: Fuel go in robot, -: Fuel go out robot
   public void setWheelPower(double power) {

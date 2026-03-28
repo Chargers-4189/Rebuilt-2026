@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -12,7 +15,11 @@ public class Hopper extends SubsystemBase {
   private TalonFXS rightMotor = new TalonFXS(Constants.HopperConstants.kMotorRight);
 
   /** Creates a new Hopper. */
-  public Hopper() {}
+  public Hopper() {
+    TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
+    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+    rightMotor.getConfigurator().apply(talonFXSConfigs);
+  }
 
   //Positive: Feed Into Robot (EAT)
   //Negative: Feed Out of Robot (VOMIT)
