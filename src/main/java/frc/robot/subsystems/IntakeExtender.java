@@ -33,7 +33,7 @@ public class IntakeExtender extends SubsystemBase {
 
   //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
   public void setExtensionPower(double power) {
-    extensionMotor.set(power);
+    extensionMotor.set(-power);
   }
 
   public double getEncoder() {

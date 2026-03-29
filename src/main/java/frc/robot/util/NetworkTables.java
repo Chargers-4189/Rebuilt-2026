@@ -250,7 +250,7 @@ public class NetworkTables {
     public static class ShootingCalculatorTable {
         private static final NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
 
-        public static final DoubleEntry kAngleIntercept = shootingCalcTable.getDoubleTopic("Intercept (Scoring)").getEntry(Constants.ShootingCalculatorConstants.kAngleIntercept);
+        public static final DoubleEntry kAngleIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleIntercept);
         public static final DoubleEntry kAngleSlope = shootingCalcTable.getDoubleTopic("Slope (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleSlope);
         public static final DoubleEntry kVelocitySlope = shootingCalcTable.getDoubleTopic("Slope (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySlope);
         public static final DoubleEntry kVelocityIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocityIntercept);

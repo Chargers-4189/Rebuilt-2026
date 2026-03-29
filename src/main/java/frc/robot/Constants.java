@@ -71,9 +71,9 @@ public final class Constants {
     public static final double kMaxVelocity = 0;
     public static final double kMaxAcceleration = 0;
 
-    public static final double kTauntRotations = .25;
+    public static final double kTauntRotations = .27;
     public static final double kTauntFrequency = 1;
-    public static final double kTauntMagnitude = .05; 
+    public static final double kTauntMagnitude = .07; 
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.0;
@@ -84,7 +84,7 @@ public final class Constants {
 
     public static final double kTauntDelay = 2;
 
-    public static final double kPushDownPower = -.1;
+    public static final double kPushDownPower = 0;
  }
   
   public static class HopperConstants {
