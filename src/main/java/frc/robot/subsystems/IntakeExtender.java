@@ -6,8 +6,11 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,11 +24,16 @@ public class IntakeExtender extends SubsystemBase {
   private CANcoder encoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
 
 
-  public IntakeExtender() {}
+  public IntakeExtender() {
+    TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
+    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+    talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    extensionMotor.getConfigurator().apply(talonFXSConfigs);
+  }
 
   //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
   public void setExtensionPower(double power) {
-    extensionMotor.set(power);
+    extensionMotor.set(-power);
   }
 
   public double getEncoder() {
@@ -36,13 +44,13 @@ public class IntakeExtender extends SubsystemBase {
     return encoder.isConnected();
   }
 
-  public Command manualExtensionCommand(DoubleSupplier power) {
+  public Command setPowerCommand(DoubleSupplier power) {
     return Commands.run(
       () -> setExtensionPower(power.getAsDouble()), this
     ).finallyDo(
       () -> setExtensionPower(0)
     ).withName(
-      "ExtendIntake"
+      "SetPowerIntakeExtension"
     );
   }
 

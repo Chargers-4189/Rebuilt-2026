@@ -111,6 +111,7 @@ public class NetworkTables {
 
         public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Taunt Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
 
+        public static final DoubleEntry kPushDownPower = intakeTable.getDoubleTopic("Push Down Power").getEntry(Constants.IntakeConstants.kPushDownPower);
         public static void init() {
             kWheelPower.set(kWheelPower.get());
             kLowWheelPower.set(kLowWheelPower.get());
@@ -139,6 +140,8 @@ public class NetworkTables {
             kReverseEncoder.set(kReverseEncoder.get());
 
             kTauntDelay.set(kTauntDelay.get());
+
+            kPushDownPower.set(kPushDownPower.get());
         }
     }
 
@@ -247,7 +250,7 @@ public class NetworkTables {
     public static class ShootingCalculatorTable {
         private static final NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
 
-        public static final DoubleEntry kAngleIntercept = shootingCalcTable.getDoubleTopic("Intercept (Scoring)").getEntry(Constants.ShootingCalculatorConstants.kAngleIntercept);
+        public static final DoubleEntry kAngleIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleIntercept);
         public static final DoubleEntry kAngleSlope = shootingCalcTable.getDoubleTopic("Slope (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleSlope);
         public static final DoubleEntry kVelocitySlope = shootingCalcTable.getDoubleTopic("Slope (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySlope);
         public static final DoubleEntry kVelocityIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocityIntercept);
@@ -269,12 +272,20 @@ public class NetworkTables {
         public static final DoubleEntry kAngleSlope = passingCalcTable.getDoubleTopic("Slope (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kAngleSlope);
         public static final DoubleEntry kVelocitySlope = passingCalcTable.getDoubleTopic("Slope (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocitySlope);
         public static final DoubleEntry kVelocityIntercept = passingCalcTable.getDoubleTopic("Intercept (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocityIntercept);
+        public static final DoubleEntry kMinVelocity = passingCalcTable.getDoubleTopic("Min (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMinVelocity);
+        public static final DoubleEntry kMaxVelocity = passingCalcTable.getDoubleTopic("Max (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMaxVelocity);
+        public static final DoubleEntry kMinHoodAngle = passingCalcTable.getDoubleTopic("Min (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMinHoodAngle);
+        public static final DoubleEntry kMaxHoodAngle = passingCalcTable.getDoubleTopic("Max (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMaxHoodAngle);
 
         public static final void init() {
             kAngleIntercept.set(kAngleIntercept.get());
             kAngleSlope.set(kAngleSlope.get());
             kVelocitySlope.set(kVelocitySlope.get());
             kVelocityIntercept.set(kVelocityIntercept.get());
+            kMinVelocity.set(kMinVelocity.get());
+            kMaxVelocity.set(kMaxVelocity.get());
+            kMinHoodAngle.set(kMinHoodAngle.get());
+            kMaxHoodAngle.set(kMaxHoodAngle.get());
         }
     }
 

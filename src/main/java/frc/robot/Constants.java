@@ -17,8 +17,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final int kTestControllerPort = 1;
+    public static final int kPrimaryControllerPort = 0;
+    public static final int kSecondaryControllerPort = 1;
   }
 
   public static class SwerveConstants {
@@ -71,18 +71,20 @@ public final class Constants {
     public static final double kMaxVelocity = 0;
     public static final double kMaxAcceleration = 0;
 
-    public static final double kTauntRotations = .25;
+    public static final double kTauntRotations = .27;
     public static final double kTauntFrequency = 1;
-    public static final double kTauntMagnitude = .05; 
+    public static final double kTauntMagnitude = .07; 
 
     public static final double kTolerance = 0.06;
     public static final double kOuterExtensionLimit = 0.0;
-    public static final double kInnerExtensionLimit = 0.35;
+    public static final double kInnerExtensionLimit = 0.4;
     public static final double kEncoderOffset = 0.5;
 
     public static final boolean reverseEncoder = false;
 
     public static final double kTauntDelay = 2;
+
+    public static final double kPushDownPower = 0;
  }
   
   public static class HopperConstants {
@@ -159,7 +161,7 @@ public final class Constants {
   public static class ShootingCalculatorConstants {
     public static final double kAngleIntercept = -.07;
     public static final double kAngleSlope = .06;
-    public static final double kVelocityIntercept = 36.5;
+    public static final double kVelocityIntercept = 35;
     public static final double kVelocitySlope = 4.2;
     public static final double kVelocitySquared = 0;
   }
@@ -170,6 +172,11 @@ public final class Constants {
     public static final double kVelocityIntercept = 40;
     public static final double kVelocitySlope = 4.2;
     public static final double kVelocitySquared = 0;
+
+    public static final double kMinVelocity = 45;
+    public static final double kMaxVelocity = 80;
+    public static final double kMinHoodAngle = 0.2;
+    public static final double kMaxHoodAngle = .5;
   }
 
   public static class AutoConstants {

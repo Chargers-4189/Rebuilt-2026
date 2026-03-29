@@ -117,16 +117,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj quarterCenter = new ChoreoTraj(
         "quarterCenter",
         OptionalInt.empty(),
-        6.09827,
-        new Pose2d(4.30312, 7.41938, Rotation2d.fromRadians(0.00992)),
-        new Pose2d(3.03989, 7.0424, Rotation2d.fromRadians(-1.08746))
+        5.86979,
+        new Pose2d(4.2291, 7.4168, Rotation2d.fromRadians(0.00992)),
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
     public static final ChoreoTraj secondPass = new ChoreoTraj(
         "secondPass",
         OptionalInt.empty(),
-        6.85157,
-        new Pose2d(2.93748, 6.8562, Rotation2d.fromRadians(-1.11649)),
-        new Pose2d(2.93107, 6.87738, Rotation2d.fromRadians(-1.106))
+        6.52191,
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",

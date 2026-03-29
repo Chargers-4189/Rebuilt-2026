@@ -26,17 +26,27 @@ public class AlignHoodAndFlywheel extends Command {
   private Stopwatch stopwatch = new Stopwatch();
 
   private boolean finished = false;
+  private boolean passing;
   
   /** Creates a new AlignHoodAndFlywheel. */
-  public AlignHoodAndFlywheel(Hood hood, Shooter shooter, DoubleSupplier distance) {
+  public AlignHoodAndFlywheel(Hood hood, Shooter shooter, DoubleSupplier distance, boolean passing) {
     this.hood = hood;
     this.shooter = shooter;
     this.distance = distance;
+    this.passing = passing;
     addRequirements(hood, shooter);
   }
 
-  public AlignHoodAndFlywheel(Hood hood, Shooter shooter, Vision vision) {
-    this(hood, shooter, vision::getDistanceFromHub);
+  public AlignHoodAndFlywheel(Hood hood, Shooter shooter, Vision vision, boolean passing) {
+    this(hood, shooter, distanceFromVision(vision, passing), passing);
+  }
+
+  private static DoubleSupplier distanceFromVision(Vision vision, boolean passing) {
+    if (passing) {
+      return () -> vision.getDistanceToOurZone();
+    } else {
+      return () -> vision.getDistanceFromHub();
+    }
   }
 
   // Called when the command is initially scheduled.
@@ -50,8 +60,13 @@ public class AlignHoodAndFlywheel extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angle = ScoringCalculator.calculateShootingAngle(distance.getAsDouble());
-    power = ScoringCalculator.calculateShootingPower(distance.getAsDouble());
+    if (passing) {
+      angle = ScoringCalculator.calculatePassingAngle(distance.getAsDouble());
+      power = ScoringCalculator.calculatePassingPower(distance.getAsDouble());
+    } else {
+      angle = ScoringCalculator.calculateShootingAngle(distance.getAsDouble());
+      power = ScoringCalculator.calculateShootingPower(distance.getAsDouble());
+    }
   
     hood.setHoodAngle(angle);
     shooter.setVelocity(power);

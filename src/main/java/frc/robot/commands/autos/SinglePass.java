@@ -26,18 +26,18 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SinglePass extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public SinglePass(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj) {
+  public SinglePass(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj, boolean resetOdom, boolean withShooterTimeout) {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       Commands.race(
         new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower),
-        swerve.choreoAuto(traj, false),
+        swerve.choreoAuto(traj, resetOdom),
         Commands.sequence(
           Commands.waitSeconds(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get()),
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
       ),
-      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(AutoTable.kShooterTimeout.get())
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(withShooterTimeout ? AutoTable.kShooterTimeout.get() : 6)
     );
   }
 }

@@ -29,7 +29,7 @@ public class OutpostOnly extends SequentialCommandGroup {
 
     addCommands(
       Commands.race(
-        swerve.choreoAuto(ChoreoTraj.outpostOnly$0, false),
+        swerve.choreoAuto(ChoreoTraj.outpostOnly$0, true),
         new IntakeRotate(intakeExtender, IntakeTable.kOuterExtensionLimit)
       ),
       Commands.waitSeconds(4),
