@@ -161,7 +161,7 @@ public final class Constants {
   public static class ShootingCalculatorConstants {
     public static final double kAngleIntercept = -.07;
     public static final double kAngleSlope = .06;
-    public static final double kVelocityIntercept = 36.5;
+    public static final double kVelocityIntercept = 35;
     public static final double kVelocitySlope = 4.2;
     public static final double kVelocitySquared = 0;
   }

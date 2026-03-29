@@ -95,8 +95,8 @@ public class RobotContainer {
         primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
 
         //Rotate Intake
-        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
-        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
+        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
+        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
 
         //Outtake Fuel
         primaryController.povUp().whileTrue(new OuttakeFuel(intakeWheels, hopper));
