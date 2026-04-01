@@ -37,7 +37,7 @@ public class Hood extends SubsystemBase {
   public Hood() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
-    talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     hoodMotor.getConfigurator().apply(talonFXSConfigs);
     
     hoodEncoder.getConfigurator().apply(HoodConstants.kHoodEncoderConfigs);
