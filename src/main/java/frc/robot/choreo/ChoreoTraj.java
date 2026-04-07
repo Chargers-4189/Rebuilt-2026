@@ -152,9 +152,9 @@ public record ChoreoTraj(
     public static final ChoreoTraj quarterCenterCopy2 = new ChoreoTraj(
         "quarterCenterCopy2",
         OptionalInt.empty(),
-        4.09544,
+        5.18703,
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(5.72858, 7.48862, Rotation2d.fromRadians(0))
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
     );
 
     /**
