@@ -24,7 +24,7 @@ public class SimpleCollectThenShoot extends SequentialCommandGroup {
     if (doublePass) {
       addCommands(
         new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, true, true),
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.secondPass, false, false)
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.secondPassCopy1, false, false)
       );
     } else {
       addCommands(
