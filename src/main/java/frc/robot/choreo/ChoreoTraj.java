@@ -121,6 +121,20 @@ public record ChoreoTraj(
         new Pose2d(4.2291, 7.4168, Rotation2d.fromRadians(0.00992)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
+    public static final ChoreoTraj quarterCenterCopy1 = new ChoreoTraj(
+        "quarterCenterCopy1",
+        OptionalInt.empty(),
+        5.72407,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
+    );
+    public static final ChoreoTraj secondPass = new ChoreoTraj(
+        "secondPass",
+        OptionalInt.empty(),
+        6.52191,
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
+    );
     public static final ChoreoTraj secondPassCopy1 = new ChoreoTraj(
         "secondPassCopy1",
         OptionalInt.empty(),
@@ -128,12 +142,19 @@ public record ChoreoTraj(
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
         new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
-    public static final ChoreoTraj quarterCenterCopy1 = new ChoreoTraj(
-        "quarterCenterCopy1",
+    public static final ChoreoTraj stealCenter = new ChoreoTraj(
+        "stealCenter",
         OptionalInt.empty(),
-        5.72407,
+        6.63913,
+        new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
+        new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
+    );
+    public static final ChoreoTraj quarterCenterCopy2 = new ChoreoTraj(
+        "quarterCenterCopy2",
+        OptionalInt.empty(),
+        4.09544,
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
+        new Pose2d(5.72858, 7.48862, Rotation2d.fromRadians(0))
     );
 
     /**
@@ -154,8 +175,11 @@ public record ChoreoTraj(
         Map.entry("outpostThenDepot$0", outpostThenDepot$0),
         Map.entry("outpostThenDepot$1", outpostThenDepot$1),
         Map.entry("quarterCenter", quarterCenter),
+        Map.entry("quarterCenterCopy1", quarterCenterCopy1),
+        Map.entry("secondPass", secondPass),
         Map.entry("secondPassCopy1", secondPassCopy1),
-        Map.entry("quarterCenterCopy1", quarterCenterCopy1)
+        Map.entry("stealCenter", stealCenter),
+        Map.entry("quarterCenterCopy2", quarterCenterCopy2)
     );
 
     /**
