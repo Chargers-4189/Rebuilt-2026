@@ -11,6 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,6 +27,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
+import frc.robot.commands.autos.AlignPosition;
 import frc.robot.commands.autos.DepotThenOutpost;
 import frc.robot.commands.autos.OutpostOnly;
 import frc.robot.commands.autos.OutpostThenDepot;
@@ -153,6 +156,8 @@ public class RobotContainer {
 
         //Intake Wheels
         secondaryController.a().whileTrue(intakeWheels.runWheelsCommand(IntakeTable.kWheelPower));
+
+        //secondaryController.y().whileTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4, Rotation2d.kZero)));
     }
 
     public void configureAutoChooser() {
@@ -178,6 +183,13 @@ public class RobotContainer {
     
     public Command getAutonomousCommand() {
         return autoChooser.selectedCommand();
+    }
+
+    public void activateVision() {
+        vision.activate();
+    }
+    public void deactivateVision() {
+        vision.activate();
     }
 
     /*

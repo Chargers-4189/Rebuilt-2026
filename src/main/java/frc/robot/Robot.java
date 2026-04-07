@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 //import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -34,6 +36,9 @@ public class Robot extends TimedRobot {
         //m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
         NetworkTables.periodic();
+        if (!DriverStation.isAutonomousEnabled()) {
+            m_robotContainer.activateVision();
+        }
     }
 
     @Override
@@ -48,6 +53,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_robotContainer.deactivateVision();
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
