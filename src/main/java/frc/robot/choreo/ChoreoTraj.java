@@ -135,6 +135,13 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
+    public static final ChoreoTraj quarterCenterCopy1 = new ChoreoTraj(
+        "quarterCenterCopy1",
+        OptionalInt.empty(),
+        5.72407,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
+    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -155,7 +162,8 @@ public record ChoreoTraj(
         Map.entry("outpostThenDepot$1", outpostThenDepot$1),
         Map.entry("quarterCenter", quarterCenter),
         Map.entry("secondPass", secondPass),
-        Map.entry("stealCenter", stealCenter)
+        Map.entry("stealCenter", stealCenter),
+        Map.entry("quarterCenterCopy1", quarterCenterCopy1)
     );
 
     /**
