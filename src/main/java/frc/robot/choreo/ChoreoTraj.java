@@ -149,12 +149,12 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
-    public static final ChoreoTraj quarterCenterCopy2 = new ChoreoTraj(
-        "quarterCenterCopy2",
+    public static final ChoreoTraj quarterCenterCopy3 = new ChoreoTraj(
+        "quarterCenterCopy3",
         OptionalInt.empty(),
-        5.18703,
+        5.22987,
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
 
     /**
@@ -179,7 +179,7 @@ public record ChoreoTraj(
         Map.entry("secondPass", secondPass),
         Map.entry("secondPassCopy1", secondPassCopy1),
         Map.entry("stealCenter", stealCenter),
-        Map.entry("quarterCenterCopy2", quarterCenterCopy2)
+        Map.entry("quarterCenterCopy3", quarterCenterCopy3)
     );
 
     /**
