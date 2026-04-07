@@ -41,7 +41,7 @@ public class IntakeWheels extends SubsystemBase {
   }
 
   public double getWheelPower() {
-    return wheelMotor.get();
+    return wheelMotor.getVelocity().getValueAsDouble();
   }
 
   public Command runWheelsCommand(DoubleSupplier power) {
@@ -56,7 +56,7 @@ public class IntakeWheels extends SubsystemBase {
 
 
   public void setDriverLight() {
-    if(getWheelPower() > 0.1){
+    if(getWheelPower() < -0.1){
       if ((timer % 25) < 12.5) { // 1/2 seconds flash
         LEDone.set(ControlMode.PercentOutput,1);
         LEDtwo.set(ControlMode.PercentOutput,1);
