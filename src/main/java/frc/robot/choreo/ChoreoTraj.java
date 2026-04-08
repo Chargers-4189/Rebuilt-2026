@@ -191,6 +191,13 @@ public record ChoreoTraj(
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
         new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
+    public static final ChoreoTraj secondPassCopy2 = new ChoreoTraj(
+        "secondPassCopy2",
+        OptionalInt.empty(),
+        5.39735,
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
+        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
+    );
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
@@ -219,12 +226,19 @@ public record ChoreoTraj(
         new Pose2d(3.44865, 7.34487, Rotation2d.fromRadians(0)),
         new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
-    public static final ChoreoTraj thirdPass = new ChoreoTraj(
-        "thirdPass",
+    public static final ChoreoTraj thirdPassA = new ChoreoTraj(
+        "thirdPassA",
         OptionalInt.empty(),
         1.75265,
         new Pose2d(2.72264, 7.00328, Rotation2d.fromRadians(-1.00686)),
         new Pose2d(6.4076, 7.48608, Rotation2d.fromRadians(3.13474))
+    );
+    public static final ChoreoTraj thirdPassB = new ChoreoTraj(
+        "thirdPassB",
+        OptionalInt.empty(),
+        1.86671,
+        new Pose2d(2.72229, 7.02115, Rotation2d.fromRadians(-1.00686)),
+        new Pose2d(6.47219, 7.00526, Rotation2d.fromRadians(2.29177))
     );
 
     /**
@@ -255,11 +269,13 @@ public record ChoreoTraj(
         Map.entry("quarterCenterTwist", quarterCenterTwist),
         Map.entry("secondPass", secondPass),
         Map.entry("secondPassCopy1", secondPassCopy1),
+        Map.entry("secondPassCopy2", secondPassCopy2),
         Map.entry("stealCenter", stealCenter),
         Map.entry("stealCenterCopy1", stealCenterCopy1),
         Map.entry("stealCenterTwist", stealCenterTwist),
         Map.entry("superClose", superClose),
-        Map.entry("thirdPass", thirdPass)
+        Map.entry("thirdPassA", thirdPassA),
+        Map.entry("thirdPassB", thirdPassB)
     );
 
     /**
