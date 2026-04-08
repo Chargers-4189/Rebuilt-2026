@@ -119,7 +119,7 @@ public class RobotContainer {
         primaryController.b().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, primaryController, ShooterTable.kFixedShootDistance));
         
         //Align to Trench
-        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
+        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true, false));
 
         //Shuttle
         primaryController.y().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));
@@ -166,6 +166,7 @@ public class RobotContainer {
         autoChooser.addCmd("Quarter Center Copy 1 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy1, true));
         autoChooser.addCmd("Quarter Center Copy 2 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy2, true));
         autoChooser.addCmd("Quarter Center Copy 3 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy3, true));
+        autoChooser.addCmd("Quarter Center Copy 4 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, true));
         //autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, false));
         //autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, true));
 
@@ -186,6 +187,10 @@ public class RobotContainer {
     
     public Command getAutonomousCommand() {
         return autoChooser.selectedCommand();
+    }
+
+    public Command getTeleopInitCommand() {
+        return new IntakeRotate(intakeExtender, true);
     }
 
     public void activateVision() {

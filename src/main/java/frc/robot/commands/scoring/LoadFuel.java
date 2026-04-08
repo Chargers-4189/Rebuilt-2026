@@ -14,6 +14,7 @@ import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IndexerTable;
 import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.util.NetworkTables.SwerveTable;
+import frc.robot.util.Stopwatch;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -24,6 +25,8 @@ public class LoadFuel extends Command {
   private Hopper hopper;
   private boolean alreadyAligned;
   private boolean swerveRotateNeeded;
+
+  private Stopwatch stopwatch = new Stopwatch();
 
   /** Creates a new LoadFuel. */
   public LoadFuel(Indexer indexer, Hopper hopper, Shooter shooter, SwerveSubsystem swerve, boolean swerveRotateNeeded) {
@@ -39,31 +42,43 @@ public class LoadFuel extends Command {
   @Override
   public void initialize() {
     alreadyAligned = false;
+    stopwatch.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    checkSwerveRotation();
     if (alreadyAligned) {
-      //System.out.println("Loading Fuel!");
+      System.out.println("Loading Fuel!");
       indexer.setPower(IndexerTable.kPower.get());
       hopper.setPower(HopperTable.kPower.get());
     } else {
       if (Math.abs(shooter.getVelocity() - shooter.getTargetVelocity()) > ShooterTable.kTolerance.get()){
-        //System.out.println("Not Enough Power");
+        System.out.println("Not Enough Power");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0);
-      } else if (Math.abs(swerve.getRotationalError()) >= SwerveTable.kAngleTolerance.get() && swerveRotateNeeded) {
-        //System.out.println("Not Rotated Enough");
+      } else if (swerveRotateNeeded && !swerveRotated()) {
+        System.out.println("Not Rotated Enough");
         indexer.setPower(IndexerConstants.kReversePower);
         hopper.setPower(0); 
       } else {
-        //System.out.println("Loading Fuel!");
+        System.out.println("Loading Fuel!");
         indexer.setPower(IndexerTable.kPower.get());
         hopper.setPower(HopperTable.kPower.get());
         alreadyAligned = true;
       }
+    }
   }
+
+  private boolean swerveRotated() {
+    return stopwatch.hasStarted() && stopwatch.hasTriggered();
+  }
+
+  private void checkSwerveRotation() {
+    if (!stopwatch.hasStarted() && Math.abs(swerve.getRotationalError()) <= SwerveTable.kAngleTolerance.get()) {
+      stopwatch.start(1000 * SwerveTable.kExtraRotationSeconds.get());
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -42,6 +42,8 @@ public final class Constants {
     //Constants for Manual Driving
     public static final double kDriveExponent = 1.4;
     public static final double kRotationalExponent = 1.4;
+
+    public static final double kExtraRotationSeconds = .5;
   }
 
   public static class IntakeConstants {
