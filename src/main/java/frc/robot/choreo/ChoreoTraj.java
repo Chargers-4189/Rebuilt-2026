@@ -38,6 +38,20 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
+    public static final ChoreoTraj closeCenter = new ChoreoTraj(
+        "closeCenter",
+        OptionalInt.empty(),
+        5.1179,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
+    public static final ChoreoTraj closeCenterSlow = new ChoreoTraj(
+        "closeCenterSlow",
+        OptionalInt.empty(),
+        5.56726,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
@@ -142,10 +156,17 @@ public record ChoreoTraj(
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
         new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
-    public static final ChoreoTraj quarterCenterCopy4 = new ChoreoTraj(
-        "quarterCenterCopy4",
+    public static final ChoreoTraj quarterCenterTwist = new ChoreoTraj(
+        "quarterCenterTwist",
         OptionalInt.empty(),
-        5.00345,
+        4.93884,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
+    public static final ChoreoTraj quarterCenterSlow = new ChoreoTraj(
+        "quarterCenterSlow",
+        OptionalInt.empty(),
+        5.45397,
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
         new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
@@ -177,31 +198,17 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
+    public static final ChoreoTraj stealCenterTwist = new ChoreoTraj(
+        "stealCenterTwist",
+        OptionalInt.empty(),
+        4.88172,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
     public static final ChoreoTraj stealCenterCopy1 = new ChoreoTraj(
         "stealCenterCopy1",
         OptionalInt.empty(),
-        5.01379,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closeCenter = new ChoreoTraj(
-        "closeCenter",
-        OptionalInt.empty(),
-        5.1179,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closeCenterSlow = new ChoreoTraj(
-        "closeCenterSlow",
-        OptionalInt.empty(),
-        5.56726,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterSlow = new ChoreoTraj(
-        "quarterCenterSlow",
-        OptionalInt.empty(),
-        5.00345,
+        4.87892,
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
         new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
@@ -213,6 +220,8 @@ public record ChoreoTraj(
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
         Map.entry("bumpQuarterCenter", bumpQuarterCenter),
         Map.entry("bumpStealCenter", bumpStealCenter),
+        Map.entry("closeCenter", closeCenter),
+        Map.entry("closeCenterSlow", closeCenterSlow),
         Map.entry("depotOnly", depotOnly),
         Map.entry("depotThenOutpost", depotThenOutpost),
         Map.entry("depotThenOutpost$0", depotThenOutpost$0),
@@ -227,15 +236,14 @@ public record ChoreoTraj(
         Map.entry("quarterCenterCopy1", quarterCenterCopy1),
         Map.entry("quarterCenterCopy2", quarterCenterCopy2),
         Map.entry("quarterCenterCopy3", quarterCenterCopy3),
-        Map.entry("quarterCenterCopy4", quarterCenterCopy4),
+        Map.entry("quarterCenterTwist", quarterCenterTwist),
+        Map.entry("quarterCenterSlow", quarterCenterSlow),
         Map.entry("secondPass", secondPass),
         Map.entry("secondPassCopy1", secondPassCopy1),
         Map.entry("secondPassCopy2", secondPassCopy2),
         Map.entry("stealCenter", stealCenter),
-        Map.entry("stealCenterCopy1", stealCenterCopy1),
-        Map.entry("closeCenter", closeCenter),
-        Map.entry("closeCenterSlow", closeCenterSlow),
-        Map.entry("quarterCenterSlow", quarterCenterSlow)
+        Map.entry("stealCenterTwist", stealCenterTwist),
+        Map.entry("stealCenterCopy1", stealCenterCopy1)
     );
 
     /**
