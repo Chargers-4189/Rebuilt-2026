@@ -222,7 +222,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj thirdPass = new ChoreoTraj(
         "thirdPass",
         OptionalInt.empty(),
-        1.4373,
+        1.75265,
         new Pose2d(2.72264, 7.00328, Rotation2d.fromRadians(-1.00686)),
         new Pose2d(6.4076, 7.48608, Rotation2d.fromRadians(3.13474))
     );
