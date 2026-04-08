@@ -162,26 +162,26 @@ public class RobotContainer {
 
     public void configureAutoChooser() {
 
-        //Quarter Center
-        autoChooser.addCmd("Quarter Center V4 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, 2));
-        autoChooser.addCmd("Quarter Center Slow (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterSlow, 2));
-        autoChooser.addCmd("Quarter Center Twist (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, 2));
+        //Quarter Center (Fastest to center, more like a steal TBH)
+        autoChooser.addCmd("Quarter Center V4", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, 3));
+        autoChooser.addCmd("Quarter Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterSlow, 3));
+        autoChooser.addCmd("Quarter Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, 3));
 
-        autoChooser.addCmd("Quarter Center Twist (Triple)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, 3));
+        //Close Center (Shouldn't cross the center line)
+        autoChooser.addCmd("Close Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, 3));
+        autoChooser.addCmd("Close Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, 3));
 
-        //Doesn't Cross the Center Line
-        autoChooser.addCmd("Close Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, 2));
-        autoChooser.addCmd("Close Center Slow (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, 2));
+        //Closer Center (Basically like our old quarter center)
+        autoChooser.addCmd("Closer Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenter, 3));
+        autoChooser.addCmd("Closer Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterSlow, 3));
+        autoChooser.addCmd("Closer Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterTwist, 3));
+
+        //Steal Center (Not recommended, likely to overshoot the center line and get penalties)
+        autoChooser.addCmd("Steal Center V1", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterCopy1, 3));
+        autoChooser.addCmd("Steal Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterTwist, 3));
         
-        autoChooser.addCmd("Close Center (Triple)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, 3));
-        autoChooser.addCmd("Close Center Slow (Triple)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, 3));
-        
-        //Steal Center
-        autoChooser.addCmd("Steal Center V1 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterCopy1, 2));
-        autoChooser.addCmd("Steal Center Twist (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterTwist, 2));
-        
-        //Route similar to center pass
-        autoChooser.addCmd("Super Close", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.superClose, 2));
+        //Super Close (Routed similar to second pass)
+        autoChooser.addCmd("Super Close", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.superClose, 3));
 
         //autoChooser.addCmd("Quarter Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
         //autoChooser.addCmd("Quarter Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, true));
