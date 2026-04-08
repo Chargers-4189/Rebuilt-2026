@@ -161,13 +161,21 @@ public class RobotContainer {
     }
 
     public void configureAutoChooser() {
+
+        //Quarter Center
         autoChooser.addCmd("Quarter Center V4 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, true));
         autoChooser.addCmd("Quarter Center Slow (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterSlow, true));
         autoChooser.addCmd("Quarter Center Twist (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, true));
+        
+        //Doesn't Cross the Center Line
         autoChooser.addCmd("Close Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, true));
         autoChooser.addCmd("Close Center Slow (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, true));
+        
+        //Steal Center
         autoChooser.addCmd("Steal Center V1 (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterCopy1, true));
         autoChooser.addCmd("Steal Center Twist (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterTwist, true));
+        
+        //Route similar to center pass
         autoChooser.addCmd("Super Close", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.superClose, true));
 
         //autoChooser.addCmd("Quarter Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
