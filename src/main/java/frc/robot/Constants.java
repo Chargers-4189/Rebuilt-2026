@@ -54,7 +54,9 @@ public final class Constants {
     //IDs
     public static final int kWheelMotor = 21; 
     public static final int kExtenderMotor = 22;
-    public static final int kIntakeEncoder = 32; 
+    public static final int kIntakeEncoder = 32;
+    public static final int kLEDONECANID = 41;  
+    public static final int kLEDTWOCANID = 48;  
 
     //Modifiables
     public static final double kWheelPower = 1;
