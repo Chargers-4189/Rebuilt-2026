@@ -55,6 +55,8 @@ public class NetworkTables {
 
         public static final StructEntry<Pose2d> goalPose = swerveTable.getStructTopic("Goal Pose", Pose2d.struct).getEntry(new Pose2d());
 
+        public static final DoubleEntry kExtraRotationSeconds = swerveTable.getDoubleTopic("Extra Rotation Seconds").getEntry(Constants.SwerveConstants.kExtraRotationSeconds);
+
         public static void init() {
             kAngleP.set(kAngleP.get());
             kAngleI.set(kAngleI.get());
@@ -72,6 +74,8 @@ public class NetworkTables {
 
             kDriveExponent.set(kDriveExponent.get());
             kRotationalExponent.set(kRotationalExponent.get());
+
+            kExtraRotationSeconds.set(kExtraRotationSeconds.get());
         }
     }
 

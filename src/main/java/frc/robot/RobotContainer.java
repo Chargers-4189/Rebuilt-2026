@@ -11,6 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,6 +27,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
+import frc.robot.commands.autos.AlignPosition;
 import frc.robot.commands.autos.DepotThenOutpost;
 import frc.robot.commands.autos.OutpostOnly;
 import frc.robot.commands.autos.OutpostThenDepot;
@@ -116,7 +119,7 @@ public class RobotContainer {
         primaryController.b().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, primaryController, ShooterTable.kFixedShootDistance));
         
         //Align to Trench
-        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true));
+        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true, false));
 
         //Shuttle
         primaryController.y().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));
@@ -153,11 +156,35 @@ public class RobotContainer {
 
         //Intake Wheels
         secondaryController.a().whileTrue(intakeWheels.runWheelsCommand(IntakeTable.kWheelPower));
+
+        //secondaryController.y().whileTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4, Rotation2d.kZero)));
     }
 
     public void configureAutoChooser() {
-        autoChooser.addCmd("Quarter Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
-        autoChooser.addCmd("Quarter Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, true));
+
+        //Quarter Center (Fastest to center, more like a steal TBH)
+        autoChooser.addCmd("Quarter Center V4", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, 3));
+        autoChooser.addCmd("Quarter Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterSlow, 3));
+        autoChooser.addCmd("Quarter Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, 3));
+
+        //Close Center (Shouldn't cross the center line)
+        autoChooser.addCmd("Close Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, 3));
+        autoChooser.addCmd("Close Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, 3));
+
+        //Closer Center (Basically like our old quarter center)
+        autoChooser.addCmd("Closer Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenter, 3));
+        autoChooser.addCmd("Closer Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterSlow, 3));
+        autoChooser.addCmd("Closer Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterTwist, 3));
+
+        //Steal Center (Not recommended, likely to overshoot the center line and get penalties)
+        autoChooser.addCmd("Steal Center V1", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterCopy1, 3));
+        autoChooser.addCmd("Steal Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterTwist, 3));
+        
+        //Super Close (Routed similar to second pass)
+        autoChooser.addCmd("Super Close", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.superClose, 3));
+
+        //autoChooser.addCmd("Quarter Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
+        //autoChooser.addCmd("Quarter Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, true));
         //autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, false));
         //autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, true));
 
@@ -178,6 +205,17 @@ public class RobotContainer {
     
     public Command getAutonomousCommand() {
         return autoChooser.selectedCommand();
+    }
+
+    public Command getTeleopInitCommand() {
+        return new IntakeRotate(intakeExtender, true);
+    }
+
+    public void activateVision() {
+        vision.activate();
+    }
+    public void deactivateVision() {
+        vision.activate();
     }
 
     /*

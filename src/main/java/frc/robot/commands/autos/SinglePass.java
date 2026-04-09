@@ -34,10 +34,13 @@ public class SinglePass extends SequentialCommandGroup {
         swerve.choreoAuto(traj, resetOdom),
         Commands.sequence(
           Commands.waitSeconds(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get()),
+          Commands.runOnce(() -> vision.activate(), vision),
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
       ),
-      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(withShooterTimeout ? AutoTable.kShooterTimeout.get() : 6)
+      Commands.runOnce(() -> vision.activate(), vision),
+      new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(withShooterTimeout ? AutoTable.kShooterTimeout.get() : 6),
+      Commands.runOnce(() -> vision.deactivate(), vision)
     );
   }
 }
