@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 //import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -14,6 +16,7 @@ import frc.robot.util.NetworkTables;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
+    private Command m_teleopInitCommand;
 
     private final RobotContainer m_robotContainer;
 
@@ -34,6 +37,9 @@ public class Robot extends TimedRobot {
         //m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
         NetworkTables.periodic();
+        if (!DriverStation.isAutonomousEnabled()) {
+            m_robotContainer.activateVision();
+        }
     }
 
     @Override
@@ -48,6 +54,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        m_robotContainer.deactivateVision();
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -64,6 +71,10 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
+        }
+        m_teleopInitCommand = m_robotContainer.getTeleopInitCommand();
+        if (DriverStation.isFMSAttached() && m_teleopInitCommand != null) {
+            CommandScheduler.getInstance().schedule(m_teleopInitCommand);
         }
     }
 
