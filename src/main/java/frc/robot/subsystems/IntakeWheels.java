@@ -27,6 +27,8 @@ public class IntakeWheels extends SubsystemBase {
   private TalonSRX LEDtwo = new TalonSRX(Constants.IntakeConstants.kLEDTWOCANID);
   private int timer = 0;
 
+  private double currentPowerGoal = 0;
+
 
 
   public IntakeWheels() {
@@ -37,11 +39,15 @@ public class IntakeWheels extends SubsystemBase {
 
   //+: Fuel go in robot, -: Fuel go out robot
   public void setWheelPower(double power) {
-    wheelMotor.set(-power);
+    this.currentPowerGoal = -power;
+    wheelMotor.set(currentPowerGoal);
   }
 
-  public double getWheelPower() {
-    return wheelMotor.getVelocity().getValueAsDouble();
+  public double getVelocity() {
+    if (!wheelMotor.isConnected()) {
+      return 0;
+    }
+    return -wheelMotor.getVelocity().getValueAsDouble();
   }
 
   public Command runWheelsCommand(DoubleSupplier power) {
@@ -56,19 +62,35 @@ public class IntakeWheels extends SubsystemBase {
 
 
   public void setDriverLight() {
-    if(getWheelPower() < -0.1){
-      if ((timer % 25) < 12.5) { // 1/2 seconds flash
-        LEDone.set(ControlMode.PercentOutput,1);
-        LEDtwo.set(ControlMode.PercentOutput,1);
+    if(currentPowerGoal != 0){
+      if (Math.abs(getVelocity()) > .5) {
+        //Flash
+        if ((timer % 25) < 12.5) { // 1/2 seconds flash
+          setLeds(1);
+        } else {
+          setLeds(0);
+        }
+
       } else {
-        LEDone.set(ControlMode.PercentOutput,0);
-        LEDtwo.set(ControlMode.PercentOutput,0);
+        //Solid
+        setLeds(1);
       }
-    }else{
-      LEDone.set(ControlMode.PercentOutput,0);
-      LEDtwo.set(ControlMode.PercentOutput,0);
+    } else {
+      //Off
+      setLeds(0);
     }
   }
+
+  private void setLeds(double power) {
+    if (power < 0) {
+      System.out.println("ERROR: Don't Set LEDS to absorb light!!!");
+    } else {
+      LEDone.set(ControlMode.PercentOutput,power);
+      LEDtwo.set(ControlMode.PercentOutput,power);
+    }
+  }
+
+  
 
   @Override
   public void periodic() {
