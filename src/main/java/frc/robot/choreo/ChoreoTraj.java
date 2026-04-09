@@ -52,6 +52,27 @@ public record ChoreoTraj(
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
         new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
+    public static final ChoreoTraj closerCenter = new ChoreoTraj(
+        "closerCenter",
+        OptionalInt.empty(),
+        4.89233,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
+    public static final ChoreoTraj closerCenterSlow = new ChoreoTraj(
+        "closerCenterSlow",
+        OptionalInt.empty(),
+        5.4293,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
+    public static final ChoreoTraj closerCenterTwist = new ChoreoTraj(
+        "closerCenterTwist",
+        OptionalInt.empty(),
+        4.88718,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
@@ -250,6 +271,9 @@ public record ChoreoTraj(
         Map.entry("bumpStealCenter", bumpStealCenter),
         Map.entry("closeCenter", closeCenter),
         Map.entry("closeCenterSlow", closeCenterSlow),
+        Map.entry("closerCenter", closerCenter),
+        Map.entry("closerCenterSlow", closerCenterSlow),
+        Map.entry("closerCenterTwist", closerCenterTwist),
         Map.entry("depotOnly", depotOnly),
         Map.entry("depotThenOutpost", depotThenOutpost),
         Map.entry("depotThenOutpost$0", depotThenOutpost$0),
