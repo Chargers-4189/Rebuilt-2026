@@ -51,12 +51,18 @@ public class Vision extends SubsystemBase {
     this.activated = true;
   }
 
-  public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform){
+  public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform, boolean filterOppositeSide){
     PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(layout, robotTransform); 
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
     if(!results.isEmpty()){
       for (PhotonPipelineResult result : results) {
+
+        if (filterOppositeSide) {
+          result.targets.removeIf(tag -> {
+            return getAlliance(tag.fiducialId) != DriverStation.getAlliance().get();
+          });
+        }
         Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(result);
           
         if(estimatedPoseOptional.isPresent()){
@@ -64,6 +70,14 @@ public class Vision extends SubsystemBase {
           swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
         }
       }
+    }
+  }
+
+  public Alliance getAlliance(int aprilTagId) {
+    if (layout.getTagPose(aprilTagId).get().getX() > fieldCenterPose.getX()) {
+      return Alliance.Red;
+    } else {
+      return Alliance.Blue;
     }
   }
 
