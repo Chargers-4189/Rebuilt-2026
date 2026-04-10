@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
         NetworkTables.periodic();
         if (!DriverStation.isAutonomousEnabled()) {
             m_robotContainer.activateVision();
+            m_robotContainer.setFilterOppositeSide(false);
         }
     }
 
@@ -55,6 +56,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         m_robotContainer.deactivateVision();
+        m_robotContainer.setFilterOppositeSide(true);
 
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);

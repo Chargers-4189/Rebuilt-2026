@@ -23,19 +23,19 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleCollectThenShoot extends SequentialCommandGroup {
   /** Creates a new AutoCenterCollectAndShootFullPath. */
-  public SimpleCollectThenShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper,  IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj, int numPasses) {
+  public SimpleCollectThenShoot(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper,  IntakeWheels intakeWheels, IntakeExtender intakeExtender, ChoreoTraj traj, int numPasses, boolean resetOdom) {
     if (numPasses == 1) {
       addCommands(
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, false, false)
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, resetOdom, false)
       );
     } else if (numPasses == 2) {
       addCommands(
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, false, true),
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, resetOdom, true),
         new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.secondPassCopy1, false, false)
       );
     } else if (numPasses == 3) {
       addCommands(
-        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, false, true),
+        new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, traj, resetOdom, true),
         new SinglePass(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.secondPassCopy1, false, true),
         Commands.race(
           new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower),
