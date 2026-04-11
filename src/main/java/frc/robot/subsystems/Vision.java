@@ -45,6 +45,7 @@ public class Vision extends SubsystemBase {
   SwerveSubsystem swerve;
 
   private boolean activated;
+  private boolean filterOppositeSide = false;
 
   public Vision(SwerveSubsystem swerve) {
     this.swerve = swerve;
@@ -161,8 +162,8 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     if (activated) {
-      this.addVisionMeasurement(leftcamera, leftCamTransform);
-      this.addVisionMeasurement(rightCamera, rightCamTransform);
+      this.addVisionMeasurement(leftcamera, leftCamTransform, filterOppositeSide);
+      this.addVisionMeasurement(rightCamera, rightCamTransform, filterOppositeSide);
     }
     //System.out.println(getDistanceFromHub());
     SwerveTable.hubRotation.set(getRotationFromHub());
@@ -176,6 +177,10 @@ public class Vision extends SubsystemBase {
 
   public void deactivate() {
     this.activated = false;
+  }
+
+  public void setFilterOppositeSide(boolean filterOppositeSide) {
+    this.filterOppositeSide = filterOppositeSide;
   }
 
   
