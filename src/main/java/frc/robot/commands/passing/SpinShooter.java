@@ -36,7 +36,6 @@ public class SpinShooter extends Command {
   @Override
   public void execute() {
       shooter.setVelocitySimple(velocity.getAsDouble());
-      System.out.println(velocity.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

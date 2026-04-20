@@ -38,41 +38,6 @@ public record ChoreoTraj(
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
     );
-    public static final ChoreoTraj closeCenter = new ChoreoTraj(
-        "closeCenter",
-        OptionalInt.empty(),
-        4.99625,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closeCenterSlow = new ChoreoTraj(
-        "closeCenterSlow",
-        OptionalInt.empty(),
-        5.37248,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closerCenter = new ChoreoTraj(
-        "closerCenter",
-        OptionalInt.empty(),
-        4.89233,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closerCenterSlow = new ChoreoTraj(
-        "closerCenterSlow",
-        OptionalInt.empty(),
-        5.4293,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj closerCenterTwist = new ChoreoTraj(
-        "closerCenterTwist",
-        OptionalInt.empty(),
-        4.88718,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
@@ -156,48 +121,6 @@ public record ChoreoTraj(
         new Pose2d(4.2291, 7.4168, Rotation2d.fromRadians(0.00992)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
-    public static final ChoreoTraj quarterCenterCopy1 = new ChoreoTraj(
-        "quarterCenterCopy1",
-        OptionalInt.empty(),
-        5.72407,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterCopy2 = new ChoreoTraj(
-        "quarterCenterCopy2",
-        OptionalInt.empty(),
-        5.18703,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterCopy3 = new ChoreoTraj(
-        "quarterCenterCopy3",
-        OptionalInt.empty(),
-        5.231,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterCopy4 = new ChoreoTraj(
-        "quarterCenterCopy4",
-        OptionalInt.empty(),
-        4.95686,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterSlow = new ChoreoTraj(
-        "quarterCenterSlow",
-        OptionalInt.empty(),
-        5.44752,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj quarterCenterTwist = new ChoreoTraj(
-        "quarterCenterTwist",
-        OptionalInt.empty(),
-        4.93884,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
     public static final ChoreoTraj secondPass = new ChoreoTraj(
         "secondPass",
         OptionalInt.empty(),
@@ -205,61 +128,12 @@ public record ChoreoTraj(
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
     );
-    public static final ChoreoTraj secondPassCopy1 = new ChoreoTraj(
-        "secondPassCopy1",
-        OptionalInt.empty(),
-        5.86996,
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
-        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
-    );
-    public static final ChoreoTraj secondPassCopy2 = new ChoreoTraj(
-        "secondPassCopy2",
-        OptionalInt.empty(),
-        5.39735,
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
-        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
-    );
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
         6.63913,
         new Pose2d(3.45039, 7.41189, Rotation2d.fromRadians(0)),
         new Pose2d(2.98994, 6.89168, Rotation2d.fromRadians(-1.05273))
-    );
-    public static final ChoreoTraj stealCenterCopy1 = new ChoreoTraj(
-        "stealCenterCopy1",
-        OptionalInt.empty(),
-        4.87898,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj stealCenterTwist = new ChoreoTraj(
-        "stealCenterTwist",
-        OptionalInt.empty(),
-        4.88172,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj superClose = new ChoreoTraj(
-        "superClose",
-        OptionalInt.empty(),
-        5.1028,
-        new Pose2d(3.44865, 7.34487, Rotation2d.fromRadians(0)),
-        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
-    );
-    public static final ChoreoTraj thirdPassA = new ChoreoTraj(
-        "thirdPassA",
-        OptionalInt.empty(),
-        1.75265,
-        new Pose2d(2.72264, 7.00328, Rotation2d.fromRadians(-1.00686)),
-        new Pose2d(6.4076, 7.48608, Rotation2d.fromRadians(3.13474))
-    );
-    public static final ChoreoTraj thirdPassB = new ChoreoTraj(
-        "thirdPassB",
-        OptionalInt.empty(),
-        1.86671,
-        new Pose2d(2.72229, 7.02115, Rotation2d.fromRadians(-1.00686)),
-        new Pose2d(6.47219, 7.00526, Rotation2d.fromRadians(2.29177))
     );
 
     /**
@@ -269,11 +143,6 @@ public record ChoreoTraj(
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
         Map.entry("bumpQuarterCenter", bumpQuarterCenter),
         Map.entry("bumpStealCenter", bumpStealCenter),
-        Map.entry("closeCenter", closeCenter),
-        Map.entry("closeCenterSlow", closeCenterSlow),
-        Map.entry("closerCenter", closerCenter),
-        Map.entry("closerCenterSlow", closerCenterSlow),
-        Map.entry("closerCenterTwist", closerCenterTwist),
         Map.entry("depotOnly", depotOnly),
         Map.entry("depotThenOutpost", depotThenOutpost),
         Map.entry("depotThenOutpost$0", depotThenOutpost$0),
@@ -285,21 +154,8 @@ public record ChoreoTraj(
         Map.entry("outpostThenDepot$0", outpostThenDepot$0),
         Map.entry("outpostThenDepot$1", outpostThenDepot$1),
         Map.entry("quarterCenter", quarterCenter),
-        Map.entry("quarterCenterCopy1", quarterCenterCopy1),
-        Map.entry("quarterCenterCopy2", quarterCenterCopy2),
-        Map.entry("quarterCenterCopy3", quarterCenterCopy3),
-        Map.entry("quarterCenterCopy4", quarterCenterCopy4),
-        Map.entry("quarterCenterSlow", quarterCenterSlow),
-        Map.entry("quarterCenterTwist", quarterCenterTwist),
         Map.entry("secondPass", secondPass),
-        Map.entry("secondPassCopy1", secondPassCopy1),
-        Map.entry("secondPassCopy2", secondPassCopy2),
-        Map.entry("stealCenter", stealCenter),
-        Map.entry("stealCenterCopy1", stealCenterCopy1),
-        Map.entry("stealCenterTwist", stealCenterTwist),
-        Map.entry("superClose", superClose),
-        Map.entry("thirdPassA", thirdPassA),
-        Map.entry("thirdPassB", thirdPassB)
+        Map.entry("stealCenter", stealCenter)
     );
 
     /**

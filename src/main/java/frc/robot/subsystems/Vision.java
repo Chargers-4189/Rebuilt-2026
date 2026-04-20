@@ -44,11 +44,8 @@ public class Vision extends SubsystemBase {
   
   SwerveSubsystem swerve;
 
-  private boolean activated;
-
   public Vision(SwerveSubsystem swerve) {
     this.swerve = swerve;
-    this.activated = true;
   }
 
   public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform){
@@ -146,22 +143,13 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (activated) {
-      this.addVisionMeasurement(leftcamera, leftCamTransform);
-      this.addVisionMeasurement(rightCamera, rightCamTransform);
-    }
+    this.addVisionMeasurement(leftcamera, leftCamTransform);
+    this.addVisionMeasurement(rightCamera, rightCamTransform);
+
     //System.out.println(getDistanceFromHub());
     SwerveTable.hubRotation.set(getRotationFromHub());
     SwerveTable.hubDistance.set(getDistanceFromHub());
     SwerveTable.trenchDistance.set(getDistanceToOurZone());
-  }
-
-  public void activate() {
-    this.activated = true;
-  }
-
-  public void deactivate() {
-    this.activated = false;
   }
 
   

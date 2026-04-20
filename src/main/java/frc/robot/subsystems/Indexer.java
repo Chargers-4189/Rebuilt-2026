@@ -4,23 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.TalonFXS;
-import com.ctre.phoenix6.signals.MotorArrangementValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
 
   //Indexer motor gets ball from hopper and ready to shoot
-  private final TalonFXS indexerMotor = new TalonFXS(IndexerConstants.kMotorCanID);  
+  private final TalonFXS indexerMotor = new TalonFXS(
+    IndexerConstants.kMotorCanID
+  );  
 
-  public Indexer() {
-    TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
-    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
-    indexerMotor.getConfigurator().apply(talonFXSConfigs);
-  }
+  public Indexer() {}
 
   public void setPower(double indexerMotorPower) {
     indexerMotor.set(-indexerMotorPower);

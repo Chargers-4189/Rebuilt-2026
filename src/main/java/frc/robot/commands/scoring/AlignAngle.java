@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.NetworkTables.SwerveTable;
-import frc.robot.util.Stopwatch;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignAngle extends Command {
@@ -28,6 +27,8 @@ public class AlignAngle extends Command {
 
   private DoubleSupplier rotationGoal;
 
+  private PIDController xPid = new PIDController(0, 0, 0);
+  private PIDController yPid = new PIDController(0, 0, 0);
   private PIDController anglePid = new PIDController(0, 0, 0);
 
   private boolean biDirectional;
@@ -35,20 +36,15 @@ public class AlignAngle extends Command {
   private double anglePidCalculation;
   private double kSCalculation;
 
-  private boolean endAtSetpoint;
-
-  private Stopwatch stopwatch = new Stopwatch();
-
   private final SwerveRequest.FieldCentric drive;
 
   /** Creates a new AutoAlignPose. */
-  public AlignAngle(SwerveSubsystem swerve, DoubleSupplier xPower, DoubleSupplier yPower, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint) {
+  public AlignAngle(SwerveSubsystem swerve, DoubleSupplier xPower, DoubleSupplier yPower, DoubleSupplier rotationGoal, boolean biDirectional) {
     this.swerve = swerve;
     this.xPower = xPower;
     this.yPower = yPower;
     this.rotationGoal = rotationGoal;
     this.biDirectional = biDirectional;
-    this.endAtSetpoint = endAtSetpoint;
     this.drive = new SwerveRequest.FieldCentric()
             .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -57,17 +53,22 @@ public class AlignAngle extends Command {
     addRequirements(swerve);
   }
 
-  public AlignAngle(SwerveSubsystem swerve, CommandXboxController controller, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint) {
-    this(swerve, () -> -controller.getLeftY(), () -> -controller.getLeftX(), rotationGoal, biDirectional, endAtSetpoint);
+  public AlignAngle(SwerveSubsystem swerve, CommandXboxController controller, DoubleSupplier rotationGoal, boolean biDirectional) {
+    this(swerve, () -> -controller.getLeftY(), () -> -controller.getLeftX(), rotationGoal, biDirectional);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     anglePid.enableContinuousInput(-.5, .5);
+
+    xPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
+    yPid.setPID(SwerveTable.kPositionP.get(), SwerveTable.kPositionI.get(), SwerveTable.kPositionD.get());
     anglePid.setPID(SwerveTable.kAngleP.get(), SwerveTable.kAngleI.get(), SwerveTable.kAngleD.get());
+
+    xPid.setTolerance(SwerveTable.kPositionTolerance.get());
+    yPid.setTolerance(SwerveTable.kPositionTolerance.get());
     anglePid.setTolerance(SwerveTable.kAngleTolerance.get());
-    stopwatch.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -100,8 +101,6 @@ public class AlignAngle extends Command {
            .withVelocityY(MathUtil.copyDirectionPow(yPower.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
            .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
     );
-
-    swerve.setRotationalError(anglePid.getError());
   }
 
   // Called once the command ends or is interrupted.
@@ -113,6 +112,6 @@ public class AlignAngle extends Command {
   // Returns true when the command should end.P
   @Override
   public boolean isFinished() {
-    return anglePid.atSetpoint() && endAtSetpoint;
+    return anglePid.atSetpoint() && xPid.atSetpoint() && yPid.atSetpoint();
   }
 }
