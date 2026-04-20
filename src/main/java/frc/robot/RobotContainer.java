@@ -24,6 +24,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Faces;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
@@ -57,7 +58,8 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kPrimaryControllerPort);
       private final CommandXboxController secondaryController =
       new CommandXboxController(OperatorConstants.kSecondaryControllerPort);
-
+      private final CommandXboxController faceController =
+      new CommandXboxController(OperatorConstants.kFaceControllerPort);
 
     //Subsystem declaration
     private final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
@@ -69,6 +71,8 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer();
     private final Hood hood = new Hood();
     private final Shooter shooter = new Shooter();
+
+    private final Faces face = new Faces();
 
     private static AutoChooser autoChooser = new AutoChooser();
 
@@ -83,6 +87,7 @@ public class RobotContainer {
         //swerveSystemId();
         configureAutoChooser();
         NetworkTables.initialize(primaryController);
+        configureFaces();
     }
 
     private void configureBindings() {
@@ -222,6 +227,73 @@ public class RobotContainer {
 
     public void setFilterOppositeSide(boolean filterOppositeSide) {
         vision.setFilterOppositeSide(filterOppositeSide);
+    }
+
+    private void configureFaces() {
+        faceController.button(1).onTrue(Commands.runOnce(() -> {
+            face.defaultanimation(0);
+        },face).ignoringDisable(true));
+        
+        faceController.button(2).onTrue(Commands.runOnce(() -> {
+            face.happy();
+        },face).ignoringDisable(true));
+
+        faceController.button(
+            3).onTrue(Commands.runOnce(() -> {
+            face.sad();
+        },face).ignoringDisable(true));
+
+        faceController.button(4).onTrue(Commands.runOnce(() -> {
+            face.dead();
+        },face).ignoringDisable(true));
+
+        faceController.button(5).onTrue(Commands.runOnce(() -> {
+            face.love();
+        },face).ignoringDisable(true));
+
+        faceController.button(6).onTrue(Commands.runOnce(() -> {
+            face.scared();
+        },face).ignoringDisable(true));
+
+        /*
+        faceController.button(7).onTrue(Commands.runOnce(() -> {
+            face.pirate();
+        },face).ignoringDisable(true));
+        */
+
+        faceController.button(8).onTrue(Commands.runOnce(() -> {
+            face.mad();
+        },face).ignoringDisable(true));
+
+        faceController.button(9).onTrue(Commands.runOnce(() -> {
+            face.lookleft();
+        },face).ignoringDisable(true));
+        
+        faceController.button(10).onTrue(Commands.runOnce(() -> {
+            face.lookright();
+        },face).ignoringDisable(true));
+
+        faceController.button(11).onTrue(Commands.runOnce(() -> {
+            face.sleepy();
+        },face).ignoringDisable(true));
+
+        faceController.button(12).onTrue(Commands.runOnce(() -> {
+            face.confusedanimation(0);
+        },face).ignoringDisable(true));
+
+        faceController.button(13).onTrue(Commands.runOnce(() -> {
+            face.monster();
+        },face).ignoringDisable(true));
+
+        /*
+        faceController.button(14).onTrue(Commands.runOnce(() -> {
+            face.rainbow();
+        },face).ignoringDisable(true));
+
+        faceController.button(15).onTrue(Commands.runOnce(() -> {
+            face.alt(); // used to be money animation
+        },face).ignoringDisable(true));
+        */
     }
 
     /*
