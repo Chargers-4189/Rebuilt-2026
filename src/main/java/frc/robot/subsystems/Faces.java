@@ -317,7 +317,7 @@ public class Faces extends SubsystemBase {
         if(animation != "none" && (Timer.getTimestamp() - startTime) >= 1){
             mode++;
             if(animation == "one"){
-                defaultanimation(mode % 16);aaab
+                defaultanimation(mode % 16);
             }if(animation == "confused"){
                 defaultanimation(mode % 4);
             }
