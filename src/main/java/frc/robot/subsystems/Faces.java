@@ -24,7 +24,7 @@ import com.ctre.phoenix6.signals.RGBWColor;
 public class Faces extends SubsystemBase {
     //private static final int LED_PIN = 1;//port number
     private static final int NUM_LEDS = 512;//number of lights (16 by 16 plus 8)
-    //private static final double BRIGHTNESS = 0.5;
+    private static final double BRIGHTNESS = 0.5;
 
     private Timer time = new Timer();
     //private AddressableLED led = new AddressableLED(LED_PIN);
@@ -67,7 +67,7 @@ public class Faces extends SubsystemBase {
 
     public void makeFace(short[] pixelsArray){
         for (int i = 0, j = 8; j < NUM_LEDS && i + 2 < pixelsArray.length; i += 3, j++) {  
-            candle.setControl(new SolidColor(j, j).withColor( new RGBWColor((int) (pixelsArray[i]), (int) (pixelsArray[i + 1]), (int) (pixelsArray[i + 2]), 0)));
+            candle.setControl(new SolidColor(j, j).withColor( new RGBWColor((int) (BRIGHTNESS * pixelsArray[i]), (int) (BRIGHTNESS * pixelsArray[i + 1]), (int) (BRIGHTNESS * pixelsArray[i + 2]), 0)));
         }
         //led.setData(ledBuffer);
     }
@@ -82,11 +82,11 @@ public class Faces extends SubsystemBase {
 
     public short[] getFace(String name) {
         try {
-            FileReader faceFile = new FileReader(Filesystem.getDeployDirectory() + "/faces.properties");
+            FileReader faceFile = new FileReader(Filesystem.getDeployDirectory() + "/newfaces.properties");
             Properties p = new Properties();
             p.load(faceFile);
             return convertToArray(p.getProperty(name));
-        } catch (Exception e) {
+        } catch (Exception e) { 
             System.err.println("Error loading face properties: " + e);
             return defaultFace;
         }
@@ -106,7 +106,66 @@ public class Faces extends SubsystemBase {
         return shortArray;
     }
 
+    //newfaces
 
+    public void normal(){
+        setFace(getFace("normal"), "none");
+    }public void happy(){
+        setFace(getFace("happy"), "none");
+    }public void lookleft(){
+        setFace(getFace("lookleft"), "none");
+    }public void lookright(){
+        setFace(getFace("lookright"), "none");
+    }public void blink(){
+        setFace(getFace("blink"), "none");
+    }public void dead(){
+        setFace(getFace("dead"), "none");
+    }public void mad(){
+        setFace(getFace("mad"), "none");
+    }public void love(){
+        setFace(getFace("love"), "none");
+    }public void monster(){
+        setFace(getFace("monster"), "none");
+    }public void sleepy(){
+        setFace(getFace("sleepy"), "none");
+    }public void scared(){
+        setFace(getFace("scared"), "none");
+    }public void sad(){
+        setFace(getFace("sad"), "none");
+    }public void defaultanimation(int mode){ // 16 frames in a loop
+        if(mode <= 5){
+            setFace(getFace("normal"), "one");
+        }else if(mode == 6){
+            setFace(getFace("lookleft"), "one");
+        }else if(mode == 7){
+            setFace(getFace("lookright"), "one");
+        }else if(mode == 8){
+            setFace(getFace("normal"), "one");
+        }else if(mode == 9){
+            setFace(getFace("lookleft"), "one");
+        }else if(mode >=10 && mode <= 15){
+            setFace(getFace("normal"), "one");
+        }else if(mode == 16){
+            setFace(getFace("blink"), "one");
+        }
+    }public void confusedanimation(int mode){ // 16 frames in a loop
+        if(mode == 0){
+            setFace(getFace("confused1"), "confused");
+        }else if(mode == 1){
+            setFace(getFace("confused2"), "confused");
+        }else if(mode == 2){
+            setFace(getFace("confused3"), "confused");
+        }else if(mode == 3){
+            setFace(getFace("confused4"), "confused");
+        }
+    }
+
+
+
+
+    //old faces
+
+    /* 
     public void smile(){
         setFace(getFace("smile"), "none");
     }
@@ -122,7 +181,7 @@ public class Faces extends SubsystemBase {
             setFace(getFace("dizzyFour"), "dizzy");
         }
     }
-    /** 
+    /*
     public void submerge(int mode){
         if(mode == 0){
             setFace(getFace("waterOne"));
@@ -158,7 +217,7 @@ public class Faces extends SubsystemBase {
             setFace(getFace("waterSixteen"));
         }
         makeFace(chosenFace);
-    }*/
+    }*'/
     public void jeremy(int mode){
         if(mode == 0){
             setFace(getFace("jeremyOne"), "jeremy");
@@ -213,7 +272,7 @@ public class Faces extends SubsystemBase {
     public void speed(){
         setFace(getFace("speed"), "none");
         makeFace(chosenFace);
-    }*/
+    }*'/
    //I'm not gonna comment sick ans heart eyes out becuase thay seem pretty likeley to be needed
     public void sick(){
         setFace(getFace("sick"), "none");
@@ -227,7 +286,7 @@ public class Faces extends SubsystemBase {
     public void eyebrowRaise(){
         setFace(getFace("eyebrowRaise"), "none");
         makeFace(chosenFace);
-    } */
+    } *'/
     public void pirate(){
         setFace(getFace("pirate"), "none");
     }/* 
@@ -251,26 +310,16 @@ public class Faces extends SubsystemBase {
     public void bad(){
         setFace(getFace("exclamationPoint"));
         makeFace(chosenFace);
-    }*/
+    }*'/*/
 
     @Override
     public void periodic() {
         if(animation != "none" && (Timer.getTimestamp() - startTime) >= 1){
             mode++;
-            if(animation == "smile"){
-                //smile(mode % 11);
-            } 
-            else if(animation == "jeremy"){
-                jeremy(mode % 4);
-            }
-            else if(animation == "dizzy"){
-                nextDizzy(mode % 5);
-            }
-            else if(animation == "party"){
-                party(mode % 2);
-            }
-            else if(animation == "money"){
-                money(mode % 2);
+            if(animation == "one"){
+                defaultanimation(mode % 16);aaab
+            }if(animation == "confused"){
+                defaultanimation(mode % 4);
             }
             startTime = Timer.getTimestamp();
         }

@@ -215,51 +215,50 @@ public class RobotContainer {
     //change faces
     private void configureFaces(){
         faceController.button(1).onTrue(Commands.runOnce(() -> {
-            face.smile();
+            face.defaultanimation(0);
         },face).ignoringDisable(true));
         faceController.button(2).onTrue(Commands.runOnce(() -> {
-            face.wink();
-        },face).ignoringDisable(true));
+            face.happy();
+        },face).ignoringDisable(true)); 
         faceController.button(
             3).onTrue(Commands.runOnce(() -> {
-            face.crying();
+            face.sad();
         },face).ignoringDisable(true));
         faceController.button(4).onTrue(Commands.runOnce(() -> {
-            face.pirate();
+            face.dead();
         },face).ignoringDisable(true));
         faceController.button(5).onTrue(Commands.runOnce(() -> {
-            face.sleepy();
+            face.love();
         },face).ignoringDisable(true));
         faceController.button(6).onTrue(Commands.runOnce(() -> {
-            face.fearShock();
-
-        },face).ignoringDisable(true));
+            face.scared();
+        },face).ignoringDisable(true));/* 
         faceController.button(7).onTrue(Commands.runOnce(() -> {
-            face.angry(1);
-        },face).ignoringDisable(true));
+            face.pirate();
+        },face).ignoringDisable(true));*/
         faceController.button(8).onTrue(Commands.runOnce(() -> {
-            face.angry(2);
+            face.mad();
         },face).ignoringDisable(true));
         faceController.button(9).onTrue(Commands.runOnce(() -> {
-            face.angry(3);
+            face.lookleft();
         },face).ignoringDisable(true));
         faceController.button(10).onTrue(Commands.runOnce(() -> {
-            face.angry(4);
+            face.lookright();
         },face).ignoringDisable(true));
         faceController.button(11).onTrue(Commands.runOnce(() -> {
-            face.smile();
+            face.sleepy();
         },face).ignoringDisable(true));
         faceController.button(12).onTrue(Commands.runOnce(() -> {
-            face.jeremy(0);
+            face.confusedanimation(0);
         },face).ignoringDisable(true));
         faceController.button(13).onTrue(Commands.runOnce(() -> {
-            face.nextDizzy(0);
-        },face).ignoringDisable(true));
+            face.monster();
+        },face).ignoringDisable(true));/*
         faceController.button(14).onTrue(Commands.runOnce(() -> {
-            face.party(0);
+            face.rainbow();
         },face).ignoringDisable(true));
         faceController.button(15).onTrue(Commands.runOnce(() -> {
-            face.money(0);
-        },face).ignoringDisable(true));}
+            face.alt(); // used to be money animation
+        },face).ignoringDisable(true)); */}
 
 }
