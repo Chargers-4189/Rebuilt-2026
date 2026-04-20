@@ -53,7 +53,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private double rotationalError;
+    private double rotationalError = .5;
 
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -350,8 +350,8 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public double setRotationalError() {
-        return rotationalError;
+    public void setRotationalError(double rotationalError) {
+        this.rotationalError = rotationalError;
     }
 
     public double getRotationalError() {

@@ -6,8 +6,11 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +35,11 @@ public class Hood extends SubsystemBase {
   );
 
   public Hood() {
+    TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
+    talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
+    talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    hoodMotor.getConfigurator().apply(talonFXSConfigs);
+    
     hoodEncoder.getConfigurator().apply(HoodConstants.kHoodEncoderConfigs);
   }
 

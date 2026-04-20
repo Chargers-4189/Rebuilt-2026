@@ -4,6 +4,8 @@
 
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.PassingCalculatorConstants;
 import frc.robot.util.NetworkTables.PassingCalculatorTable;
 import frc.robot.util.NetworkTables.ShootingCalculatorTable;
 
@@ -30,10 +32,18 @@ public class ScoringCalculator {
     }
 
     public static double calculatePassingPower(double distance) {
-        return ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get();
+        return MathUtil.clamp(
+            ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get(),
+            PassingCalculatorTable.kMinVelocity.get(),
+            PassingCalculatorTable.kMaxVelocity.get()
+        );
     }
 
     public static double calculatePassingAngle(double distance) {
-        return PassingCalculatorTable.kAngleSlope.get() * distance + PassingCalculatorTable.kAngleIntercept.get();
+        return MathUtil.clamp(
+            PassingCalculatorTable.kAngleSlope.get() * distance + PassingCalculatorTable.kAngleIntercept.get(),
+            PassingCalculatorTable.kMinHoodAngle.get(),
+            PassingCalculatorTable.kMaxHoodAngle.get()
+        );
     }
 }

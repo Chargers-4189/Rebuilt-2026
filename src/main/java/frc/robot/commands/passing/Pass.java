@@ -17,6 +17,7 @@ import frc.robot.util.NetworkTables.IntakeTable;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.intake.IntakeRotate;
 import frc.robot.commands.scoring.AlignAngle;
+import frc.robot.commands.scoring.AlignHoodAndFlywheel;
 import frc.robot.commands.scoring.LoadFuel;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -31,9 +32,8 @@ public class Pass extends ParallelCommandGroup {
   public Pass(Shooter shooter, Hood hood, Indexer indexer, Hopper hopper, Vision vision, SwerveSubsystem swerve, CommandXboxController primaryController) {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
-        new SpinShooter(shooter, () -> ScoringCalculator.calculatePassingPower(vision.getDistanceToOurZone())),
-        hood.setHoodAngleCommand(() -> ScoringCalculator.calculatePassingAngle(vision.getDistanceToOurZone())),
-        new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.kZero).getRotations(), false)
+        new AlignHoodAndFlywheel(hood, shooter, vision, true),
+        new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.k180deg).getRotations(), false, false)
     );
   }
 }
