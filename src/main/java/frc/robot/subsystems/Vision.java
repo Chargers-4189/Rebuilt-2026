@@ -45,18 +45,25 @@ public class Vision extends SubsystemBase {
   SwerveSubsystem swerve;
 
   private boolean activated;
+  private boolean filterOppositeSide = false;
 
   public Vision(SwerveSubsystem swerve) {
     this.swerve = swerve;
     this.activated = true;
   }
 
-  public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform){
+  public void addVisionMeasurement(PhotonCamera camera, Transform3d robotTransform, boolean filterOppositeSide){
     PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(layout, robotTransform); 
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
     if(!results.isEmpty()){
       for (PhotonPipelineResult result : results) {
+
+        if (filterOppositeSide) {
+          result.targets.removeIf(tag -> {
+            return getAlliance(tag.fiducialId) != DriverStation.getAlliance().get();
+          });
+        }
         Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.estimateAverageBestTargetsPose(result);
           
         if(estimatedPoseOptional.isPresent()){
@@ -64,6 +71,14 @@ public class Vision extends SubsystemBase {
           swerve.addVisionMeasurement(estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
         }
       }
+    }
+  }
+
+  public Alliance getAlliance(int aprilTagId) {
+    if (layout.getTagPose(aprilTagId).get().getX() > fieldCenterPose.getX()) {
+      return Alliance.Red;
+    } else {
+      return Alliance.Blue;
     }
   }
 
@@ -147,8 +162,8 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     if (activated) {
-      this.addVisionMeasurement(leftcamera, leftCamTransform);
-      this.addVisionMeasurement(rightCamera, rightCamTransform);
+      this.addVisionMeasurement(leftcamera, leftCamTransform, filterOppositeSide);
+      this.addVisionMeasurement(rightCamera, rightCamTransform, filterOppositeSide);
     }
     //System.out.println(getDistanceFromHub());
     SwerveTable.hubRotation.set(getRotationFromHub());
@@ -162,6 +177,10 @@ public class Vision extends SubsystemBase {
 
   public void deactivate() {
     this.activated = false;
+  }
+
+  public void setFilterOppositeSide(boolean filterOppositeSide) {
+    this.filterOppositeSide = filterOppositeSide;
   }
 
   
