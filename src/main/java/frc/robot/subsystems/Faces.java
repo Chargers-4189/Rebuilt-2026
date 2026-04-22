@@ -66,9 +66,21 @@ public class Faces extends SubsystemBase {
     }
 
     public void makeFace(short[] pixelsArray){
-        for (int i = 0, j = 8; j < NUM_LEDS && i + 2 < pixelsArray.length; i += 3, j++) {  
-            candle.setControl(new SolidColor(j, j).withColor( new RGBWColor((int) (BRIGHTNESS * pixelsArray[i]), (int) (BRIGHTNESS * pixelsArray[i + 1]), (int) (BRIGHTNESS * pixelsArray[i + 2]), 0)));
+        RGBWColor lastColor = null;
+        int lastId = -1;
+
+        for (int i = 0, j = 8; j < NUM_LEDS && i + 2 < pixelsArray.length; i += 3, j++) {
+            RGBWColor color = new RGBWColor((int) (BRIGHTNESS * pixelsArray[i]), (int) (BRIGHTNESS * pixelsArray[i + 1]), (int) (BRIGHTNESS * pixelsArray[i + 2]), 0);
+            if (!color.equals(lastColor)) {
+                if (lastId != -1) {
+                    candle.setControl(new SolidColor(lastId, j - 1).withColor(lastColor));
+                }
+                lastColor = color;
+                lastId = j;
+            }
         }
+        
+        candle.setControl(new SolidColor(lastId, NUM_LEDS - 1).withColor(lastColor));
         //led.setData(ledBuffer);
     }
 
