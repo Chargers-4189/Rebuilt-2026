@@ -240,7 +240,7 @@ public class RobotContainer {
 
         faceController.button(
             3).onTrue(Commands.runOnce(() -> {
-            face.sad();
+            face.sad(0);
         },face).ignoringDisable(true));
 
         faceController.button(4).onTrue(Commands.runOnce(() -> {
@@ -251,12 +251,12 @@ public class RobotContainer {
             face.love();
         },face).ignoringDisable(true));
 
-        faceController.button(6).onTrue(Commands.runOnce(() -> {
-            face.scared();
+        faceController.button(7).onTrue(Commands.runOnce(() -> {
+            face.scared(0);
         },face).ignoringDisable(true));
 
         /*
-        faceController.button(7).onTrue(Commands.runOnce(() -> {
+        faceController.button(6).onTrue(Commands.runOnce(() -> {
             face.pirate();
         },face).ignoringDisable(true));
         */
@@ -284,16 +284,14 @@ public class RobotContainer {
         faceController.button(13).onTrue(Commands.runOnce(() -> {
             face.monster();
         },face).ignoringDisable(true));
-
-        /*
         faceController.button(14).onTrue(Commands.runOnce(() -> {
-            face.rainbow();
+            face.alien();
         },face).ignoringDisable(true));
 
         faceController.button(15).onTrue(Commands.runOnce(() -> {
-            face.alt(); // used to be money animation
+            face.pirate(); // used to be money animation
         },face).ignoringDisable(true));
-        */
+        
     }
 
     /*
