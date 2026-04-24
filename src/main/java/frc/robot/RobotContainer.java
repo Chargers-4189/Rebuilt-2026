@@ -114,7 +114,7 @@ public class RobotContainer {
         
         //Score
         primaryController.leftBumper().whileTrue(
-            new Score(shooter, hood, indexer, swerve, vision, hopper, primaryController)
+            new Score(shooter, hood, indexer, swerve, vision, hopper)
         );
 
         //Intake Wooble (Taunt)
@@ -124,7 +124,7 @@ public class RobotContainer {
         primaryController.b().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, primaryController, ShooterTable.kFixedShootDistance));
         
         //Align to Trench
-        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true, false));
+        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true, false, false));
 
         //Shuttle
         primaryController.y().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));

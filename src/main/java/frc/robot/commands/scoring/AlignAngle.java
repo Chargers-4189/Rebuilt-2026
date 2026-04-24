@@ -36,19 +36,21 @@ public class AlignAngle extends Command {
   private double kSCalculation;
 
   private boolean endAtSetpoint;
+  private boolean withXForm;
 
   private Stopwatch stopwatch = new Stopwatch();
 
   private final SwerveRequest.FieldCentric drive;
 
   /** Creates a new AutoAlignPose. */
-  public AlignAngle(SwerveSubsystem swerve, DoubleSupplier xPower, DoubleSupplier yPower, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint) {
+  public AlignAngle(SwerveSubsystem swerve, DoubleSupplier xPower, DoubleSupplier yPower, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint, boolean withXForm) {
     this.swerve = swerve;
     this.xPower = xPower;
     this.yPower = yPower;
     this.rotationGoal = rotationGoal;
     this.biDirectional = biDirectional;
     this.endAtSetpoint = endAtSetpoint;
+    this.withXForm = withXForm;
     this.drive = new SwerveRequest.FieldCentric()
             .withDeadband(SwerveSubsystem.MaxSpeed * 0.1).withRotationalDeadband(SwerveSubsystem.MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -57,8 +59,8 @@ public class AlignAngle extends Command {
     addRequirements(swerve);
   }
 
-  public AlignAngle(SwerveSubsystem swerve, CommandXboxController controller, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint) {
-    this(swerve, () -> -controller.getLeftY(), () -> -controller.getLeftX(), rotationGoal, biDirectional, endAtSetpoint);
+  public AlignAngle(SwerveSubsystem swerve, CommandXboxController controller, DoubleSupplier rotationGoal, boolean biDirectional, boolean endAtSetpoint, boolean withXForm) {
+    this(swerve, () -> -controller.getLeftY(), () -> -controller.getLeftX(), rotationGoal, biDirectional, endAtSetpoint, withXForm);
   }
 
   // Called when the command is initially scheduled.
@@ -95,11 +97,15 @@ public class AlignAngle extends Command {
       SwerveTable.kAngleMaxPower.get()
     );
 
-    swerve.setControl(
-      drive.withVelocityX(MathUtil.copyDirectionPow(xPower.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
-           .withVelocityY(MathUtil.copyDirectionPow(yPower.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
-           .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
-    );
+    if (anglePid.atSetpoint() & withXForm) {
+      swerve.setControl(SwerveSubsystem.idle);
+    } else {
+      swerve.setControl(
+        drive.withVelocityX(MathUtil.copyDirectionPow(xPower.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
+            .withVelocityY(MathUtil.copyDirectionPow(yPower.getAsDouble(), SwerveTable.kDriveExponent.get()) * SwerveSubsystem.MaxSpeed)
+            .withRotationalRate(anglePower * SwerveSubsystem.MaxAngularRate)
+      );
+    }
 
     swerve.setRotationalError(anglePid.getError());
   }

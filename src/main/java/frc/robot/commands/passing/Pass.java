@@ -33,7 +33,7 @@ public class Pass extends ParallelCommandGroup {
     addCommands(
         new SequentialCommandGroup(Commands.waitSeconds(.5), new LoadFuel(indexer, hopper, shooter, swerve, true)),
         new AlignHoodAndFlywheel(hood, shooter, vision, true),
-        new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.k180deg).getRotations(), false, false)
+        new AlignAngle(swerve, primaryController, () -> Vision.convertFieldRotation(Rotation2d.k180deg).getRotations(), false, false, false)
     );
   }
 }
