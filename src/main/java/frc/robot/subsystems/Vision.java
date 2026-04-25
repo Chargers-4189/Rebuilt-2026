@@ -37,10 +37,10 @@ public class Vision extends SubsystemBase {
   public static final double blueTrenchX = fieldCenterPose.getX() - Units.inchesToMeters(143.50);
 
   PhotonCamera leftcamera = new PhotonCamera("Camera B");
-  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(2.25),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
+  Transform3d leftCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(6.75),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-30),0));
 
   PhotonCamera rightCamera = new PhotonCamera("Camera A");
-  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(-7.75),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-50),0));
+  Transform3d rightCamTransform = new Transform3d(Units.inchesToMeters(12.25),Units.inchesToMeters(-8.75),Units.inchesToMeters(10.75), new Rotation3d(0,Units.degreesToRadians(-50),0));
   
   SwerveSubsystem swerve;
 
