@@ -176,6 +176,8 @@ public class RobotContainer {
         //Closer Center (Basically like our old quarter center)
         //autoChooser.addCmd("Closer Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenter, 3, resetOdom));
         autoChooser.addCmd("Closer Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterSlow, 3, resetOdom));
+        autoChooser.addCmd("Closer Center V2", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, 3, resetOdom));
+
         //autoChooser.addCmd("Closer Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterTwist, 3, resetOdom));
 
         //Steal Center (Not recommended, likely to overshoot the center line and get penalties)
