@@ -33,7 +33,7 @@ public class SinglePass extends SequentialCommandGroup {
         new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower),
         swerve.choreoAuto(traj, resetOdom),
         Commands.sequence(
-          Commands.waitSeconds(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get()),
+          Commands.waitSeconds(Math.clamp(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get(), .6, 20)),
           Commands.runOnce(() -> vision.activate(), vision),
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
