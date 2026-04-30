@@ -158,7 +158,7 @@ public final class Constants {
     // set Motion Magic settings
     public static final double kMotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
     public static final double kMotionMagicAcceleration = 100000; // Target acceleration of 160 rps/s (0.5 seconds)
-    public static final double kMotionMagicJerk = 400; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    public static final double kMotionMagicJerk = 4000; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     public static final double KMaxPowerCutoff = 2;
   }
