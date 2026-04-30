@@ -72,7 +72,7 @@ public class RobotContainer {
     private final Hood hood = new Hood();
     private final Shooter shooter = new Shooter();
 
-    private final Faces face = new Faces();
+    //private final Faces face = new Faces();
 
     private static AutoChooser autoChooser = new AutoChooser();
 
@@ -87,7 +87,7 @@ public class RobotContainer {
         //swerveSystemId();
         configureAutoChooser();
         NetworkTables.initialize(primaryController);
-        configureFaces();
+        //configureFaces();
     }
 
     private void configureBindings() {
@@ -231,6 +231,7 @@ public class RobotContainer {
         vision.setFilterOppositeSide(filterOppositeSide);
     }
 
+    /*
     private void configureFaces() {
         faceController.button(1).onTrue(Commands.runOnce(() -> {
             face.defaultanimation(0);
@@ -257,11 +258,11 @@ public class RobotContainer {
             face.scared(0);
         },face).ignoringDisable(true));
 
-        /*
-        faceController.button(6).onTrue(Commands.runOnce(() -> {
-            face.pirate();
-        },face).ignoringDisable(true));
-        */
+        
+        //faceController.button(6).onTrue(Commands.runOnce(() -> {
+        //    face.pirate();
+        //},face).ignoringDisable(true));
+        
 
         faceController.button(8).onTrue(Commands.runOnce(() -> {
             face.mad();
@@ -295,6 +296,7 @@ public class RobotContainer {
         },face).ignoringDisable(true));
         
     }
+    */
 
     /*
     private void swerveSystemId() {
