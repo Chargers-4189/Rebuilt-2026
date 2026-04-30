@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
@@ -62,7 +63,7 @@ public class Shooter extends SubsystemBase {
   public void setVelocity(double shooterVelocity) {
     targetVelocity = shooterVelocity;
 
-    if (getVelocity() < shooterVelocity - ShooterTable.kMaxPowerCutoff.get()) {
+    if (DriverStation.isAutonomousEnabled() && getVelocity() < shooterVelocity - ShooterTable.kMaxPowerCutoff.get()) {
       if (shooterVelocity > 5) { //Just in case of a wierd coding error, prevents the shooter from moving when it shouldn't.
         setPower(ShooterTable.kSuperSpinPower.get());
       }
