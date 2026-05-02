@@ -255,11 +255,9 @@ public class RobotContainer {
             face.scared(0);
         },face).ignoringDisable(true));
 
-        /*
         faceController.button(6).onTrue(Commands.runOnce(() -> {
-            face.pirate();
+            face.teamnumber();
         },face).ignoringDisable(true));
-        */
 
         faceController.button(8).onTrue(Commands.runOnce(() -> {
             face.mad();
@@ -289,7 +287,7 @@ public class RobotContainer {
         },face).ignoringDisable(true));
 
         faceController.button(15).onTrue(Commands.runOnce(() -> {
-            face.pirate(); // used to be money animation
+            face.pirate();
         },face).ignoringDisable(true));
         
     }
