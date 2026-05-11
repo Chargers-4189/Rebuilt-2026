@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.scoring;
+package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
@@ -75,7 +75,7 @@ public class AlignAngle extends Command {
   public void execute() {
 
     anglePid.setSetpoint(rotationGoal.getAsDouble());
-    double error1 =anglePid.getError();
+    double error1 = anglePid.getError();
     double setpoint1 = anglePid.getSetpoint();
     
     if (biDirectional && Math.abs(anglePid.getError()) > .25) {

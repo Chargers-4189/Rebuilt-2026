@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import java.util.function.DoubleSupplier;
 
@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.NetworkTables.IntakeTable;
 
 public class IntakeWheels extends SubsystemBase {
   /** Creates a new Intake. */
@@ -29,8 +28,6 @@ public class IntakeWheels extends SubsystemBase {
 
   private double currentPowerGoal = 0;
 
-
-
   public IntakeWheels() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
@@ -38,9 +35,23 @@ public class IntakeWheels extends SubsystemBase {
   }
 
   //+: Fuel go in robot, -: Fuel go out robot
-  public void setWheelPower(double power) {
+  public void setPower(double power) {
     this.currentPowerGoal = -power;
     wheelMotor.set(currentPowerGoal);
+  }
+
+  public void stop() {
+    setPower(0);
+  }
+
+  public Command setPowerCommand(DoubleSupplier power) {
+    return Commands.runEnd(
+      () -> setPower(power.getAsDouble()),
+      () -> stop(),
+      this
+    ).withName(
+      "Set Intake Wheel Power"
+    );
   }
 
   public double getVelocity() {
@@ -50,18 +61,16 @@ public class IntakeWheels extends SubsystemBase {
     return -wheelMotor.getVelocity().getValueAsDouble();
   }
 
-  public Command runWheelsCommand(DoubleSupplier power) {
-    return Commands.run(
-      () -> setWheelPower(power.getAsDouble()), this
-    ).finallyDo(
-      () -> setWheelPower(0)
-    ).withName(
-      "RunIntakeWheels"
-    );
+  private void setLeds(double power) {
+    if (power < 0) {
+      System.out.println("ERROR: Don't Set LEDS to absorb light!!!");
+    } else {
+      LEDone.set(ControlMode.PercentOutput,power);
+      LEDtwo.set(ControlMode.PercentOutput,power);
+    }
   }
 
-
-  public void setDriverLight() {
+  public void updateLeds() {
     if(currentPowerGoal != 0){
       if (Math.abs(getVelocity()) > .5) {
         //Flash
@@ -79,23 +88,12 @@ public class IntakeWheels extends SubsystemBase {
       //Off
       setLeds(0);
     }
+    timer++;
   }
-
-  private void setLeds(double power) {
-    if (power < 0) {
-      System.out.println("ERROR: Don't Set LEDS to absorb light!!!");
-    } else {
-      LEDone.set(ControlMode.PercentOutput,power);
-      LEDtwo.set(ControlMode.PercentOutput,power);
-    }
-  }
-
-  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    setDriverLight();
-    timer++;
+    updateLeds();
   }
 }

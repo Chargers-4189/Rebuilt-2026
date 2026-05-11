@@ -16,7 +16,6 @@ import frc.robot.util.NetworkTables;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-    private Command m_teleopInitCommand;
 
     private final RobotContainer m_robotContainer;
 
@@ -73,10 +72,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
-        }
-        m_teleopInitCommand = m_robotContainer.getTeleopInitCommand();
-        if (DriverStation.isFMSAttached() && m_teleopInitCommand != null) {
-            CommandScheduler.getInstance().schedule(m_teleopInitCommand);
         }
     }
 

@@ -2,9 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -13,8 +11,6 @@ import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.util.NetworkTables.HoodTable;
@@ -34,6 +30,8 @@ public class Hood extends SubsystemBase {
     HoodTable.kD.get()
   );
 
+  private double hoodGoal = 0;
+
   public Hood() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
@@ -47,22 +45,16 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(-power);
   }
 
-  public double getHoodPosition() {
-    return hoodEncoder.getAbsolutePosition().getValueAsDouble();
-  }
-  
-  public Command setHoodAngleCommand(DoubleSupplier angle) {
-    return Commands.run(() -> setHoodAngle(angle.getAsDouble()), this)
-        .finallyDo(() -> setPower(0))
-        .withName("HoodAlign");
+  public void home() {
+    setAngle(HoodTable.kDefaultAngle.get());
   }
 
-  public void setHoodAngle(double angle) {
-    HoodTable.hoodGoal.set(angle);
+  public void setAngle(double angle) {
+    hoodGoal = angle;
     if (hoodEncoder.isConnected()) {
       hoodMotor.set(
         -MathUtil.clamp(hoodController.calculate(
-          getHoodPosition(),
+          getPosition(),
           angle
         ),
         -HoodConstants.kAutoPower,
@@ -74,16 +66,15 @@ public class Hood extends SubsystemBase {
     }
   }
 
-  public void setHoodAngle(DoubleSupplier angle) {
-    setHoodAngle(angle.getAsDouble());
+  public double getPosition() {
+    return hoodEncoder.getAbsolutePosition().getValueAsDouble();
   }
-
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    HoodTable.hoodEncoder.set(getHoodPosition());
+    HoodTable.hoodGoal.set(hoodGoal);
+    HoodTable.hoodEncoder.set(getPosition());
     
     hoodController.setPID(
       HoodTable.kP.get(),

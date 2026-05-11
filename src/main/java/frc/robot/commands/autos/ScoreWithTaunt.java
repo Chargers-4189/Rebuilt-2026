@@ -6,17 +6,10 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.intake.IntakeTaunt;
-import frc.robot.commands.scoring.Score;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.IntakeExtender;
-import frc.robot.subsystems.IntakeWheels;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Superstructure.RobotState;
 import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -24,14 +17,20 @@ import frc.robot.util.NetworkTables.IntakeTable;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ScoreWithTaunt extends ParallelCommandGroup {
   /** Creates a new ScoreWithTaunt. */
-  public ScoreWithTaunt(Shooter shooter, Hood hood, Indexer indexer, SwerveSubsystem swerve, Vision vision, Hopper hopper, IntakeWheels intakeWheels, IntakeExtender intakeExtender) {
+  public ScoreWithTaunt(Superstructure superstructure, SwerveSubsystem swerve, Vision vision) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new Score(shooter, hood, indexer, swerve, vision, hopper),
-      new SequentialCommandGroup(
+      Commands.startEnd(
+        () -> superstructure.setState(RobotState.ALIGNING),
+        () -> superstructure.setState(RobotState.DEFAULT)
+      ),
+      Commands.sequence(
         Commands.waitSeconds(IntakeTable.kTauntDelay.get()),
-        new IntakeTaunt(intakeWheels, intakeExtender)
+        Commands.startEnd(
+          () -> superstructure.setTaunting(true),
+          () -> superstructure.setTaunting(false)
+        )
       )
     );
   }

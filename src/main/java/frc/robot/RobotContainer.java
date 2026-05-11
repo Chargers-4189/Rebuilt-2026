@@ -6,52 +6,30 @@ package frc.robot;
 
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.Faces;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Indexer;
-import frc.robot.commands.StopAll;
-import frc.robot.commands.autos.AlignPosition;
-import frc.robot.commands.autos.DepotThenOutpost;
-import frc.robot.commands.autos.OutpostOnly;
-import frc.robot.commands.autos.OutpostThenDepot;
+import frc.robot.commands.AlignAngle;
 import frc.robot.commands.autos.ScoreWithTaunt;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
-import frc.robot.commands.intake.IntakeRotate;
-import frc.robot.commands.intake.IntakeRunAndRotate;
-import frc.robot.commands.intake.IntakeTaunt;
-import frc.robot.commands.intake.OuttakeFuel;
-import frc.robot.commands.passing.Pass;
-import frc.robot.commands.scoring.AlignAngle;
-import frc.robot.commands.scoring.FixedDistanceScore;
-import frc.robot.commands.scoring.Score;
-import frc.robot.subsystems.Shooter;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Faces;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.Superstructure.RobotState;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.shooter.Shooter.ShootingType;
 import frc.robot.util.NetworkTables;
-import frc.robot.util.NetworkTables.HoodTable;
-import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.util.NetworkTables.ShooterTable;
 import frc.robot.util.NetworkTables.SwerveTable;
-import frc.robot.subsystems.IntakeExtender;
-import frc.robot.subsystems.IntakeWheels;
-import frc.robot.subsystems.Hopper;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
@@ -65,12 +43,10 @@ public class RobotContainer {
     private final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
     private final Vision vision = new Vision(swerve);
 
-    private final IntakeExtender intakeExtender = new IntakeExtender();
-    private final IntakeWheels intakeWheels = new IntakeWheels();
-    private final Hopper hopper = new Hopper();
-    private final Indexer indexer = new Indexer();
-    private final Hood hood = new Hood();
-    private final Shooter shooter = new Shooter();
+    private final Superstructure superstructure = new Superstructure(
+        vision,
+        swerve
+    );
 
     private final Faces face = new Faces();
 
@@ -91,43 +67,41 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-
-        //Hood Default Command
-        hood.setDefaultCommand(Commands.run(() -> {
-            hood.setHoodAngle(HoodTable.kDefaultAngle);
-        }, hood).withName("Hood Default Angle"));
-
-        /*---------- Primary Controls ----------*/
         
         //Cancel All
-        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
+        superstructure.bindStopAll(primaryController.start().or(secondaryController.start()).or(secondaryController.back()));
+
+        /*---------- Primary Controls ----------*/
 
         //Rotate Intake
-        primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
-        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
+        superstructure.onTrue(primaryController.leftTrigger(.5), RobotState.DEFAULT);
+        superstructure.onTrue(primaryController.rightTrigger(.5), RobotState.TUCK);
 
         //Outtake Fuel
-        primaryController.povUp().whileTrue(new OuttakeFuel(intakeWheels, hopper));
+        superstructure.whileTrue(primaryController.povUp(), RobotState.OUTTAKING);
 
         //Intake Fuel
-        primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower));
+        superstructure.whileTrue(primaryController.rightBumper(), RobotState.INTAKING);
         
         //Score
-        primaryController.leftBumper().whileTrue(
-            new Score(shooter, hood, indexer, swerve, vision, hopper, primaryController)
-        );
+        superstructure.whileTrue(primaryController.leftBumper(), RobotState.ALIGNING, ShootingType.SCORE);
 
         //Intake Wooble (Taunt)
-        primaryController.x().whileTrue(new IntakeTaunt(intakeWheels, intakeExtender));
+        primaryController.x().whileTrue(Commands.startEnd(
+            () -> superstructure.setTaunting(true), 
+            () -> superstructure.setTaunting(false)
+        ));
 
-        //Fixed Distance Score
-        primaryController.b().whileTrue(new FixedDistanceScore(shooter, hood, indexer, swerve, vision, hopper, primaryController, ShooterTable.kFixedShootDistance));
-        
+        //Fixed Distance Score        
+        superstructure.whileTrue(primaryController.b(), RobotState.ALIGNING, ShootingType.STATIC);
+
         //Align to Trench
-        primaryController.a().whileTrue(new AlignAngle(swerve, primaryController, () -> 0, true, false));
+        primaryController.a().whileTrue(
+            new AlignAngle(swerve, primaryController, () -> 0, true, false)
+        );
 
         //Shuttle
-        primaryController.y().whileTrue(new Pass(shooter, hood, indexer, hopper, vision, swerve, primaryController));
+        superstructure.whileTrue(primaryController.y(), RobotState.ALIGNING, ShootingType.PASS);
 
         /*---------- Drivetrain ----------*/
 
@@ -151,16 +125,12 @@ public class RobotContainer {
 
         /*---------- Secondary Controls ----------*/
 
-        //Cancel All
-        secondaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
-        secondaryController.back().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
-        
-        //Intake Extension
-        secondaryController.leftTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> -IntakeTable.kManualExtensionPower.get()));
-        secondaryController.rightTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> IntakeTable.kManualExtensionPower.get()));
+        //Manual Intake Extension
+        //secondaryController.leftTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> -IntakeTable.kManualExtensionPower.get()));
+        //secondaryController.rightTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> IntakeTable.kManualExtensionPower.get()));
 
-        //Intake Wheels
-        secondaryController.a().whileTrue(intakeWheels.runWheelsCommand(IntakeTable.kWheelPower));
+        //Manual Intake Wheels
+        superstructure.whileTrue(secondaryController.a(), RobotState.UNJAMMING);
 
         //secondaryController.y().whileTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4, Rotation2d.kZero)));
     }
@@ -170,32 +140,28 @@ public class RobotContainer {
         boolean resetOdom = true;
 
         //This is the main auto we ran at the state competition. Previously Titled "Closer Center V2"
-        autoChooser.addCmd("DCMP Auto", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassCopy1, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("DCMP Auto", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassCopy1, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //This auto tries has an optimized second pass, trying to score slightly more fuel.
-        autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //This auto shouldn't cross the center line
-        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //Third Wheel
         autoChooser.addCmd("Third Wheel", () -> Commands.sequence(
             Commands.waitSeconds(5),
-            new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.shootPreload, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom)
+            new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.shootPreload, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom)
         ));
 
         //Preload Only.
-        autoChooser.addCmd("Shoot Preload", () -> new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(6));
+        autoChooser.addCmd("Shoot Preload", () -> new ScoreWithTaunt(superstructure, swerve, vision).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     
     public Command getAutonomousCommand() {
         return autoChooser.selectedCommand();
-    }
-
-    public Command getTeleopInitCommand() {
-        return new IntakeRotate(intakeExtender, true);
     }
 
     public void activateVision() {

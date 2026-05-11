@@ -5,7 +5,6 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
-import frc.robot.Constants.PassingCalculatorConstants;
 import frc.robot.util.NetworkTables.PassingCalculatorTable;
 import frc.robot.util.NetworkTables.ShootingCalculatorTable;
 

@@ -152,8 +152,8 @@ public class NetworkTables {
     public static class HopperTable {
         private static final NetworkTable hopperTable = networkInstance.getTable("hopperTable");
 
-        public static final DoubleEntry kPower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kPower);
-        public static final DoubleEntry kReversePower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.HopperConstants.kReversePower);
+        public static final DoubleEntry kPower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.FloorConstants.kPower);
+        public static final DoubleEntry kReversePower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.FloorConstants.kReversePower);
 
         public static final void init() {
             kPower.set(kPower.get());
@@ -201,33 +201,33 @@ public class NetworkTables {
     }
 
     
-    public static class ShooterTable {
+    public static class FlywheelTable {
         private static final NetworkTable shooterTable = networkInstance.getTable("shooterTable");
 
         public static final DoublePublisher velocity = shooterTable.getDoubleTopic("Shooter Velocity").publish();
         public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
         public static final DoublePublisher currentPower = shooterTable.getDoubleTopic("Current Power").publish();
 
-        public static final DoubleEntry kSuperSpinPower = shooterTable.getDoubleTopic("Super Spin Power").getEntry(Constants.ShooterConstants.kSuperSpinPower);
-        public static final DoubleEntry kFixedShootDistance = shooterTable.getDoubleTopic("Fixed Shoot Distance").getEntry(Constants.ShooterConstants.kFixedShootDistance);
-        public static final DoubleEntry kPassVelocity = shooterTable.getDoubleTopic("Pass Velocity").getEntry(Constants.ShooterConstants.kPassVelocity);
+        public static final DoubleEntry kSuperSpinPower = shooterTable.getDoubleTopic("Super Spin Power").getEntry(Constants.FlywheelConstants.kSuperSpinPower);
+        public static final DoubleEntry kFixedShootDistance = shooterTable.getDoubleTopic("Fixed Shoot Distance").getEntry(Constants.FlywheelConstants.kFixedShootDistance);
+        public static final DoubleEntry kPassVelocity = shooterTable.getDoubleTopic("Pass Velocity").getEntry(Constants.FlywheelConstants.kPassVelocity);
 
-        public static final DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.ShooterConstants.kTolerance);
+        public static final DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.FlywheelConstants.kTolerance);
 
         //slot 0 configs
-        public static final DoubleEntry kS = shooterTable.getDoubleTopic("S (Shooter)").getEntry(Constants.ShooterConstants.kS); // Add 0.25 V output to overcome static friction
-        public static final DoubleEntry kV = shooterTable.getDoubleTopic("V (Shooter)").getEntry(Constants.ShooterConstants.kV); // A velocity target of 1 rps results in 0.12 V output
-        public static final DoubleEntry kA = shooterTable.getDoubleTopic("A (Shooter)").getEntry(Constants.ShooterConstants.kA); // An acceleration of 1 rps/s requires 0.01 V output
-        public static final DoubleEntry kP = shooterTable.getDoubleTopic("P (Shooter)").getEntry(Constants.ShooterConstants.kP);
-        public static final DoubleEntry kI = shooterTable.getDoubleTopic("I (Shooter)").getEntry(Constants.ShooterConstants.kI);
-        public static final DoubleEntry kD = shooterTable.getDoubleTopic("D (Shooter)").getEntry(Constants.ShooterConstants.kD);
+        public static final DoubleEntry kS = shooterTable.getDoubleTopic("S (Shooter)").getEntry(Constants.FlywheelConstants.kS); // Add 0.25 V output to overcome static friction
+        public static final DoubleEntry kV = shooterTable.getDoubleTopic("V (Shooter)").getEntry(Constants.FlywheelConstants.kV); // A velocity target of 1 rps results in 0.12 V output
+        public static final DoubleEntry kA = shooterTable.getDoubleTopic("A (Shooter)").getEntry(Constants.FlywheelConstants.kA); // An acceleration of 1 rps/s requires 0.01 V output
+        public static final DoubleEntry kP = shooterTable.getDoubleTopic("P (Shooter)").getEntry(Constants.FlywheelConstants.kP);
+        public static final DoubleEntry kI = shooterTable.getDoubleTopic("I (Shooter)").getEntry(Constants.FlywheelConstants.kI);
+        public static final DoubleEntry kD = shooterTable.getDoubleTopic("D (Shooter)").getEntry(Constants.FlywheelConstants.kD);
 
         // set Motion Magic settings
-        public static final DoubleEntry kMotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MM Velocity (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicCruiseVelocity); // Target cruise velocity of 80 rps
-        public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
-        public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.ShooterConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
+        public static final DoubleEntry kMotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MM Velocity (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicCruiseVelocity); // Target cruise velocity of 80 rps
+        public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
+        public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-        public static final DoubleEntry kMaxPowerCutoff = shooterTable.getDoubleTopic("Max Power Range").getEntry(Constants.ShooterConstants.KMaxPowerCutoff);
+        public static final DoubleEntry kMaxPowerCutoff = shooterTable.getDoubleTopic("Max Power Range").getEntry(Constants.FlywheelConstants.KMaxPowerCutoff);
 
         public static final void init() {
             kSuperSpinPower.set(kSuperSpinPower.get());
@@ -321,7 +321,7 @@ public class NetworkTables {
         HopperTable.init();
         IndexerTable.init();
         HoodTable.init();
-        ShooterTable.init();
+        FlywheelTable.init();
         ShootingCalculatorTable.init();
         PassingCalculatorTable.init();
         AutoTable.init();

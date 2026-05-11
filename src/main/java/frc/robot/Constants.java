@@ -92,7 +92,7 @@ public final class Constants {
     public static final double kPushDownPower = 0;
  }
   
-  public static class HopperConstants {
+  public static class FloorConstants {
     //IDs
     public static final int kMotorRight = 26; 
 
@@ -135,7 +135,7 @@ public final class Constants {
     public static final double kD = 0;
   }
 
-  public static class ShooterConstants {
+  public static class FlywheelConstants {
     //IDs
     public static final int kLeftMotorCanID = 29;
     public static final int kRightMotorCanID = 28;
