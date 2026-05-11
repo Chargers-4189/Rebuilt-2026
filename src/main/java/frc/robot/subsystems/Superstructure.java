@@ -37,7 +37,8 @@ public class Superstructure extends SubsystemBase {
   private EventLoop stateEventLoop = new EventLoop();
 
   //private Trigger defaultTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.DEFAULT);
-  //private Trigger tuckTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.TUCK);
+  //private Trigger tuckedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.TUCKED);
+  //private Trigger extendedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.EXTENDED);
   //private Trigger intakingTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.INTAKING);
   private Trigger aligningTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.ALIGNING);
   private Trigger firingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.FIRING);
@@ -73,7 +74,8 @@ public class Superstructure extends SubsystemBase {
 
   public enum RobotState {
     DEFAULT,
-    TUCK,
+    TUCKED,
+    EXTENDING,
     INTAKING,
     ALIGNING,
     FIRING,
@@ -101,11 +103,18 @@ public class Superstructure extends SubsystemBase {
         }
         shooter.stop();
         break;
-      case TUCK:
+      case TUCKED:
         hopper.stop();
         intake.idleIn();
         shooter.stop();
         if (isTaunting) {
+          setState(RobotState.DEFAULT);
+        }
+      case EXTENDING:
+        hopper.stop();
+        intake.idleOut();
+        shooter.stop();
+        if (isTaunting || intake.extender.isAligned()) {
           setState(RobotState.DEFAULT);
         }
       case INTAKING:

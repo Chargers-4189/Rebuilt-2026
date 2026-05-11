@@ -74,8 +74,8 @@ public class RobotContainer {
         /*---------- Primary Controls ----------*/
 
         //Rotate Intake
-        superstructure.onTrue(primaryController.leftTrigger(.5), RobotState.DEFAULT);
-        superstructure.onTrue(primaryController.rightTrigger(.5), RobotState.TUCK);
+        superstructure.onTrue(primaryController.leftTrigger(.5), RobotState.EXTENDING);
+        superstructure.onTrue(primaryController.rightTrigger(.5), RobotState.TUCKED);
 
         //Outtake Fuel
         superstructure.whileTrue(primaryController.povUp(), RobotState.OUTTAKING);
