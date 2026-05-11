@@ -24,6 +24,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Faces;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Indexer;
 import frc.robot.commands.StopAll;
@@ -57,7 +58,8 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kPrimaryControllerPort);
       private final CommandXboxController secondaryController =
       new CommandXboxController(OperatorConstants.kSecondaryControllerPort);
-
+      private final CommandXboxController faceController =
+      new CommandXboxController(OperatorConstants.kFaceControllerPort);
 
     //Subsystem declaration
     private final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
@@ -69,6 +71,8 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer();
     private final Hood hood = new Hood();
     private final Shooter shooter = new Shooter();
+
+    private final Faces face = new Faces();
 
     private static AutoChooser autoChooser = new AutoChooser();
 
@@ -83,6 +87,7 @@ public class RobotContainer {
         //swerveSystemId();
         configureAutoChooser();
         NetworkTables.initialize(primaryController);
+        configureFaces();
     }
 
     private void configureBindings() {
@@ -164,42 +169,22 @@ public class RobotContainer {
 
         boolean resetOdom = true;
 
-        //Quarter Center (Fastest to center, more like a steal TBH)
-        autoChooser.addCmd("Quarter Center V4", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterCopy4, 3, resetOdom));
-        //autoChooser.addCmd("Quarter Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterSlow, 3, resetOdom));
-        //autoChooser.addCmd("Quarter Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenterTwist, 3, resetOdom));
-
-        //Close Center (Shouldn't cross the center line)
-        //autoChooser.addCmd("Close Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenter, 3, resetOdom));
-        //autoChooser.addCmd("Close Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closeCenterSlow, 3, resetOdom));
-
-        //Closer Center (Basically like our old quarter center)
-        //autoChooser.addCmd("Closer Center", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenter, 3, resetOdom));
-        autoChooser.addCmd("Closer Center Slow", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterSlow, 3, resetOdom));
-        //autoChooser.addCmd("Closer Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterTwist, 3, resetOdom));
-
-        //Steal Center (Not recommended, likely to overshoot the center line and get penalties)
-        //autoChooser.addCmd("Steal Center V1", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterCopy1, 3, resetOdom));
-        //autoChooser.addCmd("Steal Center Twist", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenterTwist, 3, resetOdom));
+        //This is the main auto we ran at the state competition. Previously Titled "Closer Center V2"
+        autoChooser.addCmd("DCMP Auto", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassCopy1, ChoreoTraj.thirdPassB, 3, resetOdom));
         
-        //Super Close (Routed similar to second pass)
-        autoChooser.addCmd("Super Close", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.superClose, 3, resetOdom));
-
-        //autoChooser.addCmd("Quarter Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, false));
-        //autoChooser.addCmd("Quarter Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.quarterCenter, true));
-        //autoChooser.addCmd("Quarter Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, false));
-        //autoChooser.addCmd("Quarter Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpQuarterCenter, true));
-
-        //autoChooser.addCmd("Steal Center (Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenter, false));
-        //autoChooser.addCmd("Steal Center (Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.stealCenter, true));
-        //autoChooser.addCmd("Steal Center (Bump, Single)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpStealCenter, false));
-        //autoChooser.addCmd("Steal Center (Bump, Double)", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.bumpStealCenter, true));
+        //This auto tries has an optimized second pass, trying to score slightly more fuel.
+        autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
-        //autoChooser.addCmd("Depot Then Outpost", () -> new DepotThenOutpost(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
-        //autoChooser.addCmd("Outpost Then Depot", () -> new OutpostThenDepot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
-        //autoChooser.addCmd("Depot Only", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.depotOnly, false));
-        //autoChooser.addCmd("Outpost Only", () -> new OutpostOnly(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender));
+        //This auto shouldn't cross the center line
+        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        
+        //Third Wheel
+        autoChooser.addCmd("Third Wheel", () -> Commands.sequence(
+            Commands.waitSeconds(5),
+            new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.shootPreload, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom)
+        ));
 
+        //Preload Only.
         autoChooser.addCmd("Shoot Preload", () -> new ScoreWithTaunt(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -222,6 +207,71 @@ public class RobotContainer {
 
     public void setFilterOppositeSide(boolean filterOppositeSide) {
         vision.setFilterOppositeSide(filterOppositeSide);
+    }
+
+    private void configureFaces() {
+        faceController.button(1).onTrue(Commands.runOnce(() -> {
+            face.defaultanimation(0);
+        },face).ignoringDisable(true));
+        
+        faceController.button(2).onTrue(Commands.runOnce(() -> {
+            face.happy();
+        },face).ignoringDisable(true));
+
+        faceController.button(
+            3).onTrue(Commands.runOnce(() -> {
+            face.sad(0);
+        },face).ignoringDisable(true));
+
+        faceController.button(4).onTrue(Commands.runOnce(() -> {
+            face.dead();
+        },face).ignoringDisable(true));
+
+        faceController.button(5).onTrue(Commands.runOnce(() -> {
+            face.love();
+        },face).ignoringDisable(true));
+
+        faceController.button(7).onTrue(Commands.runOnce(() -> {
+            face.scared(0);
+        },face).ignoringDisable(true));
+
+        /*
+        faceController.button(6).onTrue(Commands.runOnce(() -> {
+            face.pirate();
+        },face).ignoringDisable(true));
+        */
+
+        faceController.button(8).onTrue(Commands.runOnce(() -> {
+            face.mad();
+        },face).ignoringDisable(true));
+
+        faceController.button(9).onTrue(Commands.runOnce(() -> {
+            face.lookleft();
+        },face).ignoringDisable(true));
+        
+        faceController.button(10).onTrue(Commands.runOnce(() -> {
+            face.lookright();
+        },face).ignoringDisable(true));
+
+        faceController.button(11).onTrue(Commands.runOnce(() -> {
+            face.sleepy();
+        },face).ignoringDisable(true));
+
+        faceController.button(12).onTrue(Commands.runOnce(() -> {
+            face.confusedanimation(0);
+        },face).ignoringDisable(true));
+
+        faceController.button(13).onTrue(Commands.runOnce(() -> {
+            face.monster();
+        },face).ignoringDisable(true));
+        faceController.button(14).onTrue(Commands.runOnce(() -> {
+            face.alien();
+        },face).ignoringDisable(true));
+
+        faceController.button(15).onTrue(Commands.runOnce(() -> {
+            face.pirate(); // used to be money animation
+        },face).ignoringDisable(true));
+        
     }
 
     /*
