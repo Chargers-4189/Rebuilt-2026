@@ -142,7 +142,7 @@ public final class Constants {
 
     //Modifiables
     public static final double kSuperSpinPower = 1;
-    public static final double kFixedShootDistance = 0.3;
+    public static final double kFixedShootDistance = 3.2;
     public static final double kPassVelocity = 70;
 
     public static final double kTolerance = 1.5;
