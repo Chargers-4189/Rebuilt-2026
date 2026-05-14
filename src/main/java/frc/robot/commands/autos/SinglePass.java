@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autos;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
@@ -33,7 +34,7 @@ public class SinglePass extends SequentialCommandGroup {
         new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower),
         swerve.choreoAuto(traj, resetOdom),
         Commands.sequence(
-          Commands.waitSeconds(Math.clamp(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get(), .6, 20)),
+          Commands.waitSeconds(MathUtil.clamp(traj.totalTimeSecs() - AutoTable.kPreSpinDuration.get(), .6, 20)),
           Commands.runOnce(() -> vision.activate(), vision),
           new SpinShooter(shooter, AutoTable.kPreSpinVelocity, false)
         )
