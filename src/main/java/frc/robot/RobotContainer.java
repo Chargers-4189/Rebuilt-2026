@@ -19,14 +19,12 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.AlignAngle;
-import frc.robot.commands.autos.ScoreWithTaunt;
-import frc.robot.commands.autos.SimpleCollectThenShoot;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Manager;
-import frc.robot.subsystems.Manager.RobotState;
+import frc.robot.commands.ScoreWithTaunt;
+import frc.robot.commands.SimpleCollectThenShoot;
+import frc.robot.handlers.Manager;
+import frc.robot.handlers.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.shooter.Shooter.ShootingType;
 import frc.robot.util.NetworkTables;
 import frc.robot.util.NetworkTables.SwerveTable;
 

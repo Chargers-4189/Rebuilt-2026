@@ -2,16 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.autos;
+package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
-import frc.robot.subsystems.Manager;
+import frc.robot.handlers.Manager;
+import frc.robot.handlers.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Manager.RobotState;
 import frc.robot.util.NetworkTables.AutoTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

@@ -2,12 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.shooter;
+package frc.robot.handlers;
 
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.shooter.Flywheel;
+import frc.robot.subsystems.shooter.Hood;
 import frc.robot.util.NetworkTables.AutoTable;
 import frc.robot.util.NetworkTables.FlywheelTable;
 import frc.robot.util.NetworkTables.PassingCalculatorTable;
@@ -15,19 +17,20 @@ import frc.robot.util.NetworkTables.ShootingCalculatorTable;
 
 public class Shooter extends SubsystemBase {
 
-  public final Hood hood;
-  public final Flywheel flywheel;
-  public final Vision vision;
+  /** Hood Subsystem - Fully controlled by the Shooter.*/
+  private final Hood hood;
+  /** Flywheel Subsystem - Fully controlled by the Shooter.*/
+  private final Flywheel flywheel;
+  /** Vision Subsystem */
+  private final Vision vision;
   
+  /** Current State of the Shooter.*/
   private ShooterState shooterState = ShooterState.STOPPED;
+
+  /** Specifies whether the Shooter is aligned. */
   private boolean isAligned = false;
 
-  public enum ShootingType {
-    SCORE,
-    STATIC,
-    PASS
-  }
-
+  /** An enum for representing states the shooter could be in. */
   public enum ShooterState {
     SCORING,
     STATIC_SHOOTING,

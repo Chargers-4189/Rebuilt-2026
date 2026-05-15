@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.autos;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.Manager;
+import frc.robot.handlers.Manager;
+import frc.robot.handlers.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Manager.RobotState;
 import frc.robot.util.NetworkTables.IntakeTable;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -22,7 +22,7 @@ public class ScoreWithTaunt extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       Commands.startEnd(
-        () -> manager.setState(RobotState.ALIGNING),
+        () -> manager.setState(RobotState.SCORING),
         () -> manager.setState(RobotState.DEFAULT)
       ),
       Commands.sequence(

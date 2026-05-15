@@ -2,8 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.handlers;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,63 +13,61 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignAngle;
-import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Intake.IntakeState;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.Shooter.ShooterState;
-import frc.robot.subsystems.shooter.Shooter.ShootingType;
+import frc.robot.handlers.Hopper.HopperState;
+import frc.robot.handlers.Intake.IntakeState;
+import frc.robot.handlers.Shooter.ShooterState;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.util.Stopwatch;
 
 public class Manager extends SubsystemBase {
 
+  /** Vision Subsystem */
   private Vision vision;
+  /** Swerve Subsystem */
   private SwerveSubsystem swerve;
+  /** Hopper Subsystem - Fully controlled by the Manager.*/
   private Hopper hopper;
+  /** Intake Subsystem - Fully controlled by the Manager.*/
   private Intake intake;
+  /** Shooter Subsystem - Fully controlled by the Manager.*/
   private Shooter shooter;
 
+  /** Driving Power in the X Direction.*/
   private DoubleSupplier driveX;
+  
+  /** Driving Power in the Y Direction.*/
   private DoubleSupplier driveY;
-  private DoubleSupplier unjamPower;
 
+  /** Current State of the Robot.*/
   private RobotState currentState = RobotState.DEFAULT;
+
+  /** Specifies whether the intake should be taunting. */
   private boolean isTaunting = false;
 
+  /** The Event Loop for State-Activated Triggers. */
   private EventLoop stateEventLoop = new EventLoop();
 
-  //private Trigger defaultTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.DEFAULT);
-  //private Trigger tuckedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.TUCKED);
-  //private Trigger extendedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.EXTENDED);
-  //private Trigger intakingTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.INTAKING);
-  
+  /** Triggers when the robot is attempting to shoot. */
   private Trigger shootingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.SCORING || currentState == RobotState.PASSING || currentState == RobotState.STATIC_SHOOTING);
-  
-  private Trigger aligningTrigger = shootingTrigger.and(new Trigger(stateEventLoop, () -> !shooter.isAligned()));
+  /** Triggers when the robot is actually firing fuel. */
   private Trigger firingTrigger = shootingTrigger.and(new Trigger(stateEventLoop, () -> shooter.isAligned()));
-  
-  //private Trigger outtakingTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.OUTTAKING);
-  //private Trigger unjamTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.UNJAMMING);
-  //private Trigger stoppedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.STOPPED);
-  //private Trigger prespinTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.PRESPIN);
+  /** Triggers when the robot should align to the hub. */
+  private Trigger scoringTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.SCORING);
+  /** Triggers when the robot should align for passing. */
+  private Trigger passingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.PASSING);
 
-  private Trigger scoringTrigger = new Trigger(stateEventLoop, () -> {
-    return currentState == RobotState.SCORING;
-  });
+  /** Requests that the robot be stopped. Replaces the StopAll command. */
+  private BooleanSupplier reqStop = () -> false;
 
-  private Trigger passingTrigger = new Trigger(stateEventLoop, () -> {
-    return currentState == RobotState.PASSING;
-  });
-
-  //private Trigger staticShootingTrigger = new Trigger(stateEventLoop, () -> {
-  //  return currentState == RobotState.STATIC_SHOOTING;
-  //});
-
-  private Trigger reqStop;
-
+  /** Used to measure how long it takes for the flywheel to spin up. */
   private Stopwatch spinupTime = new Stopwatch();
 
-  /** Creates a new Manager. */
+  /** Creates a new Manager. 
+   * 
+   * @param vision the vision subsystem
+   * @param swerve the swerve subsystem
+  */
   public Manager(Vision vision, SwerveSubsystem swerve) {
     this.vision = vision;
     this.swerve = swerve;
@@ -79,6 +78,7 @@ public class Manager extends SubsystemBase {
     configureStateTriggers();
   }
 
+  /** An enum for representing states the robot could be in. */
   public enum RobotState {
     DEFAULT,
     TUCKING,
@@ -93,6 +93,7 @@ public class Manager extends SubsystemBase {
     PRESPIN
   }
 
+  /** Causes the robot to behave based on its current state. Should be called in a periodic method. */
   public void stateLoop() {
     stateEventLoop.poll();
 
@@ -103,12 +104,12 @@ public class Manager extends SubsystemBase {
 
     switch (currentState) {
       case DEFAULT:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.STOPPED);
         shooter.setState(ShooterState.STOPPED);
         break;
       case TUCKING:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.RETRACTED);
         shooter.setState(ShooterState.STOPPED);
         if (isTaunting || intake.extender.isAligned()) {
@@ -116,7 +117,7 @@ public class Manager extends SubsystemBase {
         }
         break;
       case EXTENDING:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.RETRACTED);
         shooter.setState(ShooterState.STOPPED);
         if (isTaunting || intake.extender.isAligned()) {
@@ -124,7 +125,7 @@ public class Manager extends SubsystemBase {
         }
         break;
       case INTAKING:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.INTAKING);
         shooter.setState(ShooterState.STOPPED);
         if (isTaunting) {
@@ -132,63 +133,64 @@ public class Manager extends SubsystemBase {
         }
         break;
       case SCORING:
-        if (shooter.isAligned()) {
-          hopper.index(); 
-        } else {
-          hopper.outdex();
-        }
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
         intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
         shooter.setState(ShooterState.SCORING);;
         break;
       case STATIC_SHOOTING:
-        if (shooter.isAligned()) {
-          hopper.index(); 
-        } else {
-          hopper.outdex();
-        }
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
         intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
         shooter.setState(ShooterState.STATIC_SHOOTING);;
         break;
       case PASSING:
-        if (shooter.isAligned()) {
-          hopper.index(); 
-        } else {
-          hopper.outdex();
-        }
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
         intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
         shooter.setState(ShooterState.PASSING);;
         break;
       case OUTTAKING:
-        hopper.outtake();
+        hopper.setState(HopperState.OUTTAKING);
         intake.setState(IntakeState.OUTTAKING);
         shooter.setState(ShooterState.STOPPED);
         break;
       case UNJAMMING:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.FORCE_OUTTAKE);
         shooter.setState(ShooterState.STOPPED);
         break;
       case STOPPED:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.STOPPED);
         shooter.setState(ShooterState.STOPPED);
         break;
       case PRESPIN:
-        hopper.stop();
+        hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.STOPPED);
         shooter.setState(ShooterState.PRESPIN);
         break;
     }
   }
 
-  public void whileTrue(Trigger trigger, RobotState onTrue) {
+  /**
+   * Sets the robot to the given state when the condition changes to `true` and resets the state
+   * to `RobotState.DEFAULT` when the condition changes to `false`.
+   * 
+   * @param trigger the trigger
+   * @param robotState the state to activate
+   */
+  public void whileTrue(Trigger trigger, RobotState robotState) {
     trigger.whileTrue(Commands.startEnd(
-      () -> setState(onTrue),
+      () -> setState(robotState),
       () -> setState(RobotState.DEFAULT),
       this
     ));
   }
 
+  /**
+   * Sets the robot to the given state when the condition changes to `true`.
+   * 
+   * @param trigger the trigger
+   * @param robotState the state to activate
+   */
   public void onTrue(Trigger trigger, RobotState onTrue) {
     trigger.onTrue(Commands.runOnce(
       () -> setState(onTrue),
@@ -196,37 +198,78 @@ public class Manager extends SubsystemBase {
     ));
   }
 
+  /**
+   * Toggles a state when the condition changes from `false` to `true`.
+   * 
+   * @param trigger the trigger
+   * @param robotState the state to toggle
+   */
   public void toggleOnTrue(Trigger trigger, RobotState onTrue) {
     trigger.toggleOnTrue(Commands.startEnd(
       () -> setState(onTrue),
-      () -> setState(RobotState.DEFAULT),
+      () -> {
+        if (this.currentState == onTrue) {
+          setState(RobotState.DEFAULT);
+        }
+      },
       this
     ));
   }
 
+  /**
+   * Sets the current state of the robot to the given state.
+   * 
+   * @param robotState the state to toggle
+   */
   public void setState(RobotState robotState) {
     this.currentState = robotState;
   }
 
-  public void setTaunting(boolean isTaunting) {
-    this.isTaunting = isTaunting;
+  /**
+   * Returns the robot's current state.
+   * 
+   * @return robotState the current robot state
+   */
+  public RobotState getState() {
+    return currentState;
   }
 
+  /**
+   * Specifies whether the intake should be taunting.
+   * 
+   * @param reqTaunt whether the intake should taunt
+   */
+  public void setTaunting(boolean reqTaunt) {
+    this.isTaunting = reqTaunt;
+  }
+
+  /**
+   * Binds driving controls for the swerve drive, which will be active when the
+   * Manager has control over the swerve subsystem.
+   * 
+   * @param driveX the power to drive in the X direction
+   * @param driveY power to drive in the Y direction
+   */
   public void bindDrivePower(DoubleSupplier driveX, DoubleSupplier driveY) {
     this.driveX = driveX;
     this.driveY = driveY;
   }
 
-  public void bindUnjamPower(DoubleSupplier unjamPower) {
-    this.unjamPower = unjamPower;
+  /**
+   * Binds stopAll for the robot.
+   * 
+   * @param stopAll supplies whether the robot should be stopped.
+   */
+  public void bindStopAll(BooleanSupplier stopAll) {
+    reqStop = stopAll;
   }
 
-  public void bindStopAll(Trigger trigger) {
-    reqStop = trigger;
-  }
-
+  /**
+   * Configures any state triggers that should activate when the robot switches
+   * between states. Helpful for integrating Commands into the state machine.
+   */
   public void configureStateTriggers() {
-    aligningTrigger.onTrue(Commands.runOnce(() -> {
+    shootingTrigger.onTrue(Commands.runOnce(() -> {
       spinupTime.start();
     }));
     firingTrigger.onTrue(Commands.runOnce(() -> {
@@ -243,7 +286,6 @@ public class Manager extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     stateLoop();
   }
 }
