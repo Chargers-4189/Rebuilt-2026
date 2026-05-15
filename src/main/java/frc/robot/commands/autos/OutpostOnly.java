@@ -7,8 +7,8 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
-import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.Superstructure.RobotState;
+import frc.robot.subsystems.Manager;
+import frc.robot.subsystems.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 
@@ -17,15 +17,15 @@ import frc.robot.subsystems.Vision;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OutpostOnly extends SequentialCommandGroup {
   /** Creates a new AutoShootOurSide. */
-  public OutpostOnly(Superstructure superstructure, SwerveSubsystem swerve, Vision vision) {
+  public OutpostOnly(Manager manager, SwerveSubsystem swerve, Vision vision) {
     // Add your commands in the addCommands() call, e.g.
 
     addCommands(
-      Commands.runOnce(() -> superstructure.setState(RobotState.INTAKING)),
+      Commands.runOnce(() -> manager.setState(RobotState.INTAKING)),
       swerve.choreoAuto(ChoreoTraj.outpostOnly$0, true),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.outpostOnly$1, false),
-      new ScoreWithTaunt(superstructure, swerve, vision) 
+      new ScoreWithTaunt(manager, swerve, vision) 
     );
   }
 }

@@ -19,7 +19,6 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kPrimaryControllerPort = 0;
     public static final int kSecondaryControllerPort = 1;
-    public static final int kFaceControllerPort = 2;
   }
 
   public static class SwerveConstants {

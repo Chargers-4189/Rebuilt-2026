@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NetworkTables.IntakeTable;
 
-public class IntakeExtender extends SubsystemBase {
+public class Extender extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
   private CANcoder encoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
@@ -29,7 +29,7 @@ public class IntakeExtender extends SubsystemBase {
   private ProfiledPIDController pidController;
   private double goal = 0;
 
-  public IntakeExtender() {
+  public Extender() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;

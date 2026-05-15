@@ -6,6 +6,7 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 
 //import com.ctre.phoenix6.HootAutoReplay;
 
@@ -29,7 +30,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void robotInit() {}
+    public void robotInit() {
+        RobotController.setBrownoutVoltage(5.75);
+    }
 
     @Override
     public void robotPeriodic() {

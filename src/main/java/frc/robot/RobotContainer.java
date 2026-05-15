@@ -22,9 +22,8 @@ import frc.robot.commands.AlignAngle;
 import frc.robot.commands.autos.ScoreWithTaunt;
 import frc.robot.commands.autos.SimpleCollectThenShoot;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Faces;
-import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.Superstructure.RobotState;
+import frc.robot.subsystems.Manager;
+import frc.robot.subsystems.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.shooter.Shooter.ShootingType;
@@ -36,19 +35,12 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kPrimaryControllerPort);
       private final CommandXboxController secondaryController =
       new CommandXboxController(OperatorConstants.kSecondaryControllerPort);
-      private final CommandXboxController faceController =
-      new CommandXboxController(OperatorConstants.kFaceControllerPort);
 
     //Subsystem declaration
     private final SwerveSubsystem swerve = TunerConstants.createDrivetrain();
     private final Vision vision = new Vision(swerve);
 
-    private final Superstructure superstructure = new Superstructure(
-        vision,
-        swerve
-    );
-
-    private final Faces face = new Faces();
+    private final Manager manager = new Manager(vision, swerve);
 
     private static AutoChooser autoChooser = new AutoChooser();
 
@@ -63,37 +55,36 @@ public class RobotContainer {
         //swerveSystemId();
         configureAutoChooser();
         NetworkTables.initialize(primaryController);
-        configureFaces();
     }
 
     private void configureBindings() {
         
         //Cancel All
-        superstructure.bindStopAll(primaryController.start().or(secondaryController.start()).or(secondaryController.back()));
+        manager.bindStopAll(primaryController.start().or(secondaryController.start()).or(secondaryController.back()));
 
         /*---------- Primary Controls ----------*/
 
         //Rotate Intake
-        superstructure.onTrue(primaryController.leftTrigger(.5), RobotState.EXTENDING);
-        superstructure.onTrue(primaryController.rightTrigger(.5), RobotState.TUCKED);
+        manager.onTrue(primaryController.leftTrigger(.5), RobotState.EXTENDING);
+        manager.onTrue(primaryController.rightTrigger(.5), RobotState.TUCKING);
 
         //Outtake Fuel
-        superstructure.whileTrue(primaryController.povUp(), RobotState.OUTTAKING);
+        manager.whileTrue(primaryController.povUp(), RobotState.OUTTAKING);
 
         //Intake Fuel
-        superstructure.whileTrue(primaryController.rightBumper(), RobotState.INTAKING);
+        manager.whileTrue(primaryController.rightBumper(), RobotState.INTAKING);
         
         //Score
-        superstructure.whileTrue(primaryController.leftBumper(), RobotState.ALIGNING, ShootingType.SCORE);
+        manager.whileTrue(primaryController.leftBumper(), RobotState.SCORING);
 
         //Intake Wooble (Taunt)
         primaryController.x().whileTrue(Commands.startEnd(
-            () -> superstructure.setTaunting(true), 
-            () -> superstructure.setTaunting(false)
+            () -> manager.setTaunting(true), 
+            () -> manager.setTaunting(false)
         ));
 
         //Fixed Distance Score        
-        superstructure.whileTrue(primaryController.b(), RobotState.ALIGNING, ShootingType.STATIC);
+        manager.whileTrue(primaryController.b(), RobotState.STATIC_SHOOTING);
 
         //Align to Trench
         primaryController.a().whileTrue(
@@ -101,7 +92,7 @@ public class RobotContainer {
         );
 
         //Shuttle
-        superstructure.whileTrue(primaryController.y(), RobotState.ALIGNING, ShootingType.PASS);
+        manager.whileTrue(primaryController.y(), RobotState.PASSING);
 
         /*---------- Drivetrain ----------*/
 
@@ -126,11 +117,11 @@ public class RobotContainer {
         /*---------- Secondary Controls ----------*/
 
         //Manual Intake Extension
-        //secondaryController.leftTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> -IntakeTable.kManualExtensionPower.get()));
-        //secondaryController.rightTrigger(.5).whileTrue(intakeExtender.setPowerCommand(() -> IntakeTable.kManualExtensionPower.get()));
+        //secondaryController.leftTrigger(.5).whileTrue(extender.setPowerCommand(() -> -IntakeTable.kManualExtensionPower.get()));
+        //secondaryController.rightTrigger(.5).whileTrue(extender.setPowerCommand(() -> IntakeTable.kManualExtensionPower.get()));
 
         //Manual Intake Wheels
-        superstructure.whileTrue(secondaryController.a(), RobotState.UNJAMMING);
+        manager.whileTrue(secondaryController.a(), RobotState.UNJAMMING);
 
         //secondaryController.y().whileTrue(new AlignPosition(swerve, vision, new Pose2d(14, 4, Rotation2d.kZero)));
     }
@@ -140,22 +131,22 @@ public class RobotContainer {
         boolean resetOdom = true;
 
         //This is the main auto we ran at the state competition. Previously Titled "Closer Center V2"
-        autoChooser.addCmd("DCMP Auto", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassCopy1, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("DCMP Auto", () -> new SimpleCollectThenShoot(manager, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassCopy1, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //This auto tries has an optimized second pass, trying to score slightly more fuel.
-        autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(manager, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //This auto shouldn't cross the center line
-        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(manager, swerve, vision, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //Third Wheel
         autoChooser.addCmd("Third Wheel", () -> Commands.sequence(
             Commands.waitSeconds(5),
-            new SimpleCollectThenShoot(superstructure, swerve, vision, ChoreoTraj.shootPreload, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom)
+            new SimpleCollectThenShoot(manager, swerve, vision, ChoreoTraj.shootPreload, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom)
         ));
 
         //Preload Only.
-        autoChooser.addCmd("Shoot Preload", () -> new ScoreWithTaunt(superstructure, swerve, vision).withTimeout(6));
+        autoChooser.addCmd("Shoot Preload", () -> new ScoreWithTaunt(manager, swerve, vision).withTimeout(6));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -175,76 +166,11 @@ public class RobotContainer {
         vision.setFilterOppositeSide(filterOppositeSide);
     }
 
-    private void configureFaces() {
-        faceController.button(1).onTrue(Commands.runOnce(() -> {
-            face.defaultanimation(0);
-        },face).ignoringDisable(true));
-        
-        faceController.button(2).onTrue(Commands.runOnce(() -> {
-            face.happy();
-        },face).ignoringDisable(true));
-
-        faceController.button(
-            3).onTrue(Commands.runOnce(() -> {
-            face.sad(0);
-        },face).ignoringDisable(true));
-
-        faceController.button(4).onTrue(Commands.runOnce(() -> {
-            face.dead();
-        },face).ignoringDisable(true));
-
-        faceController.button(5).onTrue(Commands.runOnce(() -> {
-            face.love();
-        },face).ignoringDisable(true));
-
-        faceController.button(7).onTrue(Commands.runOnce(() -> {
-            face.scared(0);
-        },face).ignoringDisable(true));
-
-        /*
-        faceController.button(6).onTrue(Commands.runOnce(() -> {
-            face.pirate();
-        },face).ignoringDisable(true));
-        */
-
-        faceController.button(8).onTrue(Commands.runOnce(() -> {
-            face.mad();
-        },face).ignoringDisable(true));
-
-        faceController.button(9).onTrue(Commands.runOnce(() -> {
-            face.lookleft();
-        },face).ignoringDisable(true));
-        
-        faceController.button(10).onTrue(Commands.runOnce(() -> {
-            face.lookright();
-        },face).ignoringDisable(true));
-
-        faceController.button(11).onTrue(Commands.runOnce(() -> {
-            face.sleepy();
-        },face).ignoringDisable(true));
-
-        faceController.button(12).onTrue(Commands.runOnce(() -> {
-            face.confusedanimation(0);
-        },face).ignoringDisable(true));
-
-        faceController.button(13).onTrue(Commands.runOnce(() -> {
-            face.monster();
-        },face).ignoringDisable(true));
-        faceController.button(14).onTrue(Commands.runOnce(() -> {
-            face.alien();
-        },face).ignoringDisable(true));
-
-        faceController.button(15).onTrue(Commands.runOnce(() -> {
-            face.pirate(); // used to be money animation
-        },face).ignoringDisable(true));
-        
-    }
-
     /*
     private void swerveSystemId() {
 
         //Stop All
-        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, intakeWheels, intakeExtender, shooter, swerve));
+        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, wheels, extender, shooter, swerve));
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.

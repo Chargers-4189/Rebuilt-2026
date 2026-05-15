@@ -15,8 +15,8 @@ import frc.robot.util.Stopwatch;
 
 public class Intake extends SubsystemBase {
 
-  public IntakeExtender extender;
-  public IntakeWheels wheels;
+  public Extender extender;
+  public Wheels wheels;
 
   private IntakeState intakeState = IntakeState.STOPPED;
 
@@ -28,18 +28,19 @@ public class Intake extends SubsystemBase {
   private Stopwatch tauntTimer = new Stopwatch();
   /** Creates a new Intake. */
   public Intake() {
-    extender = new IntakeExtender();
-    wheels = new IntakeWheels();
+    extender = new Extender();
+    wheels = new Wheels();
     configureStateTriggers();
   }
 
-  enum IntakeState {
+  public enum IntakeState {
     INTAKING,
     OUTTAKING,
     TAUNTING,
-    IDLE_OUT,
-    IDLE_IN,
-    UNJAMING,
+    EXTENDED,
+    RETRACTED,
+    FORCE_OUTTAKE,
+    FORCE_INTAKE,
     STOPPED
   }
 
@@ -47,33 +48,12 @@ public class Intake extends SubsystemBase {
     tauntTrigger.onTrue(Commands.runOnce(() -> tauntTimer.start()));
   }
 
-  public void intake() {
-    intakeState = IntakeState.INTAKING;
-  }
-  
-  public void outtake() {
-    intakeState = IntakeState.OUTTAKING;
+  public void setState(IntakeState intakeState) {
+    this.intakeState = intakeState;
   }
 
-  public void taunt() {
-    intakeState = IntakeState.TAUNTING;
-  }
-
-  public void idleOut() {
-    intakeState = IntakeState.IDLE_OUT;
-  }
-
-  public void idleIn() {
-    intakeState = IntakeState.IDLE_IN;
-  }
-
-  public void unjam(DoubleSupplier power) {
-    unjamPower = power;
-    intakeState = IntakeState.UNJAMING;
-  }
-
-  public void stop() {
-    intakeState = IntakeState.STOPPED;
+  public void getState(IntakeState intakeState) {
+    this.intakeState = intakeState;
   }
 
   private double calculateTauntAngle() {
@@ -107,21 +87,25 @@ public class Intake extends SubsystemBase {
         extender.setAngle(calculateTauntAngle());
         wheels.setPower(IntakeTable.kLowWheelPower.get());
         break;
-      case IDLE_OUT:
+      case EXTENDED:
         if (!extender.isAligned()) {
           extender.setAngle(IntakeTable.kOuterExtensionLimit.get());
         }
         wheels.stop();
         break;
-      case IDLE_IN:
+      case RETRACTED:
         if (!extender.isAligned()) {
           extender.setAngle(IntakeTable.kInnerExtensionLimit.get());
         }
         wheels.stop();
         break;
-      case UNJAMING:
+      case FORCE_OUTTAKE:
         extender.stop();
-        wheels.setPower(unjamPower.getAsDouble());
+        wheels.setPower(-IntakeTable.kWheelPower.getAsDouble());
+        break;
+      case FORCE_INTAKE:
+        extender.stop();
+        wheels.setPower(IntakeTable.kWheelPower.getAsDouble());
         break;
       case STOPPED:
         extender.stop();

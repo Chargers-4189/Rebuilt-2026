@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignAngle;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.Intake.IntakeState;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterState;
 import frc.robot.subsystems.shooter.Shooter.ShootingType;
 import frc.robot.util.Stopwatch;
 
-public class Superstructure extends SubsystemBase {
+public class Manager extends SubsystemBase {
 
   private Vision vision;
   private SwerveSubsystem swerve;
@@ -31,7 +33,6 @@ public class Superstructure extends SubsystemBase {
   private DoubleSupplier unjamPower;
 
   private RobotState currentState = RobotState.DEFAULT;
-  private ShootingType shootingType = ShootingType.SCORE;
   private boolean isTaunting = false;
 
   private EventLoop stateEventLoop = new EventLoop();
@@ -40,29 +41,35 @@ public class Superstructure extends SubsystemBase {
   //private Trigger tuckedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.TUCKED);
   //private Trigger extendedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.EXTENDED);
   //private Trigger intakingTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.INTAKING);
-  private Trigger aligningTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.ALIGNING);
-  private Trigger firingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.FIRING);
+  
+  private Trigger shootingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.SCORING || currentState == RobotState.PASSING || currentState == RobotState.STATIC_SHOOTING);
+  
+  private Trigger aligningTrigger = shootingTrigger.and(new Trigger(stateEventLoop, () -> !shooter.isAligned()));
+  private Trigger firingTrigger = shootingTrigger.and(new Trigger(stateEventLoop, () -> shooter.isAligned()));
+  
   //private Trigger outtakingTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.OUTTAKING);
   //private Trigger unjamTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.UNJAMMING);
   //private Trigger stoppedTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.STOPPED);
   //private Trigger prespinTrigger = new Trigger(stateEventLoop, () -> robotState == RobotState.PRESPIN);
 
   private Trigger scoringTrigger = new Trigger(stateEventLoop, () -> {
-    return (shootingType == ShootingType.SCORE) && (currentState == RobotState.ALIGNING || currentState == RobotState.FIRING);
+    return currentState == RobotState.SCORING;
   });
+
   private Trigger passingTrigger = new Trigger(stateEventLoop, () -> {
-    return (shootingType == ShootingType.PASS) && (currentState == RobotState.ALIGNING || currentState == RobotState.FIRING);
+    return currentState == RobotState.PASSING;
   });
-  //private Trigger staticScoringTrigger = new Trigger(stateEventLoop, () -> {
-  //  return (shootingType == ShootingType.STATIC) && (robotState == RobotState.ALIGNING || robotState == RobotState.FIRING);
+
+  //private Trigger staticShootingTrigger = new Trigger(stateEventLoop, () -> {
+  //  return currentState == RobotState.STATIC_SHOOTING;
   //});
 
   private Trigger reqStop;
 
   private Stopwatch spinupTime = new Stopwatch();
 
-  /** Creates a new Superstructure. */
-  public Superstructure(Vision vision, SwerveSubsystem swerve) {
+  /** Creates a new Manager. */
+  public Manager(Vision vision, SwerveSubsystem swerve) {
     this.vision = vision;
     this.swerve = swerve;
     this.hopper = new Hopper();
@@ -74,11 +81,12 @@ public class Superstructure extends SubsystemBase {
 
   public enum RobotState {
     DEFAULT,
-    TUCKED,
+    TUCKING,
     EXTENDING,
     INTAKING,
-    ALIGNING,
-    FIRING,
+    SCORING,
+    STATIC_SHOOTING,
+    PASSING,
     OUTTAKING,
     UNJAMMING,
     STOPPED,
@@ -96,75 +104,79 @@ public class Superstructure extends SubsystemBase {
     switch (currentState) {
       case DEFAULT:
         hopper.stop();
-        if (isTaunting) {
-          intake.taunt();
-        } else {
-          intake.stop();
-        }
-        shooter.stop();
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.STOPPED);
+        shooter.setState(ShooterState.STOPPED);
         break;
-      case TUCKED:
+      case TUCKING:
         hopper.stop();
-        intake.idleIn();
-        shooter.stop();
-        if (isTaunting) {
-          setState(RobotState.DEFAULT);
-        }
-      case EXTENDING:
-        hopper.stop();
-        intake.idleOut();
-        shooter.stop();
+        intake.setState(IntakeState.RETRACTED);
+        shooter.setState(ShooterState.STOPPED);
         if (isTaunting || intake.extender.isAligned()) {
           setState(RobotState.DEFAULT);
         }
+        break;
+      case EXTENDING:
+        hopper.stop();
+        intake.setState(IntakeState.RETRACTED);
+        shooter.setState(ShooterState.STOPPED);
+        if (isTaunting || intake.extender.isAligned()) {
+          setState(RobotState.DEFAULT);
+        }
+        break;
       case INTAKING:
         hopper.stop();
-        intake.intake();
-        shooter.stop();
+        intake.setState(IntakeState.INTAKING);
+        shooter.setState(ShooterState.STOPPED);
         if (isTaunting) {
           setState(RobotState.DEFAULT);
         }
         break;
-      case ALIGNING:
-        hopper.outdex();
-        if (isTaunting) {
-          intake.taunt();
+      case SCORING:
+        if (shooter.isAligned()) {
+          hopper.index(); 
         } else {
-          intake.idleOut();
+          hopper.outdex();
         }
-        shooter.align(shootingType);
-        if (shooter.flywheel.isAligned()) {
-          setState(RobotState.FIRING);
-        }
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.SCORING);;
         break;
-      case FIRING:
-        hopper.index();
-        if (isTaunting) {
-          intake.taunt();
+      case STATIC_SHOOTING:
+        if (shooter.isAligned()) {
+          hopper.index(); 
         } else {
-          intake.idleOut();
+          hopper.outdex();
         }
-        shooter.align(shootingType);
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.STATIC_SHOOTING);;
+        break;
+      case PASSING:
+        if (shooter.isAligned()) {
+          hopper.index(); 
+        } else {
+          hopper.outdex();
+        }
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.PASSING);;
         break;
       case OUTTAKING:
         hopper.outtake();
-        intake.outtake();
-        shooter.stop();
+        intake.setState(IntakeState.OUTTAKING);
+        shooter.setState(ShooterState.STOPPED);
         break;
       case UNJAMMING:
         hopper.stop();
-        intake.unjam(unjamPower);
-        shooter.stop();
+        intake.setState(IntakeState.FORCE_OUTTAKE);
+        shooter.setState(ShooterState.STOPPED);
         break;
       case STOPPED:
         hopper.stop();
-        intake.stop();
-        shooter.stop();
+        intake.setState(IntakeState.STOPPED);
+        shooter.setState(ShooterState.STOPPED);
         break;
       case PRESPIN:
         hopper.stop();
-        intake.stop();
-        shooter.prespin();
+        intake.setState(IntakeState.STOPPED);
+        shooter.setState(ShooterState.PRESPIN);
         break;
     }
   }
@@ -172,43 +184,28 @@ public class Superstructure extends SubsystemBase {
   public void whileTrue(Trigger trigger, RobotState onTrue) {
     trigger.whileTrue(Commands.startEnd(
       () -> setState(onTrue),
-      () -> setState(RobotState.DEFAULT)
-    ));
-  }
-
-  public void whileTrue(Trigger trigger, RobotState onTrue, ShootingType shootingType) {
-    trigger.whileTrue(Commands.startEnd(
-      () -> setState(onTrue, shootingType),
-      () -> setState(RobotState.DEFAULT)
+      () -> setState(RobotState.DEFAULT),
+      this
     ));
   }
 
   public void onTrue(Trigger trigger, RobotState onTrue) {
     trigger.onTrue(Commands.runOnce(
-      () -> setState(onTrue)
+      () -> setState(onTrue),
+      this
     ));
   }
 
   public void toggleOnTrue(Trigger trigger, RobotState onTrue) {
     trigger.toggleOnTrue(Commands.startEnd(
       () -> setState(onTrue),
-      () -> setState(RobotState.DEFAULT)
+      () -> setState(RobotState.DEFAULT),
+      this
     ));
   }
 
   public void setState(RobotState robotState) {
-    if (robotState == RobotState.ALIGNING || robotState == RobotState.FIRING) {
-      System.out.println("WARNING: Shooting Type should be specified.");
-    }
     this.currentState = robotState;
-  }
-
-  public void setState(RobotState robotState, ShootingType shootingType) {
-    if (this.currentState != RobotState.ALIGNING && robotState == RobotState.FIRING) {
-      System.out.println("WARNING: Innapropriate state jump to FIRING.");
-    }
-    this.currentState = robotState;
-    this.shootingType = shootingType;
   }
 
   public void setTaunting(boolean isTaunting) {

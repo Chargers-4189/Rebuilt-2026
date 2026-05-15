@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class IntakeWheels extends SubsystemBase {
+public class Wheels extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS wheelMotor = new TalonFXS(Constants.IntakeConstants.kWheelMotor); //Needs to be inverted
   private VictorSPX LEDone = new VictorSPX(Constants.IntakeConstants.kLEDONECANID);
@@ -28,7 +28,7 @@ public class IntakeWheels extends SubsystemBase {
 
   private double currentPowerGoal = 0;
 
-  public IntakeWheels() {
+  public Wheels() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     wheelMotor.getConfigurator().apply(talonFXSConfigs);
@@ -65,8 +65,8 @@ public class IntakeWheels extends SubsystemBase {
     if (power < 0) {
       System.out.println("ERROR: Don't Set LEDS to absorb light!!!");
     } else {
-      LEDone.set(ControlMode.PercentOutput,power);
-      LEDtwo.set(ControlMode.PercentOutput,power);
+      LEDone.set(ControlMode.PercentOutput, power);
+      LEDtwo.set(ControlMode.PercentOutput, power);
     }
   }
 

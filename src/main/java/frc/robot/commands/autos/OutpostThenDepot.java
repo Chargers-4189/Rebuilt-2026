@@ -7,8 +7,8 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.choreo.ChoreoTraj;
-import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.Superstructure.RobotState;
+import frc.robot.subsystems.Manager;
+import frc.robot.subsystems.Manager.RobotState;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 
@@ -17,16 +17,16 @@ import frc.robot.subsystems.Vision;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OutpostThenDepot extends SequentialCommandGroup {
   /** Creates a new AutoShootOurSide. */
-  public OutpostThenDepot(Superstructure superstructure, SwerveSubsystem swerve, Vision vision) {
+  public OutpostThenDepot(Manager manager, SwerveSubsystem swerve, Vision vision) {
     // Add your commands in the addCommands() call, e.g.
 
     addCommands(
-      Commands.runOnce(() -> superstructure.setState(RobotState.INTAKING)),
+      Commands.runOnce(() -> manager.setState(RobotState.INTAKING)),
       swerve.choreoAuto(ChoreoTraj.outpostThenDepot$0, true),
       Commands.waitSeconds(4),
       swerve.choreoAuto(ChoreoTraj.outpostThenDepot$1, false),
-      Commands.runOnce(() -> superstructure.setState(RobotState.DEFAULT)),
-      new ScoreWithTaunt(superstructure, swerve, vision) 
+      Commands.runOnce(() -> manager.setState(RobotState.DEFAULT)),
+      new ScoreWithTaunt(manager, swerve, vision) 
     );
   }
 }

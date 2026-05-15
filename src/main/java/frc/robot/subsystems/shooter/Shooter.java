@@ -18,11 +18,22 @@ public class Shooter extends SubsystemBase {
   public final Hood hood;
   public final Flywheel flywheel;
   public final Vision vision;
+  
+  private ShooterState shooterState = ShooterState.STOPPED;
+  private boolean isAligned = false;
 
   public enum ShootingType {
     SCORE,
     STATIC,
     PASS
+  }
+
+  public enum ShooterState {
+    SCORING,
+    STATIC_SHOOTING,
+    PASSING,
+    STOPPED,
+    PRESPIN
   }
 
   /** Creates a new Shooter. */
@@ -32,14 +43,8 @@ public class Shooter extends SubsystemBase {
     this.vision = vision;
   }
 
-  public void stop() {
-    hood.home();
-    flywheel.stop();
-  }
-
-  public void prespin() {
-    hood.home();
-    flywheel.setVelocitySimple(AutoTable.kPreSpinVelocity.get());
+  public void setState(ShooterState shooterState) {
+    this.shooterState = shooterState;
   }
 
   public void align(double distance, boolean scoring) {
@@ -50,32 +55,6 @@ public class Shooter extends SubsystemBase {
       hood.setAngle(calculatePassingAngle(distance));
       flywheel.setVelocity(calculatePassingPower(distance));
     }
-  }
-
-  public void align(ShootingType shootingType) {
-    switch (shootingType) {
-      case SCORE:
-        scoreAlign();
-        break;
-      case STATIC:
-        staticAlign();
-        break;
-      case PASS:
-        passAlign();
-        break;
-    }
-  }
-
-  public void scoreAlign() {
-    align(vision.getDistanceFromHub(), true);
-  }
-
-  public void staticAlign() {
-    align(FlywheelTable.kFixedShootDistance.get(), true);
-  }
-
-  public void passAlign() {
-    align(vision.getDistanceToOurZone(), false);
   }
 
   private static double calculateScoringAngle(double distance) {
@@ -102,8 +81,42 @@ public class Shooter extends SubsystemBase {
       );
   }
 
+  public boolean isAligned() {
+    return isAligned;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    switch (shooterState) {
+      case STOPPED:
+        hood.home();
+        flywheel.stop();
+        isAligned = false;
+        break;
+      case SCORING:
+        align(vision.getDistanceFromHub(), true);
+        if (flywheel.isAligned()) {
+          isAligned = true;
+        }
+        break;
+      case STATIC_SHOOTING:
+        align(FlywheelTable.kFixedShootDistance.get(), true);
+        if (flywheel.isAligned()) {
+          isAligned = true;
+        }
+        break;
+      case PASSING:
+        align(vision.getDistanceToOurZone(), false);
+        if (flywheel.isAligned()) {
+          isAligned = true;
+        }
+        break;
+      case PRESPIN:
+        hood.home();
+        flywheel.setVelocitySimple(AutoTable.kPreSpinVelocity.get());
+        isAligned = false;
+        break;
+    }
   }
 }
