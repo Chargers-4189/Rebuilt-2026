@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NetworkTables.IntakeTable;
 
-public class Extender extends SubsystemBase {
+public class IntakeExtender extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
   private CANcoder encoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
@@ -29,7 +29,7 @@ public class Extender extends SubsystemBase {
   private ProfiledPIDController pidController;
   private double goal = 0;
 
-  public Extender() {
+  public IntakeExtender() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;

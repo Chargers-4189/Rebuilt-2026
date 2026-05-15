@@ -5,8 +5,8 @@
 package frc.robot.handlers;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.hopper.Floor;
-import frc.robot.subsystems.hopper.Indexer;
+import frc.robot.subsystems.Floor;
+import frc.robot.subsystems.Indexer;
 import frc.robot.util.NetworkTables.HopperTable;
 import frc.robot.util.NetworkTables.IndexerTable;
 

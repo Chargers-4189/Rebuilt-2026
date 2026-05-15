@@ -7,9 +7,9 @@ package frc.robot.handlers;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.shooter.Flywheel;
-import frc.robot.subsystems.shooter.Hood;
 import frc.robot.util.NetworkTables.AutoTable;
 import frc.robot.util.NetworkTables.FlywheelTable;
 import frc.robot.util.NetworkTables.PassingCalculatorTable;

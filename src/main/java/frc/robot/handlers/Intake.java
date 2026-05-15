@@ -9,16 +9,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.NetworkTables.IntakeTable;
-import frc.robot.subsystems.intake.Extender;
-import frc.robot.subsystems.intake.Wheels;
+import frc.robot.subsystems.IntakeExtender;
+import frc.robot.subsystems.IntakeWheels;
 import frc.robot.util.Stopwatch;
 
 public class Intake extends SubsystemBase {
 
   /** Extender Subsystem - Fully controlled by the Intake. */
-  private Extender extender;
+  private IntakeExtender extender;
   /** Wheels Subsystem - Fully controlled by the Intake. */
-  private Wheels wheels;
+  private IntakeWheels wheels;
 
   /** Current State of the Intake.*/
   private IntakeState intakeState = IntakeState.STOPPED;
@@ -32,8 +32,8 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    extender = new Extender();
-    wheels = new Wheels();
+    extender = new IntakeExtender();
+    wheels = new IntakeWheels();
     configureStateTriggers();
   }
 
