@@ -12,10 +12,13 @@ import frc.robot.util.NetworkTables.IndexerTable;
 
 public class Hopper extends SubsystemBase {
 
-  public Indexer indexer;
-  public Floor floor;
+  /** Indexer Subsystem - Fully Controller by the Hopper. */
+  private Indexer indexer;
+  /** Floor Subsystem - Fully Controller by the Hopper. */
+  private Floor floor;
 
-  public HopperState hopperState;
+  /** Current State of the Intake.*/
+  private HopperState hopperState;
 
   /** Creates a new Hopper. */
   public Hopper() {
@@ -23,6 +26,7 @@ public class Hopper extends SubsystemBase {
     this.floor = new Floor();
   }
 
+  /** An enum for representing states the hopper could be in. */
   public enum HopperState {
     STOPPED,
     INDEXING,
@@ -30,6 +34,11 @@ public class Hopper extends SubsystemBase {
     OUTTAKING
   }
 
+  /**
+   * Sets the state of the hopper to the given state.
+   * 
+   * @param hopperState the new state
+   */
   public void setState(HopperState hopperState) {
     this.hopperState = hopperState;
   }

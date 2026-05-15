@@ -46,29 +46,58 @@ public class Shooter extends SubsystemBase {
     this.vision = vision;
   }
 
+  /**
+   * Sets the state of the shooter to the given state.
+   * 
+   * @param shooterState the new state
+   */
   public void setState(ShooterState shooterState) {
     this.shooterState = shooterState;
   }
 
+  /**
+   * Aligns the hood and spins the flywheel to the appropriate angle and velocity.
+   *
+   * @param distance the distance between the robot and the target
+   * @param scoring whether the scoring formula should be used instead of the passing formula
+   */
   public void align(double distance, boolean scoring) {
     if (scoring) {
       hood.setAngle(calculateScoringAngle(distance));
-      flywheel.setVelocity(calculateScoringPower(distance));
+      flywheel.setVelocity(calculateScoringVelocity(distance));
     } else {
       hood.setAngle(calculatePassingAngle(distance));
-      flywheel.setVelocity(calculatePassingPower(distance));
+      flywheel.setVelocity(calculatePassingVelocity(distance));
     }
   }
 
+  /**
+   * Calculates the appropriate hood angle to score from the given distance.
+   *
+   * @param distance the distance to the hub
+   * @return the hood angle
+   */
   private static double calculateScoringAngle(double distance) {
       return ShootingCalculatorTable.kAngleSlope.get() * distance + ShootingCalculatorTable.kAngleIntercept.get();
   }
 
-  private static double calculateScoringPower(double distance) {
+  /**
+   * Calculates the appropriate flywheel velocity to score from the given distance.
+   *
+   * @param distance the distance to the hub
+   * @return the flywheel velocithy
+   */
+  private static double calculateScoringVelocity(double distance) {
       return ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + ShootingCalculatorTable.kVelocitySlope.get() * distance + ShootingCalculatorTable.kVelocityIntercept.get();
   }
 
-  private static double calculatePassingPower(double distance) {
+  /**
+   * Calculates the appropriate hood angle to pass from the given distance.
+   *
+   * @param distance the distance to target
+   * @return the hood angle
+   */
+  private static double calculatePassingVelocity(double distance) {
       return MathUtil.clamp(
           ShootingCalculatorTable.kVelocitySquared.get() * distance * distance + PassingCalculatorTable.kVelocitySlope.get() * distance + PassingCalculatorTable.kVelocityIntercept.get(),
           PassingCalculatorTable.kMinVelocity.get(),
@@ -76,6 +105,13 @@ public class Shooter extends SubsystemBase {
       );
   }
 
+  /**
+   * Calculates the appropriate flywheel velocity
+   * to pass from the given distance.
+   *
+   * @param distance the distance to target
+   * @return the flywheel velocity
+   */
   private static double calculatePassingAngle(double distance) {
       return MathUtil.clamp(
           PassingCalculatorTable.kAngleSlope.get() * distance + PassingCalculatorTable.kAngleIntercept.get(),
@@ -84,6 +120,11 @@ public class Shooter extends SubsystemBase {
       );
   }
 
+  /**
+   * Returns true if the shooter is aligned & ready to shoot.
+   *
+   * @return whether the shooter is aligned
+   */
   public boolean isAligned() {
     return isAligned;
   }

@@ -93,83 +93,6 @@ public class Manager extends SubsystemBase {
     PRESPIN
   }
 
-  /** Causes the robot to behave based on its current state. Should be called in a periodic method. */
-  public void stateLoop() {
-    stateEventLoop.poll();
-
-    if (reqStop.getAsBoolean()) {
-      currentState = RobotState.STOPPED;
-      swerve.applyRequest(() -> SwerveSubsystem.idle);
-    }
-
-    switch (currentState) {
-      case DEFAULT:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.STOPPED);
-        shooter.setState(ShooterState.STOPPED);
-        break;
-      case TUCKING:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.RETRACTED);
-        shooter.setState(ShooterState.STOPPED);
-        if (isTaunting || intake.extender.isAligned()) {
-          setState(RobotState.DEFAULT);
-        }
-        break;
-      case EXTENDING:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.RETRACTED);
-        shooter.setState(ShooterState.STOPPED);
-        if (isTaunting || intake.extender.isAligned()) {
-          setState(RobotState.DEFAULT);
-        }
-        break;
-      case INTAKING:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.INTAKING);
-        shooter.setState(ShooterState.STOPPED);
-        if (isTaunting) {
-          setState(RobotState.DEFAULT);
-        }
-        break;
-      case SCORING:
-        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
-        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
-        shooter.setState(ShooterState.SCORING);;
-        break;
-      case STATIC_SHOOTING:
-        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
-        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
-        shooter.setState(ShooterState.STATIC_SHOOTING);;
-        break;
-      case PASSING:
-        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
-        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
-        shooter.setState(ShooterState.PASSING);;
-        break;
-      case OUTTAKING:
-        hopper.setState(HopperState.OUTTAKING);
-        intake.setState(IntakeState.OUTTAKING);
-        shooter.setState(ShooterState.STOPPED);
-        break;
-      case UNJAMMING:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.FORCE_OUTTAKE);
-        shooter.setState(ShooterState.STOPPED);
-        break;
-      case STOPPED:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.STOPPED);
-        shooter.setState(ShooterState.STOPPED);
-        break;
-      case PRESPIN:
-        hopper.setState(HopperState.STOPPED);
-        intake.setState(IntakeState.STOPPED);
-        shooter.setState(ShooterState.PRESPIN);
-        break;
-    }
-  }
-
   /**
    * Sets the robot to the given state when the condition changes to `true` and resets the state
    * to `RobotState.DEFAULT` when the condition changes to `false`.
@@ -219,7 +142,7 @@ public class Manager extends SubsystemBase {
   /**
    * Sets the current state of the robot to the given state.
    * 
-   * @param robotState the state to toggle
+   * @param robotState the new state
    */
   public void setState(RobotState robotState) {
     this.currentState = robotState;
@@ -228,7 +151,7 @@ public class Manager extends SubsystemBase {
   /**
    * Returns the robot's current state.
    * 
-   * @return robotState the current robot state
+   * @return the current robot state
    */
   public RobotState getState() {
     return currentState;
@@ -286,6 +209,78 @@ public class Manager extends SubsystemBase {
 
   @Override
   public void periodic() {
-    stateLoop();
+    stateEventLoop.poll();
+
+    if (reqStop.getAsBoolean()) {
+      currentState = RobotState.STOPPED;
+      swerve.applyRequest(() -> SwerveSubsystem.idle);
+    }
+
+    switch (currentState) {
+      case DEFAULT:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.STOPPED);
+        shooter.setState(ShooterState.STOPPED);
+        break;
+      case TUCKING:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.RETRACTED);
+        shooter.setState(ShooterState.STOPPED);
+        if (isTaunting || intake.isAligned()) {
+          setState(RobotState.DEFAULT);
+        }
+        break;
+      case EXTENDING:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.RETRACTED);
+        shooter.setState(ShooterState.STOPPED);
+        if (isTaunting || intake.isAligned()) {
+          setState(RobotState.DEFAULT);
+        }
+        break;
+      case INTAKING:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.INTAKING);
+        shooter.setState(ShooterState.STOPPED);
+        if (isTaunting) {
+          setState(RobotState.DEFAULT);
+        }
+        break;
+      case SCORING:
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.SCORING);;
+        break;
+      case STATIC_SHOOTING:
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.STATIC_SHOOTING);;
+        break;
+      case PASSING:
+        hopper.setState(shooter.isAligned() ? HopperState.INDEXING : HopperState.OUTDEXING);
+        intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.EXTENDED);
+        shooter.setState(ShooterState.PASSING);;
+        break;
+      case OUTTAKING:
+        hopper.setState(HopperState.OUTTAKING);
+        intake.setState(IntakeState.OUTTAKING);
+        shooter.setState(ShooterState.STOPPED);
+        break;
+      case UNJAMMING:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.FORCE_OUTTAKE);
+        shooter.setState(ShooterState.STOPPED);
+        break;
+      case STOPPED:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.STOPPED);
+        shooter.setState(ShooterState.STOPPED);
+        break;
+      case PRESPIN:
+        hopper.setState(HopperState.STOPPED);
+        intake.setState(IntakeState.STOPPED);
+        shooter.setState(ShooterState.PRESPIN);
+        break;
+    }
   }
 }

@@ -17,17 +17,21 @@ import frc.robot.util.Stopwatch;
 
 public class Intake extends SubsystemBase {
 
-  public Extender extender;
-  public Wheels wheels;
+  /** Extender Subsystem - Fully controlled by the Intake. */
+  private Extender extender;
+  /** Wheels Subsystem - Fully controlled by the Intake. */
+  private Wheels wheels;
 
+  /** Current State of the Intake.*/
   private IntakeState intakeState = IntakeState.STOPPED;
 
+  /** The Event Loop for State-Activated Triggers. */
   private EventLoop stateEventLoop;
 
-  private DoubleSupplier unjamPower;
-
+  /** Triggers when the intake is taunting. */
   private Trigger tauntTrigger = new Trigger(stateEventLoop, () -> intakeState == IntakeState.TAUNTING);
   private Stopwatch tauntTimer = new Stopwatch();
+
   /** Creates a new Intake. */
   public Intake() {
     extender = new Extender();
@@ -35,6 +39,7 @@ public class Intake extends SubsystemBase {
     configureStateTriggers();
   }
 
+  /** An enum for representing states the intake could be in. */
   public enum IntakeState {
     INTAKING,
     OUTTAKING,
@@ -46,20 +51,48 @@ public class Intake extends SubsystemBase {
     STOPPED
   }
 
+  /**
+   * Configures any state triggers that should activate when the intake switches
+   * between states. Helpful for integrating Commands into the state machine.
+   */
   private void configureStateTriggers() {
     tauntTrigger.onTrue(Commands.runOnce(() -> tauntTimer.start()));
   }
 
+  /**
+   * Sets the state of the intake to the given state.
+   * 
+   * @param intakeState the new state
+   */
   public void setState(IntakeState intakeState) {
     this.intakeState = intakeState;
   }
 
-  public void getState(IntakeState intakeState) {
-    this.intakeState = intakeState;
+  /**
+   * Returns the intake's current state.
+   * 
+   * @return the current state
+   */
+  public IntakeState getState() {
+    return intakeState;
   }
 
+  /**
+   * Calculates the appropriate angle to taunt the intake.
+   *
+   * @return the appropriate angle setpoint
+   */
   private double calculateTauntAngle() {
     return IntakeTable.kTauntMagnitude.getAsDouble() * Math.sin(2 * Math.PI * tauntTimer.getElapsedTime() * IntakeTable.kTauntFrequency.getAsDouble());
+  }
+
+  /**
+   * Returns true if the intake is aligned to its setpoint.
+   *
+   * @return whether the intake is aligned
+   */
+  public boolean isAligned() {
+    return extender.isAligned();
   }
 
   @Override
