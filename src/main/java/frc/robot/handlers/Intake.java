@@ -4,8 +4,6 @@
 
 package frc.robot.handlers;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
