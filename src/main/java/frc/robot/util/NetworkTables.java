@@ -2,10 +2,13 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.BooleanEntry;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,6 +19,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.FloorConstants;
+import frc.robot.Constants.FlywheelConstants;
+import frc.robot.Constants.HoodConstants;
+import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.PassingCalculatorConstants;
+import frc.robot.Constants.ShootingCalculatorConstants;
+import frc.robot.Constants.SwerveConstants;
 
 public class NetworkTables {
     public static final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -24,59 +36,56 @@ public class NetworkTables {
 
     private static CommandXboxController primaryController;
 
+    public static DoubleEntry createEntry(NetworkTable table, String name, double defaultValue) {
+        DoubleEntry entry = table.getDoubleTopic(name).getEntry(defaultValue);
+        entry.set(entry.get());
+        return entry;
+    }
+
+    public static BooleanEntry createEntry(NetworkTable table, String name, boolean defaultValue) {
+        BooleanEntry entry = table.getBooleanTopic(name).getEntry(defaultValue);
+        entry.set(entry.get());
+        return entry;
+    }
+
+    public static StructEntry<Pose2d> createEntry(NetworkTable table, String name, Pose2d defaultValue) {
+        StructEntry<Pose2d> entry = table.getStructTopic(name, Pose2d.struct).getEntry(defaultValue);
+        entry.set(entry.get());
+        return entry;
+    }
+
     public static class SwerveTable {
         private static final NetworkTable swerveTable = networkInstance.getTable("swerveTable");
-
-        public static final StructEntry<Pose2d> robotPose = swerveTable.getStructTopic("Robot Position", Pose2d.struct).getEntry(new Pose2d());
 
         public static final DoublePublisher hubDistance = swerveTable.getDoubleTopic("Hub Distance").publish();
         public static final DoublePublisher hubRotation = swerveTable.getDoubleTopic("Hub Rotation").publish();
         public static final DoublePublisher robotRotation = swerveTable.getDoubleTopic("Robot Rotation").publish();
         public static final DoublePublisher trenchDistance = swerveTable.getDoubleTopic("Trench Distance").publish();
 
-        public static final DoubleEntry kAngleP = swerveTable.getDoubleTopic("Angle P (Swerve)").getEntry(Constants.SwerveConstants.kAngleP);
-        public static final DoubleEntry kAngleI = swerveTable.getDoubleTopic("Angle I (Swerve)").getEntry(Constants.SwerveConstants.kAngleI);
-        public static final DoubleEntry kAngleD = swerveTable.getDoubleTopic("Angle D (Swerve)").getEntry(Constants.SwerveConstants.kAngleD);
-        public static final DoubleEntry kAngleS = swerveTable.getDoubleTopic("Angle S (Swerve)").getEntry(Constants.SwerveConstants.kAngleS);
-        public static final DoubleEntry kAngleMaxPower = swerveTable.getDoubleTopic("Angle Max Power (Swerve)").getEntry(Constants.SwerveConstants.kAngleMaxPower);
-        public static final DoubleEntry kAngleTolerance = swerveTable.getDoubleTopic("Angle Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kAngleTolerance);
-
-        public static final DoubleEntry kPositionP = swerveTable.getDoubleTopic("Position P (Swerve)").getEntry(Constants.SwerveConstants.kPositionP);
-        public static final DoubleEntry kPositionI = swerveTable.getDoubleTopic("Position I (Swerve)").getEntry(Constants.SwerveConstants.kPositionI);
-        public static final DoubleEntry kPositionD = swerveTable.getDoubleTopic("Position D (Swerve)").getEntry(Constants.SwerveConstants.kPositionD);
-        public static final DoubleEntry kPositionS = swerveTable.getDoubleTopic("Position S (Swerve)").getEntry(Constants.SwerveConstants.kPositionS);
-        public static final DoubleEntry kPositionMaxPower = swerveTable.getDoubleTopic("Position Max Power (Swerve)").getEntry(Constants.SwerveConstants.kPositionMaxPower);
-        public static final DoubleEntry kPositionTolerance = swerveTable.getDoubleTopic("Position Tolerance (Swerve)").getEntry(Constants.SwerveConstants.kPositionTolerance);
-
-        public static final DoubleEntry kDriveExponent = swerveTable.getDoubleTopic("Manual Drive Exponent").getEntry(Constants.SwerveConstants.kDriveExponent);
-        public static final DoubleEntry kRotationalExponent = swerveTable.getDoubleTopic("Manual Rotational Exponent").getEntry(Constants.SwerveConstants.kRotationalExponent);
-
         public static final StringPublisher encoderOffsets = swerveTable.getStringTopic("Encoder Offsets").publish();
 
-        public static final StructEntry<Pose2d> goalPose = swerveTable.getStructTopic("Goal Pose", Pose2d.struct).getEntry(new Pose2d());
+        public static final DoubleEntry kAngleP = createEntry(swerveTable, "Angle P (Swerve)", SwerveConstants.kAngleP);
+        public static final DoubleEntry kAngleI = createEntry(swerveTable, "Angle I (Swerve)", SwerveConstants.kAngleI);
+        public static final DoubleEntry kAngleD = createEntry(swerveTable, "Angle D (Swerve)", SwerveConstants.kAngleD);
+        public static final DoubleEntry kAngleS = createEntry(swerveTable, "Angle S (Swerve)", SwerveConstants.kAngleS);
+        public static final DoubleEntry kAngleMaxPower = createEntry(swerveTable, "Angle Max Power (Swerve)", SwerveConstants.kAngleMaxPower);
+        public static final DoubleEntry kAngleTolerance = createEntry(swerveTable, "Angle Tolerance (Swerve)", SwerveConstants.kAngleTolerance);
 
-        public static final DoubleEntry kExtraRotationSeconds = swerveTable.getDoubleTopic("Extra Rotation Seconds").getEntry(Constants.SwerveConstants.kExtraRotationSeconds);
+        public static final DoubleEntry kPositionP = createEntry(swerveTable, "Position P (Swerve)", SwerveConstants.kPositionP);
+        public static final DoubleEntry kPositionI = createEntry(swerveTable, "Position I (Swerve)", SwerveConstants.kPositionI);
+        public static final DoubleEntry kPositionD = createEntry(swerveTable, "Position D (Swerve)", SwerveConstants.kPositionD);
+        public static final DoubleEntry kPositionS = createEntry(swerveTable, "Position S (Swerve)", SwerveConstants.kPositionS);
+        public static final DoubleEntry kPositionMaxPower = createEntry(swerveTable, "Position Max Power (Swerve)", SwerveConstants.kPositionMaxPower);
+        public static final DoubleEntry kPositionTolerance = createEntry(swerveTable, "Position Tolerance (Swerve)", SwerveConstants.kPositionTolerance);
 
-        public static void init() {
-            kAngleP.set(kAngleP.get());
-            kAngleI.set(kAngleI.get());
-            kAngleD.set(kAngleD.get());
-            kAngleS.set(kAngleS.get());
-            kAngleMaxPower.set(kAngleMaxPower.get());
-            kAngleTolerance.set(kAngleTolerance.get());
+        public static final DoubleEntry kDriveExponent = createEntry(swerveTable, "Manual Drive Exponent", SwerveConstants.kDriveExponent);
+        public static final DoubleEntry kRotationalExponent = createEntry(swerveTable, "Manual Rotational Exponent", SwerveConstants.kRotationalExponent);
 
-            kPositionP.set(kPositionP.get());
-            kPositionI.set(kPositionI.get());
-            kPositionD.set(kPositionD.get());
-            kPositionS.set(kPositionS.get());
-            kPositionMaxPower.set(kPositionMaxPower.get());
-            kPositionTolerance.set(kPositionTolerance.get());
+        public static final StructEntry<Pose2d> goalPose = createEntry(swerveTable, "Goal Pose", new Pose2d());
 
-            kDriveExponent.set(kDriveExponent.get());
-            kRotationalExponent.set(kRotationalExponent.get());
+        public static final StructEntry<Pose2d> robotPose = createEntry(swerveTable, "Robot Position", new Pose2d());
 
-            kExtraRotationSeconds.set(kExtraRotationSeconds.get());
-        }
+        public static final DoubleEntry kExtraRotationSeconds = createEntry(swerveTable, "Extra Rotation Seconds", SwerveConstants.kExtraRotationSeconds);
     }
 
     public static class IntakeTable {
@@ -86,92 +95,51 @@ public class NetworkTables {
         public static final DoublePublisher offsetEncoder = intakeTable.getDoubleTopic("Offset Encoder").publish();
         public static final DoublePublisher extensionGoal = intakeTable.getDoubleTopic("Intake Extension Goal").publish();
 
-        public static final DoubleEntry kWheelPower = intakeTable.getDoubleTopic("Intake Wheel Power").getEntry(Constants.IntakeConstants.kWheelPower);
-        public static final DoubleEntry kLowWheelPower = intakeTable.getDoubleTopic("Intake Low Wheel Power").getEntry(Constants.IntakeConstants.kLowWheelPower);
-        public static final DoubleEntry kManualExtensionPower = intakeTable.getDoubleTopic("Intake Manual Extension Power").getEntry(Constants.IntakeConstants.kManualExtensionPower);
+        public static final DoubleEntry kWheelPower = createEntry(intakeTable, "Intake Wheel Power", IntakeConstants.kWheelPower);
+        public static final DoubleEntry kLowWheelPower = createEntry(intakeTable, "Intake Low Wheel Power", IntakeConstants.kLowWheelPower);
+        public static final DoubleEntry kManualExtensionPower = createEntry(intakeTable, "Intake Manual Extension Power", IntakeConstants.kManualExtensionPower);
     
-        public static final DoubleEntry kAutoOutPower = intakeTable.getDoubleTopic("Intake Auto Out Power").getEntry(Constants.IntakeConstants.kAutoOutPower);
-        public static final DoubleEntry kAutoInPower = intakeTable.getDoubleTopic("Intake Auto In Power").getEntry(Constants.IntakeConstants.kAutoInPower);
+        public static final DoubleEntry kAutoOutPower = createEntry(intakeTable, "Intake Auto Out Power", IntakeConstants.kAutoOutPower);
+        public static final DoubleEntry kAutoInPower = createEntry(intakeTable, "Intake Auto In Power", IntakeConstants.kAutoInPower);
         
-        public static final DoubleEntry kEncoderOffset = intakeTable.getDoubleTopic("Intake Encoder Offset").getEntry(Constants.IntakeConstants.kEncoderOffset);
+        public static final DoubleEntry kEncoderOffset = createEntry(intakeTable, "Intake Encoder Offset", IntakeConstants.kEncoderOffset);
 
-        public static final DoubleEntry kP = intakeTable.getDoubleTopic("P (Intake)").getEntry(Constants.IntakeConstants.kP);
-        public static final DoubleEntry kI = intakeTable.getDoubleTopic("I (Intake)").getEntry(Constants.IntakeConstants.kI);
-        public static final DoubleEntry kD = intakeTable.getDoubleTopic("D (Intake)").getEntry(Constants.IntakeConstants.kD);
-        public static final DoubleEntry kS = intakeTable.getDoubleTopic("S (Intake)").getEntry(Constants.IntakeConstants.kS);
+        public static final DoubleEntry kP = createEntry(intakeTable, "P (Intake)", IntakeConstants.kP);
+        public static final DoubleEntry kI = createEntry(intakeTable, "I (Intake)", IntakeConstants.kI);
+        public static final DoubleEntry kD = createEntry(intakeTable, "D (Intake)", IntakeConstants.kD);
+        public static final DoubleEntry kS = createEntry(intakeTable, "S (Intake)", IntakeConstants.kS);
 
-        public static final DoubleEntry kMaxVelocity = intakeTable.getDoubleTopic("Max Velocity (Intake)").getEntry(Constants.IntakeConstants.kMaxVelocity);
-        public static final DoubleEntry kMaxAcceleration = intakeTable.getDoubleTopic("Max Accel. (Intake)").getEntry(Constants.IntakeConstants.kMaxAcceleration);
+        public static final DoubleEntry kMaxVelocity = createEntry(intakeTable, "Max Velocity (Intake)", IntakeConstants.kMaxVelocity);
+        public static final DoubleEntry kMaxAcceleration = createEntry(intakeTable, "Max Accel. (Intake)", IntakeConstants.kMaxAcceleration);
 
-        public static final BooleanEntry kReverseEncoder = intakeTable.getBooleanTopic("Reverse Intake Encoder").getEntry(Constants.IntakeConstants.reverseEncoder);
+        public static final BooleanEntry kReverseEncoder = createEntry(intakeTable, "Reverse Intake Encoder", IntakeConstants.reverseEncoder);
 
-        public static final DoubleEntry kTauntRotations = intakeTable.getDoubleTopic("Taunt Rotations").getEntry(Constants.IntakeConstants.kTauntRotations);
-        public static final DoubleEntry kTauntFrequency = intakeTable.getDoubleTopic("Taunt Frequency").getEntry(Constants.IntakeConstants.kTauntFrequency);
-        public static final DoubleEntry kTauntMagnitude = intakeTable.getDoubleTopic("Taunt Magnitude").getEntry(Constants.IntakeConstants.kTauntMagnitude);
+        public static final DoubleEntry kTauntRotations = createEntry(intakeTable, "Taunt Rotations", IntakeConstants.kTauntRotations);
+        public static final DoubleEntry kTauntFrequency = createEntry(intakeTable, "Taunt Frequency", IntakeConstants.kTauntFrequency);
+        public static final DoubleEntry kTauntMagnitude = createEntry(intakeTable, "Taunt Magnitude", IntakeConstants.kTauntMagnitude);
 
-        public static final DoubleEntry kTolerance = intakeTable.getDoubleTopic("Intake Tolerance").getEntry(Constants.IntakeConstants.kTolerance);
-        public static final DoubleEntry kOuterExtensionLimit = intakeTable.getDoubleTopic("Intake Outer Limit").getEntry(Constants.IntakeConstants.kOuterExtensionLimit);
-        public static final DoubleEntry kInnerExtensionLimit = intakeTable.getDoubleTopic("Intake Inner Limit").getEntry(Constants.IntakeConstants.kInnerExtensionLimit);
+        public static final DoubleEntry kTolerance = createEntry(intakeTable, "Intake Tolerance", IntakeConstants.kTolerance);
+        public static final DoubleEntry kOuterExtensionLimit = createEntry(intakeTable, "Intake Outer Limit", IntakeConstants.kOuterExtensionLimit);
+        public static final DoubleEntry kInnerExtensionLimit = createEntry(intakeTable, "Intake Inner Limit", IntakeConstants.kInnerExtensionLimit);
 
-        public static final DoubleEntry kTauntDelay = intakeTable.getDoubleTopic("Taunt Delay").getEntry(Constants.IntakeConstants.kTauntDelay);
+        public static final DoubleEntry kTauntDelay = createEntry(intakeTable, "Taunt Delay", IntakeConstants.kTauntDelay);
 
-        public static final DoubleEntry kPushDownPower = intakeTable.getDoubleTopic("Push Down Power").getEntry(Constants.IntakeConstants.kPushDownPower);
-        public static void init() {
-            kWheelPower.set(kWheelPower.get());
-            kLowWheelPower.set(kLowWheelPower.get());
-            kManualExtensionPower.set(kManualExtensionPower.get());
-
-            kAutoInPower.set(kAutoInPower.get());
-            kAutoOutPower.set(kAutoOutPower.get());
-
-            kP.set(kP.get());
-            kI.set(kI.get());
-            kD.set(kD.get());
-            kS.set(kS.get());
-            kEncoderOffset.set(kEncoderOffset.get());
-
-            kMaxVelocity.set(kMaxVelocity.get());
-            kMaxAcceleration.set(kMaxAcceleration.get());
-
-            kTauntRotations.set(kTauntRotations.get());
-            kTauntFrequency.set(kTauntFrequency.get());
-            kTauntMagnitude.set(kTauntMagnitude.get());
-
-            kTolerance.set(kTolerance.get());
-            kOuterExtensionLimit.set(kOuterExtensionLimit.get());
-            kInnerExtensionLimit.set(kInnerExtensionLimit.get());
-
-            kReverseEncoder.set(kReverseEncoder.get());
-
-            kTauntDelay.set(kTauntDelay.get());
-
-            kPushDownPower.set(kPushDownPower.get());
-        }
+        public static final DoubleEntry kPushDownPower = createEntry(intakeTable, "Push Down Power", IntakeConstants.kPushDownPower);
     }
 
     public static class HopperTable {
         private static final NetworkTable hopperTable = networkInstance.getTable("hopperTable");
 
-        public static final DoubleEntry kPower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.FloorConstants.kPower);
-        public static final DoubleEntry kReversePower = hopperTable.getDoubleTopic("Hopper Power").getEntry(Constants.FloorConstants.kReversePower);
-
-        public static final void init() {
-            kPower.set(kPower.get());
-            kReversePower.set(kReversePower.get());
-        }
+        public static final DoubleEntry kPower = createEntry(hopperTable, "Hopper Power", FloorConstants.kPower);
+        public static final DoubleEntry kReversePower = createEntry(hopperTable, "Hopper Power", FloorConstants.kReversePower);
     }
     
     
     public static class IndexerTable {
         private static final NetworkTable indexerTable = networkInstance.getTable("indexerTable");
 
-        public static final DoubleEntry kPower = indexerTable.getDoubleTopic("Indexer Power").getEntry(Constants.IndexerConstants.kPower);
-        public static final DoubleEntry kReversePower = indexerTable.getDoubleTopic("Indexer Reverse Power").getEntry(Constants.IndexerConstants.kReversePower);
-
-        public static final void init() {
-            kPower.set(kPower.get());
-            kReversePower.set(kReversePower.get());
-        }
+        public static final DoubleEntry kPower = createEntry(indexerTable, "Indexer Power", IndexerConstants.kPower);
+        public static final DoubleEntry kReversePower = createEntry(indexerTable, "Indexer Reverse Power", IndexerConstants.kReversePower);
     }
 
     public static class HoodTable {
@@ -180,24 +148,13 @@ public class NetworkTables {
         public static final DoublePublisher hoodEncoder = hoodTable.getDoubleTopic("Hood Encoder").publish();
         public static final DoublePublisher hoodGoal = hoodTable.getDoubleTopic("Hood Goal").publish();
 
-        public static final DoubleEntry kManualPower = hoodTable.getDoubleTopic("Hood Manual Power").getEntry(Constants.HoodConstants.kManualPower);
-        public static final DoubleEntry kAutoPower = hoodTable.getDoubleTopic("Hood Auto Power").getEntry(Constants.HoodConstants.kAutoPower);
-        public static final DoubleEntry kDefaultAngle = hoodTable.getDoubleTopic("Hood Default Angle").getEntry(Constants.HoodConstants.kDefaultAngle);
+        public static final DoubleEntry kManualPower = createEntry(hoodTable, "Hood Manual Power", HoodConstants.kManualPower);
+        public static final DoubleEntry kAutoPower = createEntry(hoodTable, "Hood Auto Power", HoodConstants.kAutoPower);
+        public static final DoubleEntry kDefaultAngle = createEntry(hoodTable, "Hood Default Angle", HoodConstants.kDefaultAngle);
         
-        public static final DoubleEntry kP = hoodTable.getDoubleTopic("P (Hood)").getEntry(Constants.HoodConstants.kP);
-        public static final DoubleEntry kI = hoodTable.getDoubleTopic("I (Hood)").getEntry(Constants.HoodConstants.kI);
-        public static final DoubleEntry kD = hoodTable.getDoubleTopic("D (Hood)").getEntry(Constants.HoodConstants.kD);
-
-
-        public static final void init() {
-            kManualPower.set(kManualPower.get());
-            kAutoPower.set(kAutoPower.get());
-            kDefaultAngle.set(kDefaultAngle.get());
-
-            kP.set(kP.get());
-            kI.set(kI.get());
-            kD.set(kD.get());
-        }
+        public static final DoubleEntry kP = createEntry(hoodTable, "P (Hood)", HoodConstants.kP);
+        public static final DoubleEntry kI = createEntry(hoodTable, "I (Hood)", HoodConstants.kI);
+        public static final DoubleEntry kD = createEntry(hoodTable, "D (Hood)", HoodConstants.kD);
     }
 
     
@@ -208,123 +165,64 @@ public class NetworkTables {
         public static final DoublePublisher velocityGoal = shooterTable.getDoubleTopic("Shooter Velocity Goal").publish();
         public static final DoublePublisher currentPower = shooterTable.getDoubleTopic("Current Power").publish();
 
-        public static final DoubleEntry kSuperSpinPower = shooterTable.getDoubleTopic("Super Spin Power").getEntry(Constants.FlywheelConstants.kSuperSpinPower);
-        public static final DoubleEntry kFixedShootDistance = shooterTable.getDoubleTopic("Fixed Shoot Distance").getEntry(Constants.FlywheelConstants.kFixedShootDistance);
-        public static final DoubleEntry kPassVelocity = shooterTable.getDoubleTopic("Pass Velocity").getEntry(Constants.FlywheelConstants.kPassVelocity);
+        public static final DoubleEntry kSuperSpinPower = createEntry(shooterTable, "Super Spin Power", FlywheelConstants.kSuperSpinPower);
+        public static final DoubleEntry kFixedShootDistance = createEntry(shooterTable, "Fixed Shoot Distance", FlywheelConstants.kFixedShootDistance);
+        public static final DoubleEntry kPassVelocity = createEntry(shooterTable, "Pass Velocity", FlywheelConstants.kPassVelocity);
 
-        public static final DoubleEntry kTolerance = shooterTable.getDoubleTopic("Shooter Tolerance").getEntry(Constants.FlywheelConstants.kTolerance);
+        public static final DoubleEntry kTolerance = createEntry(shooterTable, "Shooter Tolerance", FlywheelConstants.kTolerance);
 
         //slot 0 configs
-        public static final DoubleEntry kS = shooterTable.getDoubleTopic("S (Shooter)").getEntry(Constants.FlywheelConstants.kS); // Add 0.25 V output to overcome static friction
-        public static final DoubleEntry kV = shooterTable.getDoubleTopic("V (Shooter)").getEntry(Constants.FlywheelConstants.kV); // A velocity target of 1 rps results in 0.12 V output
-        public static final DoubleEntry kA = shooterTable.getDoubleTopic("A (Shooter)").getEntry(Constants.FlywheelConstants.kA); // An acceleration of 1 rps/s requires 0.01 V output
-        public static final DoubleEntry kP = shooterTable.getDoubleTopic("P (Shooter)").getEntry(Constants.FlywheelConstants.kP);
-        public static final DoubleEntry kI = shooterTable.getDoubleTopic("I (Shooter)").getEntry(Constants.FlywheelConstants.kI);
-        public static final DoubleEntry kD = shooterTable.getDoubleTopic("D (Shooter)").getEntry(Constants.FlywheelConstants.kD);
+        public static final DoubleEntry kS = createEntry(shooterTable, "S (Shooter)", FlywheelConstants.kS); // Add 0.25 V output to overcome static friction
+        public static final DoubleEntry kV = createEntry(shooterTable, "V (Shooter)", FlywheelConstants.kV); // A velocity target of 1 rps results in 0.12 V output
+        public static final DoubleEntry kA = createEntry(shooterTable, "A (Shooter)", FlywheelConstants.kA); // An acceleration of 1 rps/s requires 0.01 V output
+        public static final DoubleEntry kP = createEntry(shooterTable, "P (Shooter)", FlywheelConstants.kP);
+        public static final DoubleEntry kI = createEntry(shooterTable, "I (Shooter)", FlywheelConstants.kI);
+        public static final DoubleEntry kD = createEntry(shooterTable, "D (Shooter)", FlywheelConstants.kD);
 
         // set Motion Magic settings
-        public static final DoubleEntry kMotionMagicCruiseVelocity = shooterTable.getDoubleTopic("MM Velocity (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicCruiseVelocity); // Target cruise velocity of 80 rps
-        public static final DoubleEntry kMotionMagicAcceleration = shooterTable.getDoubleTopic("MM Acceleration (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
-        public static final DoubleEntry kMotionMagicJerk = shooterTable.getDoubleTopic("MM Jerk (Shooter)").getEntry(Constants.FlywheelConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
+        public static final DoubleEntry kMotionMagicCruiseVelocity = createEntry(shooterTable, "MM Velocity (Shooter)", FlywheelConstants.kMotionMagicCruiseVelocity); // Target cruise velocity of 80 rps
+        public static final DoubleEntry kMotionMagicAcceleration = createEntry(shooterTable, "MM Acceleration (Shooter)", FlywheelConstants.kMotionMagicAcceleration); // Target acceleration of 160 rps/s (0.5 seconds)
+        public static final DoubleEntry kMotionMagicJerk = createEntry(shooterTable, "MM Jerk (Shooter)", FlywheelConstants.kMotionMagicJerk); // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-        public static final DoubleEntry kMaxPowerCutoff = shooterTable.getDoubleTopic("Max Power Range").getEntry(Constants.FlywheelConstants.KMaxPowerCutoff);
-
-        public static final void init() {
-            kSuperSpinPower.set(kSuperSpinPower.get());
-            kFixedShootDistance.set(kFixedShootDistance.get());
-            kPassVelocity.set(kPassVelocity.get());
-
-            kTolerance.set(kTolerance.get());
-
-            kS.set(kS.get());
-            kV.set(kV.get());
-            kA.set(kA.get());
-            kP.set(kP.get());
-            kI.set(kI.get());
-            kD.set(kD.get());
-
-            kMotionMagicCruiseVelocity.set(kMotionMagicCruiseVelocity.get());
-            kMotionMagicAcceleration.set(kMotionMagicAcceleration.get());
-            kMotionMagicJerk.set(kMotionMagicJerk.get());
-
-            kMaxPowerCutoff.set(kMaxPowerCutoff.get());
-        }
+        public static final DoubleEntry kMaxPowerCutoff = createEntry(shooterTable, "Max Power Range", FlywheelConstants.KMaxPowerCutoff);
     }
 
     public static class ShootingCalculatorTable {
         private static final NetworkTable shootingCalcTable = networkInstance.getTable("shootingCalcTable");
 
-        public static final DoubleEntry kAngleIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleIntercept);
-        public static final DoubleEntry kAngleSlope = shootingCalcTable.getDoubleTopic("Slope (Score Angle)").getEntry(Constants.ShootingCalculatorConstants.kAngleSlope);
-        public static final DoubleEntry kVelocitySlope = shootingCalcTable.getDoubleTopic("Slope (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySlope);
-        public static final DoubleEntry kVelocityIntercept = shootingCalcTable.getDoubleTopic("Intercept (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocityIntercept);
-        public static final DoubleEntry kVelocitySquared = shootingCalcTable.getDoubleTopic("Squared (Score Velocity)").getEntry(Constants.ShootingCalculatorConstants.kVelocitySquared);
-
-        public static final void init() {
-            kAngleIntercept.set(kAngleIntercept.get());
-            kAngleSlope.set(kAngleSlope.get());
-            kVelocitySlope.set(kVelocitySlope.get());
-            kVelocityIntercept.set(kVelocityIntercept.get());
-            kVelocitySquared.set(kVelocitySquared.get());
-        }
+        public static final DoubleEntry kAngleIntercept = createEntry(shootingCalcTable, "Intercept (Score Angle)", ShootingCalculatorConstants.kAngleIntercept);
+        public static final DoubleEntry kAngleSlope = createEntry(shootingCalcTable, "Slope (Score Angle)", ShootingCalculatorConstants.kAngleSlope);
+        public static final DoubleEntry kVelocitySlope = createEntry(shootingCalcTable, "Slope (Score Velocity)", ShootingCalculatorConstants.kVelocitySlope);
+        public static final DoubleEntry kVelocityIntercept = createEntry(shootingCalcTable, "Intercept (Score Velocity)", ShootingCalculatorConstants.kVelocityIntercept);
+        public static final DoubleEntry kVelocitySquared = createEntry(shootingCalcTable, "Squared (Score Velocity)", ShootingCalculatorConstants.kVelocitySquared);
     }
 
     public static class PassingCalculatorTable {
         private static final NetworkTable passingCalcTable = networkInstance.getTable("passingCalcTable");
 
-        public static final DoubleEntry kAngleIntercept = passingCalcTable.getDoubleTopic("Intercept (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kAngleIntercept);
-        public static final DoubleEntry kAngleSlope = passingCalcTable.getDoubleTopic("Slope (Pass Angle))").getEntry(Constants.PassingCalculatorConstants.kAngleSlope);
-        public static final DoubleEntry kVelocitySlope = passingCalcTable.getDoubleTopic("Slope (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocitySlope);
-        public static final DoubleEntry kVelocityIntercept = passingCalcTable.getDoubleTopic("Intercept (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kVelocityIntercept);
-        public static final DoubleEntry kMinVelocity = passingCalcTable.getDoubleTopic("Min (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMinVelocity);
-        public static final DoubleEntry kMaxVelocity = passingCalcTable.getDoubleTopic("Max (Pass Velocity)").getEntry(Constants.PassingCalculatorConstants.kMaxVelocity);
-        public static final DoubleEntry kMinHoodAngle = passingCalcTable.getDoubleTopic("Min (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMinHoodAngle);
-        public static final DoubleEntry kMaxHoodAngle = passingCalcTable.getDoubleTopic("Max (Pass Angle)").getEntry(Constants.PassingCalculatorConstants.kMaxHoodAngle);
-
-        public static final void init() {
-            kAngleIntercept.set(kAngleIntercept.get());
-            kAngleSlope.set(kAngleSlope.get());
-            kVelocitySlope.set(kVelocitySlope.get());
-            kVelocityIntercept.set(kVelocityIntercept.get());
-            kMinVelocity.set(kMinVelocity.get());
-            kMaxVelocity.set(kMaxVelocity.get());
-            kMinHoodAngle.set(kMinHoodAngle.get());
-            kMaxHoodAngle.set(kMaxHoodAngle.get());
-        }
+        public static final DoubleEntry kAngleIntercept = createEntry(passingCalcTable, "Intercept (Pass Angle))", PassingCalculatorConstants.kAngleIntercept);
+        public static final DoubleEntry kAngleSlope = createEntry(passingCalcTable, "Slope (Pass Angle))", PassingCalculatorConstants.kAngleSlope);
+        public static final DoubleEntry kVelocitySlope = createEntry(passingCalcTable, "Slope (Pass Velocity)", PassingCalculatorConstants.kVelocitySlope);
+        public static final DoubleEntry kVelocityIntercept = createEntry(passingCalcTable, "Intercept (Pass Velocity)", PassingCalculatorConstants.kVelocityIntercept);
+        public static final DoubleEntry kMinVelocity = createEntry(passingCalcTable, "Min (Pass Velocity)", PassingCalculatorConstants.kMinVelocity);
+        public static final DoubleEntry kMaxVelocity = createEntry(passingCalcTable, "Max (Pass Velocity)", PassingCalculatorConstants.kMaxVelocity);
+        public static final DoubleEntry kMinHoodAngle = createEntry(passingCalcTable, "Min (Pass Angle)", PassingCalculatorConstants.kMinHoodAngle);
+        public static final DoubleEntry kMaxHoodAngle = createEntry(passingCalcTable, "Max (Pass Angle)", PassingCalculatorConstants.kMaxHoodAngle);
     }
 
     public static class AutoTable {
         private static final NetworkTable autoTable = networkInstance.getTable("autoTable");
 
-
-        public static final BooleanEntry kRightSide = autoTable.getBooleanTopic("Right Side").getEntry(Constants.AutoConstants.kRightSide);
-
+        public static final BooleanEntry kRightSide = createEntry(autoTable, "Right Side", AutoConstants.kRightSide);
         
-        public static final DoubleEntry kPreSpinDuration = autoTable.getDoubleTopic("Pre Spin Duration").getEntry(Constants.AutoConstants.kPreSpinDuration);
-        public static final DoubleEntry kPreSpinVelocity = autoTable.getDoubleTopic("Pre Spin Velocity").getEntry(Constants.AutoConstants.kPreSpinVelocity);
-        public static final DoubleEntry kShooterTimeout = autoTable.getDoubleTopic("Shooter Timeout").getEntry(Constants.AutoConstants.kShooterTimeout);
-        
-        public static final void init() {
-            kRightSide.set(kRightSide.get());
-
-            kPreSpinDuration.set(kPreSpinDuration.get());
-            kPreSpinVelocity.set(kPreSpinVelocity.get());
-            kShooterTimeout.set(kShooterTimeout.get());
-        }
+        public static final DoubleEntry kPreSpinDuration = createEntry(autoTable, "Pre Spin Duration", AutoConstants.kPreSpinDuration);
+        public static final DoubleEntry kPreSpinVelocity = createEntry(autoTable, "Pre Spin Velocity", AutoConstants.kPreSpinVelocity);
+        public static final DoubleEntry kShooterTimeout = createEntry(autoTable, "Shooter Timeout", AutoConstants.kShooterTimeout);
     }
     
     
-    public static void initialize(CommandXboxController primaryController) {
-        NetworkTables.primaryController = primaryController;
-        SwerveTable.init();
-        IntakeTable.init();
-        HopperTable.init();
-        IndexerTable.init();
-        HoodTable.init();
-        FlywheelTable.init();
-        ShootingCalculatorTable.init();
-        PassingCalculatorTable.init();
-        AutoTable.init();
+    public static void addController(CommandXboxController newPrimaryController) {
+        primaryController = newPrimaryController;
     }
 
     public static void periodic() {

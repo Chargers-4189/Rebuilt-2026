@@ -52,7 +52,7 @@ public class RobotContainer {
         configureBindings();
         //swerveSystemId();
         configureAutoChooser();
-        NetworkTables.initialize(primaryController);
+        NetworkTables.addController(primaryController);
     }
 
     private void configureBindings() {
