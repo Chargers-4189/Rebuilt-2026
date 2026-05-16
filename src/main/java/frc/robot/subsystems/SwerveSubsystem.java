@@ -138,7 +138,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
 
-
     //Path Following
     private double xPower;
     private double yPower;
@@ -178,9 +177,6 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
         }
         createAutoFactory();
     }
-
-
-   
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -263,9 +259,7 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
          */
         //this.updateSimState(m_drivetrainId, );
 
-        SwerveTable.encoderOffsets.set(getEncoderValues());
-            
-            
+        SwerveTable.encoderOffsets.set(getEncoderValues());  
          
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -357,9 +351,11 @@ public class SwerveSubsystem extends TunerSwerveDrivetrain implements Subsystem 
     public double getRotationalError() {
         return rotationalError;
     }
+
     public double getRotations() {
         return getPose().getRotation().getRotations();
     }
+    
     public Pose2d getPose() {
         return getState().Pose;
     }

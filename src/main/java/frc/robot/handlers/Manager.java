@@ -223,6 +223,14 @@ public class Manager extends SubsystemBase {
     );
   }
 
+  /**
+   * Resets all controller bindings. (State triggers are deleted but then recreated)
+   */
+  public void resetBindings() {
+    stateEventLoop.clear();
+    configureStateTriggers();
+  }
+
   @Override
   public void periodic() {
     stateEventLoop.poll();

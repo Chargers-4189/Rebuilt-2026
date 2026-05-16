@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.choreo.ChoreoTraj;
 import frc.robot.commands.AlignAngle;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.NetworkTables;
 import frc.robot.util.NetworkTables.SwerveTable;
+import frc.robot.util.Telemetry;
 
 public class RobotContainer {
     private final CommandXboxController primaryController =
@@ -163,12 +165,9 @@ public class RobotContainer {
     public void setFilterOppositeSide(boolean filterOppositeSide) {
         vision.setFilterOppositeSide(filterOppositeSide);
     }
-
+    
     /*
-    private void swerveSystemId() {
-
-        //Stop All
-        primaryController.start().whileTrue(new StopAll(hood, hopper, indexer, wheels, extender, shooter, swerve));
+    private void configureSwerveSysId() {
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.

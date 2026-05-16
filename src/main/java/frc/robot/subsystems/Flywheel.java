@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -24,7 +23,6 @@ public class Flywheel extends SubsystemBase {
 
   private TalonFXSConfiguration talonFXSConfigs;
   private Slot0Configs slot0Configs;
-  private MotionMagicConfigs motionMagicConfigs;
   private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
 
   private double targetVelocity;
@@ -49,9 +47,8 @@ public class Flywheel extends SubsystemBase {
     slot0Configs.kD = FlywheelTable.kD.get(); // no output for error derivative
 
     // set Motion Magic settings
-    motionMagicConfigs = talonFXSConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicAcceleration = FlywheelTable.kMotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
-    motionMagicConfigs.MotionMagicJerk = FlywheelTable.kMotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
+    talonFXSConfigs.MotionMagic.MotionMagicAcceleration = FlywheelTable.kMotionMagicAcceleration.get(); // Target acceleration of 400 rps/s (0.25 seconds to max)
+    talonFXSConfigs.MotionMagic.MotionMagicJerk = FlywheelTable.kMotionMagicJerk.get(); // Target jerk of 4000 rps/s/s (0.1 seconds)
 
     leftFlywheelMotor.getConfigurator().apply(talonFXSConfigs);
     rightFlywheelMotor.getConfigurator().apply(talonFXSConfigs);
