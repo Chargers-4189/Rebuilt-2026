@@ -4,36 +4,38 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NetworkTables.IntakeTable;
 
 public class IntakeExtender extends SubsystemBase {
-  /** Creates a new Intake. */
-  private TalonFXS extensionMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
-  private CANcoder encoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
 
+  /** IntakeExtender Motor */
+  private TalonFXS extenderMotor = new TalonFXS(Constants.IntakeConstants.kExtenderMotor);
+
+  /** IntakeExtender Encoder */
+  private CANcoder extenderEncoder = new CANcoder(Constants.IntakeConstants.kIntakeEncoder);
+
+  /** PID Controller for the IntakeExtender. */
   private ProfiledPIDController pidController;
-  private double goal = 0;
 
+  /** Stores the most recent angle setpoint applied to the IntakeExtender.*/
+  private double extensionGoal = 0;
+
+  /** Creates a new IntakeExtender. */
   public IntakeExtender() {
     TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
     talonFXSConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    extensionMotor.getConfigurator().apply(talonFXSConfigs);
+    extenderMotor.getConfigurator().apply(talonFXSConfigs);
 
     pidController = new ProfiledPIDController(
       IntakeTable.kP.get(),
@@ -44,40 +46,53 @@ public class IntakeExtender extends SubsystemBase {
     pidController.setTolerance(IntakeTable.kTolerance.get());
   }
 
-  //+: Rotates Clockwise (Out), -: Rotates Counterclockwise (In)
-  public void setExtensionPower(double power) {
-    extensionMotor.set(-power);
+  /**
+   * Sets the extender motor to the given power. Positive is retracting the intake.
+   * Zero is fully extended.
+   * 
+   * @param power the power to run the extender.
+   */
+  public void setPower(double power) {
+    extenderMotor.set(-power);
   }
 
+  /** Deactivates the extender motor. */
   public void stop() {
-    setExtensionPower(0);
+    setPower(0);
   }
 
-  public Command setPowerCommand(DoubleSupplier power) {
-    return Commands.runEnd(
-      () -> setExtensionPower(power.getAsDouble()), 
-      () -> stop(),
-      this
-    ).withName(
-      "Set Intake Extension Power"
-    );
+  /**
+   * Gets the current angle of the extender via the hood encoder. Positive is retracting
+   * the intake. Zero is fully extended.
+   * 
+   * @return the current angle (rotations)
+   */
+  public double getPosition() {
+    return extenderEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
-  public double getEncoder() {
-    return encoder.getAbsolutePosition().getValueAsDouble();
+  /**
+   * Returns true if the extender encoder is connected.
+   * 
+   * @return whether the encoder is connected.
+   */
+  public boolean isEncoderConnected() {
+    return extenderEncoder.isConnected();
   }
 
-  public boolean encoderConnected() {
-    return encoder.isConnected();
-  }
-
+  /**
+   * Sets the extender to the given angle via PID. Positive is retracting
+   * the intake. Zero is fully extended.
+   * 
+   * @param angle the new angle (rotations)
+   */
   public void setAngle(double angle) {
-    goal = angle;
+    extensionGoal = angle;
 
-    if (encoderConnected()) {
-      setExtensionPower(
+    if (isEncoderConnected()) {
+      setPower(
         MathUtil.clamp(calculatePIDS(
-          getEncoder(),
+          getPosition(),
           angle
         ),
         -IntakeTable.kAutoInPower.get(),
@@ -89,11 +104,23 @@ public class IntakeExtender extends SubsystemBase {
     }
   }
 
+  /**
+   * Calculates the new PIDS result given the current measurement and the goal.
+   *
+   * @param measurement the current angle of the intake extender
+   * @param goal the target angle of the intake extender
+   * @return the power to run the extender motor
+   */
   private double calculatePIDS(double measurement, double goal) {
     double pidCalculation = pidController.calculate(measurement, goal);
     return pidCalculation + Math.copySign(IntakeTable.kS.get(), pidCalculation);
   }
 
+  /**
+   * Returns true if the exender is at its target angle.
+   *
+   * @return whether the extender is at its target angle.
+   */
   public boolean isAligned() {
     return pidController.atSetpoint();
   }
@@ -101,7 +128,7 @@ public class IntakeExtender extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    IntakeTable.extensionGoal.set(goal);
-    IntakeTable.rawEncoder.set(getEncoder());
+    IntakeTable.extensionGoal.set(extensionGoal);
+    IntakeTable.rawEncoder.set(getPosition());
   }
 }

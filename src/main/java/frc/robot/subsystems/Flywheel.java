@@ -4,32 +4,23 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.FlywheelConstants;
 import frc.robot.util.NetworkTables.FlywheelTable;
 
 public class Flywheel extends SubsystemBase {
-  /** Creates a new Flywheel. */
 
-  //Flywheel motor shoots balls upwards from the hopper and indexer motor
-  private final TalonFXS leftFlywheelMotor = new TalonFXS( 
-    FlywheelConstants.kLeftMotorCanID 
-  );
-  private final TalonFXS rightFlywheelMotor = new TalonFXS( 
-    FlywheelConstants.kRightMotorCanID 
-  );
+  /** Left Flywheel Motor */
+  private final TalonFXS leftFlywheelMotor = new TalonFXS(FlywheelConstants.kLeftMotorCanID);
+
+  /** Right Flywheel Motor */
+  private final TalonFXS rightFlywheelMotor = new TalonFXS(FlywheelConstants.kRightMotorCanID);
 
   private TalonFXSConfiguration talonFXSConfigs;
   private Slot0Configs slot0Configs;
@@ -38,10 +29,12 @@ public class Flywheel extends SubsystemBase {
 
   private double targetVelocity;
  
+  /** Creates a new Flywheel. */
   public Flywheel() {
     configureMotors();
   }
 
+  /** Configures the flywheel motors. */
   public void configureMotors() {
     talonFXSConfigs = new TalonFXSConfiguration();
     talonFXSConfigs.Commutation.MotorArrangement = MotorArrangementValue.NEO_JST;
@@ -64,29 +57,53 @@ public class Flywheel extends SubsystemBase {
     rightFlywheelMotor.getConfigurator().apply(talonFXSConfigs);
   }
 
+  /**
+   * Sets the flywheel motors to the given power. Positive is shooting out of the robot.
+   * 
+   * @param power the power to run the flywheel.
+   */
   public void setPower(double power) {
     leftFlywheelMotor.set(power);
     rightFlywheelMotor.set(-power);
   }
 
+  /** Deactivates the flywheel motors. */
   public void stop() {
     setPower(0);
   }
 
+  /**
+   * Gets the current velocity of the flywheel via the sensors on the right motor.
+   * Positive is shooting out of the robot.
+   * 
+   * @return the current velocity (rotations per second)
+   */
   public double getVelocity() {
     return -rightFlywheelMotor.getVelocity().getValueAsDouble();
   }
 
+  /**
+   * Sets the flywheel motors to the given velocity via PID. Positive is shooting out of the robot.
+   * 
+   * @param velocity the new velocity (rotations per second)
+   */
   public void setVelocitySimple(double velocity) {
     targetVelocity = velocity;
     leftFlywheelMotor.setControl(m_request.withVelocity(velocity));
     rightFlywheelMotor.setControl(m_request.withVelocity(-velocity));
   }
 
+  /**
+   * Sets the flywheel motors to the given velocity via a combination of PID and bang-bang control.
+   * Positive is shooting out of the robot.
+   * 
+   * @param velocity the new velocity (rotations per second)
+   */
   public void setVelocity(double velocity) {
     if (getVelocity() < velocity - FlywheelTable.kMaxPowerCutoff.get()) {
       targetVelocity = velocity;
-      if (velocity > 5) { //Just in case of a wierd coding error, prevents the flywheel from moving when it shouldn't.
+      if (velocity > 5) {
+        //Just in case of a wierd coding error, prevents the flywheel from moving when it shouldn't.
         setPower(FlywheelTable.kSuperSpinPower.get());
       }
     } else {
@@ -94,23 +111,17 @@ public class Flywheel extends SubsystemBase {
     }
   }
 
-  public Command setVelocityCommand(DoubleSupplier velocity) {
-    return Commands.runEnd(
-      () -> setVelocity(velocity.getAsDouble()),
-      () -> stop(),
-      this
-    ).withName(
-      "Set Flywheel Velocity"
-    );
-  }
-
+  /**
+   * Returns true if the flywheel is at its target velocity.
+   *
+   * @return whether the flywheel is at its target velocity.
+   */
   public boolean isAligned() {
     return Math.abs(getVelocity() - targetVelocity) < FlywheelTable.kTolerance.get();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     FlywheelTable.velocity.set(getVelocity());
     FlywheelTable.velocityGoal.set(targetVelocity);
     FlywheelTable.currentPower.set(leftFlywheelMotor.getMotorVoltage().getValueAsDouble() / 12.0);
