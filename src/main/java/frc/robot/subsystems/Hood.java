@@ -49,6 +49,10 @@ public class Hood extends SubsystemBase {
     setAngle(HoodTable.kDefaultAngle.get());
   }
 
+  public void stop() {
+    setPower(0);
+  }
+
   public void setAngle(double angle) {
     hoodGoal = angle;
     if (hoodEncoder.isConnected()) {

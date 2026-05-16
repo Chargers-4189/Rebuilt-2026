@@ -48,6 +48,9 @@ public class Manager extends SubsystemBase {
   /** The Event Loop for State-Activated Triggers. */
   private EventLoop stateEventLoop = new EventLoop();
 
+  /** Requests that the robot be stopped. Replaces the StopAll command. */
+  private BooleanSupplier reqStop = () -> false;
+
   /** Triggers when the robot is attempting to shoot. */
   private Trigger shootingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.SCORING || currentState == RobotState.PASSING || currentState == RobotState.STATIC_SHOOTING);
   /** Triggers when the robot is actually firing fuel. */
@@ -56,9 +59,8 @@ public class Manager extends SubsystemBase {
   private Trigger scoringTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.SCORING);
   /** Triggers when the robot should align for passing. */
   private Trigger passingTrigger = new Trigger(stateEventLoop, () -> currentState == RobotState.PASSING);
-
-  /** Requests that the robot be stopped. Replaces the StopAll command. */
-  private BooleanSupplier reqStop = () -> false;
+  /** Triggers when the robot should stop */
+  private Trigger stopTrigger = new Trigger(stateEventLoop, reqStop);
 
   /** Used to measure how long it takes for the flywheel to spin up. */
   private Stopwatch spinupTime = new Stopwatch();
@@ -80,16 +82,27 @@ public class Manager extends SubsystemBase {
 
   /** An enum for representing states the robot could be in. */
   public enum RobotState {
+    /** Just driving around. */
     DEFAULT,
+    /** Retracting the intake. */
     TUCKING,
+    /** Extending the intake. */
     EXTENDING,
+    /** Extending the intake and intaking fuel. */
     INTAKING,
+    /** Scoring in the hub. */
     SCORING,
+    /** Fixed distance scoring in the hub. */
     STATIC_SHOOTING,
+    /** Passing fuel to our alliance zone. */
     PASSING,
+    /** Extending the intake and outtaking fuel. */
     OUTTAKING,
+    /** Forcing the intake to outtake fuel. */
     UNJAMMING,
+    /** Deactivating all motors. */
     STOPPED,
+    /** Spinning up the shooter to fixed velocity. */
     PRESPIN
   }
 
@@ -205,6 +218,9 @@ public class Manager extends SubsystemBase {
     passingTrigger.whileTrue(
       new AlignAngle(swerve, driveX, driveY, () -> Vision.convertFieldRotation(Rotation2d.k180deg).getRotations(), false, false)
     );
+    stopTrigger.whileTrue(
+      Commands.run(() -> swerve.applyRequest(() -> SwerveSubsystem.idle), swerve)
+    );
   }
 
   @Override
@@ -220,12 +236,12 @@ public class Manager extends SubsystemBase {
       case DEFAULT:
         hopper.setState(HopperState.STOPPED);
         intake.setState(isTaunting ? IntakeState.TAUNTING : IntakeState.STOPPED);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         break;
       case TUCKING:
         hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.RETRACTED);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         if (isTaunting || intake.isAligned()) {
           setState(RobotState.DEFAULT);
         }
@@ -233,7 +249,7 @@ public class Manager extends SubsystemBase {
       case EXTENDING:
         hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.RETRACTED);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         if (isTaunting || intake.isAligned()) {
           setState(RobotState.DEFAULT);
         }
@@ -241,7 +257,7 @@ public class Manager extends SubsystemBase {
       case INTAKING:
         hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.INTAKING);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         if (isTaunting) {
           setState(RobotState.DEFAULT);
         }
@@ -264,17 +280,17 @@ public class Manager extends SubsystemBase {
       case OUTTAKING:
         hopper.setState(HopperState.OUTTAKING);
         intake.setState(IntakeState.OUTTAKING);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         break;
       case UNJAMMING:
         hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.FORCE_OUTTAKE);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         break;
       case STOPPED:
         hopper.setState(HopperState.STOPPED);
         intake.setState(IntakeState.STOPPED);
-        shooter.setState(ShooterState.STOPPED);
+        shooter.setState(ShooterState.DEFAULT);
         break;
       case PRESPIN:
         hopper.setState(HopperState.STOPPED);

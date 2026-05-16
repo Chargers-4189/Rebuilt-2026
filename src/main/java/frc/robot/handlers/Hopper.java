@@ -28,9 +28,13 @@ public class Hopper extends SubsystemBase {
 
   /** An enum for representing states the hopper could be in. */
   public enum HopperState {
+    /** Deactivating all motors. */
     STOPPED,
+    /** Indexing Fuel to the shooter. */
     INDEXING,
+    /** Running the indexer in reverse. */
     OUTDEXING,
+    /** Running the indexer and hopper in reverse. */
     OUTTAKING
   }
 

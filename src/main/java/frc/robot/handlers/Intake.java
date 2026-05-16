@@ -39,13 +39,21 @@ public class Intake extends SubsystemBase {
 
   /** An enum for representing states the intake could be in. */
   public enum IntakeState {
+    /** Rotating the intake down and intaking fuel. */
     INTAKING,
+    /** Rotating the intake down and outtaking fuel. */
     OUTTAKING,
+    /** Rotating the intake up and down while slowly intaking fuel. */
     TAUNTING,
+    /** Rotating the intake down. */
     EXTENDED,
+    /** Rotating the intake up. */
     RETRACTED,
+    /** Outtaking fuel without rotating. */
     FORCE_OUTTAKE,
+    /** Inttaking fuel without rotating. */
     FORCE_INTAKE,
+    /** Deactivating all motors. */
     STOPPED
   }
 

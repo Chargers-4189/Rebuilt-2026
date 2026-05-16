@@ -25,18 +25,25 @@ public class Shooter extends SubsystemBase {
   private final Vision vision;
   
   /** Current State of the Shooter.*/
-  private ShooterState shooterState = ShooterState.STOPPED;
+  private ShooterState shooterState = ShooterState.DEFAULT;
 
   /** Specifies whether the Shooter is aligned. */
   private boolean isAligned = false;
 
   /** An enum for representing states the shooter could be in. */
   public enum ShooterState {
+    /** Scoring in the hub. */
     SCORING,
+    /** Fixed distance scoring in the hub. */
     STATIC_SHOOTING,
+    /** Passing fuel to our alliance zone. */
     PASSING,
-    STOPPED,
-    PRESPIN
+    /** Stopping the flywheel & homing the hood. */
+    DEFAULT,
+    /** Spinning up the shooter to fixed velocity. */
+    PRESPIN,
+    /** Deactivating all motors */
+    STOPPED
   }
 
   /** Creates a new Shooter. */
@@ -133,7 +140,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     switch (shooterState) {
-      case STOPPED:
+      case DEFAULT:
         hood.home();
         flywheel.stop();
         isAligned = false;
@@ -161,6 +168,10 @@ public class Shooter extends SubsystemBase {
         flywheel.setVelocitySimple(AutoTable.kPreSpinVelocity.get());
         isAligned = false;
         break;
+      case STOPPED:
+        hood.stop();
+        flywheel.stop();
+        isAligned = false;
     }
   }
 }
