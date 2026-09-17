@@ -176,7 +176,7 @@ public class RobotContainer {
         autoChooser.addCmd("Worlds Auto", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //This auto shouldn't cross the center line
-        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV2, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
+        autoChooser.addCmd("Fear the Center Line", () -> new SimpleCollectThenShoot(shooter, hood, indexer, swerve, vision, hopper, intakeWheels, intakeExtender, ChoreoTraj.closerCenterV3, ChoreoTraj.secondPassV3, ChoreoTraj.thirdPassB, 3, resetOdom));
         
         //Third Wheel
         autoChooser.addCmd("Third Wheel", () -> Commands.sequence(

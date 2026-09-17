@@ -80,6 +80,13 @@ public record ChoreoTraj(
         new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
         new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
     );
+    public static final ChoreoTraj closerCenterV3 = new ChoreoTraj(
+        "closerCenterV3",
+        OptionalInt.empty(),
+        5.63557,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
     public static final ChoreoTraj depotOnly = new ChoreoTraj(
         "depotOnly",
         OptionalInt.empty(),
@@ -226,6 +233,20 @@ public record ChoreoTraj(
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
         new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
+    public static final ChoreoTraj secondPassV3 = new ChoreoTraj(
+        "secondPassV3",
+        OptionalInt.empty(),
+        5.75269,
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
+        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
+    );
+    public static final ChoreoTraj shootPreload = new ChoreoTraj(
+        "shootPreload",
+        OptionalInt.empty(),
+        0.71611,
+        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
+        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
+    );
     public static final ChoreoTraj stealCenter = new ChoreoTraj(
         "stealCenter",
         OptionalInt.empty(),
@@ -254,6 +275,13 @@ public record ChoreoTraj(
         new Pose2d(3.44865, 7.34487, Rotation2d.fromRadians(0)),
         new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
+    public static final ChoreoTraj superCloseV2 = new ChoreoTraj(
+        "superCloseV2",
+        OptionalInt.empty(),
+        5.75269,
+        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
+        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
+    );
     public static final ChoreoTraj thirdPassA = new ChoreoTraj(
         "thirdPassA",
         OptionalInt.empty(),
@@ -268,40 +296,12 @@ public record ChoreoTraj(
         new Pose2d(2.72229, 7.02115, Rotation2d.fromRadians(-1.00686)),
         new Pose2d(6.47219, 7.00526, Rotation2d.fromRadians(2.29177))
     );
-    public static final ChoreoTraj secondPassV3 = new ChoreoTraj(
-        "secondPassV3",
-        OptionalInt.empty(),
-        5.75269,
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
-        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
-    );
-    public static final ChoreoTraj closerCenterV3 = new ChoreoTraj(
-        "closerCenterV3",
-        OptionalInt.empty(),
-        5.63557,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
     public static final ChoreoTraj thirdWheel = new ChoreoTraj(
         "thirdWheel",
         OptionalInt.empty(),
         1.29065,
         new Pose2d(3.48387, 5.90129, Rotation2d.fromRadians(-0.99236)),
         new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372))
-    );
-    public static final ChoreoTraj shootPreload = new ChoreoTraj(
-        "shootPreload",
-        OptionalInt.empty(),
-        0.71611,
-        new Pose2d(3.67028, 7.42005, Rotation2d.fromRadians(0)),
-        new Pose2d(3.24853, 7.13585, Rotation2d.fromRadians(-1.19677))
-    );
-    public static final ChoreoTraj superCloseV2 = new ChoreoTraj(
-        "superCloseV2",
-        OptionalInt.empty(),
-        5.75269,
-        new Pose2d(3.38936, 7.16424, Rotation2d.fromRadians(-1.08372)),
-        new Pose2d(3.20476, 7.07027, Rotation2d.fromRadians(-1.08372))
     );
 
     /**
@@ -317,6 +317,7 @@ public record ChoreoTraj(
         Map.entry("closerCenterSlow", closerCenterSlow),
         Map.entry("closerCenterTwist", closerCenterTwist),
         Map.entry("closerCenterV2", closerCenterV2),
+        Map.entry("closerCenterV3", closerCenterV3),
         Map.entry("depotOnly", depotOnly),
         Map.entry("depotThenOutpost", depotThenOutpost),
         Map.entry("depotThenOutpost$0", depotThenOutpost$0),
@@ -337,17 +338,16 @@ public record ChoreoTraj(
         Map.entry("secondPass", secondPass),
         Map.entry("secondPassCopy1", secondPassCopy1),
         Map.entry("secondPassCopy2", secondPassCopy2),
+        Map.entry("secondPassV3", secondPassV3),
+        Map.entry("shootPreload", shootPreload),
         Map.entry("stealCenter", stealCenter),
         Map.entry("stealCenterCopy1", stealCenterCopy1),
         Map.entry("stealCenterTwist", stealCenterTwist),
         Map.entry("superClose", superClose),
+        Map.entry("superCloseV2", superCloseV2),
         Map.entry("thirdPassA", thirdPassA),
         Map.entry("thirdPassB", thirdPassB),
-        Map.entry("secondPassV3", secondPassV3),
-        Map.entry("closerCenterV3", closerCenterV3),
-        Map.entry("thirdWheel", thirdWheel),
-        Map.entry("shootPreload", shootPreload),
-        Map.entry("superCloseV2", superCloseV2)
+        Map.entry("thirdWheel", thirdWheel)
     );
 
     /**
