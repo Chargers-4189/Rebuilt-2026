@@ -104,7 +104,7 @@ public class RobotContainer {
 
         //Rotate Intake
         primaryController.leftTrigger(.5).onTrue(new IntakeRotate(intakeExtender, true));
-        primaryController.rightTrigger(.5).onTrue(new IntakeRotate(intakeExtender, false));
+        primaryController.leftBumper().onTrue(new IntakeRotate(intakeExtender, false));
 
         //Outtake Fuel
         primaryController.povUp().whileTrue(new OuttakeFuel(intakeWheels, hopper));
@@ -113,7 +113,7 @@ public class RobotContainer {
         primaryController.rightBumper().toggleOnTrue(new IntakeRunAndRotate(intakeWheels, intakeExtender, IntakeTable.kWheelPower));
         
         //Score
-        primaryController.leftBumper().whileTrue(
+        primaryController.rightTrigger(0.5).whileTrue(
             new Score(shooter, hood, indexer, swerve, vision, hopper, primaryController)
         );
 

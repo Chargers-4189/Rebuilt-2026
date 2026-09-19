@@ -127,7 +127,7 @@ public final class Constants {
 
     //Modifiables
     public static final double kManualPower = .1;
-    public static final double kAutoPower = .3;
+    public static final double kAutoPower = 3.2;
     public static final double kDefaultAngle = 0.05;
 
     public static final double kP = 3;
